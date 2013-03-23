@@ -1,0 +1,103 @@
+-------------------------------------------
+	Entities
+-------------------------------------------
+
+CREATE TABLE user(
+	uid CHAR(20),
+	password CHAR(20)
+	PRIMARY KEY (uid)
+)
+
+CREATE TABLE strategy(
+	strategy_id INTEGER
+	strategy_name CHAR(20)
+	PRIMARY KEY (strategy_id)
+)
+CREATE TABLE indicator(
+	field_data CHAR(10),
+	start_time DATE,
+	end_time DATE,
+	security CHAR(6),
+	indicator_id INTEGER,
+	PRIMARY KEY (indicator_id),
+)
+CREATE TABLE query_data (
+	time DATE,
+	security CHAR(6),
+	field_data char(10),
+	PRIMARY KEY (secuity, field_data)
+)
+
+CREATE TABLE trade (
+	trade_id INTEGER,
+	buy_sell BOOLEAN,
+	security CHAR(6),
+	time DATE,
+	portfolio_value REAL,
+	PRIMARY KEY (trade_id)
+)
+
+CREATE TABLE portfolio_statistics (
+	version INTEGER,
+	sharpe_ratio REAL,
+	returns REAL
+)
+
+-------------------------------------------
+	Relationships
+-------------------------------------------
+
+CREATE TABLE Create_Strategy (
+	uid = CHAR(20),
+	strategy_id = INTEGER,
+	PRIMARY KEY (uid, strategy_id )
+	FOREIGN KEY (uid) REFERENCES users
+	FOREIGN KEY (strategy_id) REFERENCES strategy
+)
+
+CREATE TABLE Criteria (
+	strategy_id INTEGER,
+	indicator_id INTEGER,
+	PRIMARY KEY (strategy_id, indicator_id),
+	FOREIGN KEY (strategy_id) REFERENCES strategy,
+	FOREIGN KEY (indicator_id) REFERENCES indicator,
+)
+
+CREATE TABLE references(
+	action_security CHAR(6),
+	buy_sell BOOLEAN,
+	operator char(10),
+	share_amount INTEGER,
+	allocation REAL,
+	cash_value REAL,
+	indicator_id_1 INTEGER,
+	indicator_id_2 INTEGER,
+	PRIMARY KEY (indicator_id_1, indicator_id_2)
+	FOREIGN KEY (indicator_id_1) REFERENCES indicator
+	FOREGIN KEY (indicator_id_2) REFERENCES indicator
+)
+
+CREATE TABLE raw_data_parsing (
+	strategy_id INTEGER,
+	security CHAR(6),
+	PRIMARY KEY (strategy_id, security),
+	FOREIGN KEY (strategy_id) REFERENCES strategy,
+	FOREIGN KEY (security) REFERENCES query_data,
+)	
+
+CREATE TABLE action (
+	strategy_id INTEGER,
+	trade_id INTEGER,
+	PRIMARY KEY (strategy_id, trade_id)
+	FOREIGN KEY (strategy_id) REFERENCES strategy,
+	FOREIGN KEY (trade_id) REFERENCES trade,
+)
+
+CREATE TABLE create_portfolio (
+	strategy_id INTEGER,
+	version INTEGER,
+	PRIMARY KEY (strategy_id, version),
+	FOREIGN KEY strategy_id REFERENCES strategy,
+	FOREIGN KEY version REFERENCES portfolio_statistics,
+)
+
