@@ -1,0 +1,8 @@
+NOTES:
+
+Use the ADB3 Server
+
+How we're doing Booleans:
+	http://stackoverflow.com/questions/30062/boolean-field-in-oracle
+
+	
