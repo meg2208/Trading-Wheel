@@ -1,3 +1,8 @@
+CREATE TABLE user_data(
+	user_id CHAR(20),
+	password CHAR(20),
+	PRIMARY KEY (user_id)
+);
 CREATE TABLE indicator(
 	field_data CHAR(10),
 	start_time DATE,
@@ -32,9 +37,4 @@ CREATE TABLE trade (
 	time DATE,
 	portfolio_value REAL,
 	PRIMARY KEY (trade_id)
-);
-CREATE TABLE user_data(
-	user_id CHAR(20),
-	password CHAR(20),
-	PRIMARY KEY (user_id)
 );
