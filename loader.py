@@ -49,3 +49,4 @@ if __name__ == '__main__':
 	insert_data(table,csv_file,cursor,db)
 
 	close(cursor,db)
+	#hi matt
