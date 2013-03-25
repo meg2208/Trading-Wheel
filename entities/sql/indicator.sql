@@ -4,5 +4,7 @@ CREATE TABLE indicator(
 	end_time DATE,
 	security CHAR(6),
 	indicator_id INTEGER,
-	PRIMARY KEY (indicator_id)
+	-- Can only be 'Y' or 'N'
+	preceding_operator CHAR(1),
+	PRIMARY KEY (indicator_id, preceding_operator)
 );

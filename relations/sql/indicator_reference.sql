@@ -6,10 +6,13 @@ CREATE TABLE indicator_reference(
 	share_amount INTEGER,
 	allocation REAL,
 	cash_value REAL,
-	indicator_user INTEGER,
 	-- The user uses the reference
-	indicator_ref INTEGER,
-	PRIMARY KEY (indicator_user, indicator_ref),
-	FOREIGN KEY (indicator_user) REFERENCES indicator,
-	FOREIGN KEY (indicator_ref) REFERENCES indicator
+	indicator_1 INTEGER,
+	indicator_2 INTEGER,
+	-- Shows which indicator is on which side
+	preceding_operator_1 CHAR(1),
+	preceding_operator_2 CHAR(1),
+	PRIMARY KEY (indicator_1, indicator_2),
+	FOREIGN KEY (indicator_1,preceding_operator_1) REFERENCES indicator,
+	FOREIGN KEY (indicator_2,preceding_operator_2) REFERENCES indicator
 );
