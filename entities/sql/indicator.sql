@@ -8,3 +8,4 @@ CREATE TABLE indicator(
 	preceding_operator CHAR(1),
 	PRIMARY KEY (indicator_id, preceding_operator)
 );
+
