@@ -30,7 +30,7 @@ def insert_data(table,csv_name,cursor,db):
 
 if __name__ == '__main__':
 	if len(argv) != 3:
-		print 'Proper Usage:\npython loader.py <table_name> <ticker.csv>' 
+		print '\tProper Usage:\npython loader_finance.py <table_name> <ticker.csv>' 
 		exit(1)
 
 	# Catching argv variables
