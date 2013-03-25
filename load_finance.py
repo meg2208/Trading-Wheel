@@ -17,11 +17,11 @@ def close(cursor,db):
 # Reading in csv file contents
 def insert_data(csv_name,cursor,db):
 	ticker = csv_name.split('/')[-1]
-	ticker = ticker.split('/')[0]
+	ticker = ticker.split('.')[0]
 	with open( csv_name, 'r') as csvfile:
 		data_reader = csv.reader(csvfile)
 		for row in data_reader:
-			row.insert(0,str(csv_name))
+			row.insert(0,ticker)
 			row.append('NULL')
 			row.append('NULL')
 			sql_insert = "INSERT INTO query_data VALUES {}".format(tuple(row))
