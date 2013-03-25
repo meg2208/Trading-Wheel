@@ -22,20 +22,19 @@ def insert_data(table,csv_name,cursor,db):
 			row.insert(0,str(csv_name))
 			row.append('NULL')
 			row.append('NULL')
-			sql_insert = "INSERT INTO {} VALUES {}".format(table,tuple(row))
+			sql_insert = "INSERT INTO query_data VALUES {}".format(tuple(row))
 			print sql_insert
 			cursor.execute(sql_insert)
 			db.commit()
 			
 
 if __name__ == '__main__':
-	if len(argv) != 3:
-		print '\tProper Usage:\npython loader_finance.py <table_name> <ticker.csv>' 
+	if len(argv) != 2:
+		print '\tProper Usage:\npython loader_finance.py <ticker.csv>' 
 		exit(1)
 
 	# Catching argv variables
-	table = str(argv[1])
-	csv_file = str(argv[2])
+	csv_file = str(argv[1])
 
 	db,cursor = connect()
 	insert_data(table,csv_file,cursor,db)
