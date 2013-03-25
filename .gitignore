@@ -1,7 +1,8 @@
 
 old_schema.sql
 .Python
-.build/
-.include/
+build/
+include/
 lib/
+bin/
 
