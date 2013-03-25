@@ -31,7 +31,7 @@ def insert_data(table,data,cursor,db):
 			sql_insert = """BEGIN 
 				INSERT INTO {} VALUES {}; 
 				END;""".format(table,tuple(row))
-			#sql_insert = "INSERT INTO {} VALUES {}".format(table,tuple(row))
+			sql_insert = "INSERT INTO {} VALUES {}".format(table,tuple(row))
 			print sql_insert
 			cursor.execute(sql_insert)
 			db.commit()
