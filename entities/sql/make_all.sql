@@ -3,13 +3,32 @@ CREATE TABLE user_data(
 	password CHAR(20),
 	PRIMARY KEY (user_id)
 );
-CREATE TABLE indicator(
-	field_data CHAR(10),
-	start_time DATE,
-	end_time DATE,
+CREATE TABLE trade (
+	trade_id INTEGER,
+	buy_sell CHAR(1),
 	security CHAR(6),
-	indicator_id INTEGER,
-	PRIMARY KEY (indicator_id)
+	time DATE,
+	portfolio_value REAL,
+	PRIMARY KEY (trade_id)
+);
+CREATE TABLE strategy(
+	strategy_id INTEGER,
+	strategy_name CHAR(20),
+	PRIMARY KEY (strategy_id)
+);
+CREATE TABLE query_data (
+	security CHAR(6),
+	time DATE,
+	open NUMBER,
+	high NUMBER,
+	low NUMBER,
+	close NUMBER,
+	volume INTEGER,
+	adj_close NUMBER,
+	-- field_data char(10) changed to...
+	50_day_mva NUMBER,
+	200_day_mva NUMBER,
+	PRIMARY KEY (security, time)
 );
 CREATE TABLE portfolio_statistics (
 	version INTEGER,
@@ -19,22 +38,14 @@ CREATE TABLE portfolio_statistics (
 	PRIMARY KEY(user_id, version),
 	FOREIGN KEY (user_id) REFERENCES user_data
 );
-CREATE TABLE query_data (
-	time DATE,
+CREATE TABLE indicator(
+	field_data CHAR(10),
+	start_time DATE,
+	end_time DATE,
 	security CHAR(6),
-	field_data char(10),
-	PRIMARY KEY (security, field_data)
+	indicator_id INTEGER,
+	-- Can only be 'Y' or 'N'
+	preceding_operator CHAR(1),
+	PRIMARY KEY (indicator_id, preceding_operator)
 );
-CREATE TABLE strategy(
-	strategy_id INTEGER,
-	strategy_name CHAR(20),
-	PRIMARY KEY (strategy_id)
-);
-CREATE TABLE trade (
-	trade_id INTEGER,
-	buy_sell CHAR(1),
-	security CHAR(6),
-	time DATE,
-	portfolio_value REAL,
-	PRIMARY KEY (trade_id)
-);
+
