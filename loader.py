@@ -12,13 +12,6 @@ csv_file = argv[2]
 db = oracle.connect(username,password,server)
 cursor = db.cursor()
 
-
-desc = """BEGIN DESCRIBE {}; END;""".format(table)
-print desc
-#cursor.execute(desc)
-#print cursor.fetchone()
-
-
 # Reading in csv file contents
 with open( csv_file, 'r') as csvfile:
 	data_reader = csv.reader(csvfile)
