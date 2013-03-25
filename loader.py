@@ -9,17 +9,26 @@ table = argv[1]
 csv_file = argv[2]
 
 # Connecting to oracle database
-db = oracle.Connection(username,password,server)
+db = oracle.connect(username,password,server)
 cursor = db.cursor()
+
+
+desc = """BEGIN DESCRIBE {}; END;""".format(table)
+print desc
+#cursor.execute(desc)
+#print cursor.fetchone()
+
 
 # Reading in csv file contents
 with open( csv_file, 'r') as csvfile:
 	data_reader = csv.reader(csvfile)
 	for row in data_reader:
-		sql_insert = "INSERT INTO {} VALUES ({});".format(argv[1],row)
+		sql_insert = """BEGIN 
+			INSERT INTO {} VALUES {}; 
+			END;""".format(table,tuple(row))
 		print sql_insert
 		cursor.execute(sql_insert)
-		cursor.commit()
+		db.commit()
 
 
 cursor.close()
