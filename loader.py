@@ -6,19 +6,23 @@ from credentials import username,password,server
 
 # Catching argv variables
 table = argv[1]
-csv = argv[2]
+csv_file = argv[2]
 
 # Connecting to oracle database
-connection = oracle.Connection(username,password,server)
-cursor = oracle.cursor(connection)
+db = oracle.Connection(username,password,server)
+cursor = db.cursor()
 
 # Reading in csv file contents
-with open( csv, 'r') as csvfile:
+with open( csv_file, 'r') as csvfile:
 	data_reader = csv.reader(csvfile)
-
+	for row in data_reader:
+		sql_insert = "INSERT INTO {} VALUES ({});".format(argv[1],row)
+		print sql_insert
+		cursor.execute(sql_insert)
+		cursor.commit()
 
 
 cursor.close()
-connection.close()
+db.close()
 
 
