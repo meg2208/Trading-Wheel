@@ -1,4 +1,4 @@
-CREATE TABLE references(
+CREATE TABLE indicator_reference(
 	action_security CHAR(6),
 	-- BOOLEAN: Must be 'Y' or 'N'
 	buy_sell CHAR(1),
