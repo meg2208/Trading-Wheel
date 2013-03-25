@@ -10,5 +10,5 @@ CREATE TABLE query_data (
 	-- field_data char(10) changed to...
 	50_day_mva NUMBER,
 	200_day_mva NUMBER,
-	PRIMARY KEY (security, field_data, time)
+	PRIMARY KEY (security, time)
 );
