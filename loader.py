@@ -28,9 +28,6 @@ def insert_data(table,data,cursor,db):
 	with open( data, 'r') as csvfile:
 		data_reader = csv.reader(csvfile)
 		for row in data_reader:
-			sql_insert = """BEGIN 
-				INSERT INTO {} VALUES {}; 
-				END;""".format(table,tuple(row))
 			sql_insert = "INSERT INTO {} VALUES {}".format(table,tuple(row))
 			print sql_insert
 			cursor.execute(sql_insert)
