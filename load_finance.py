@@ -15,7 +15,9 @@ def close(cursor,db):
 	db.close()
 
 # Reading in csv file contents
-def insert_data(table,csv_name,cursor,db):
+def insert_data(csv_name,cursor,db):
+	ticker = csv_name.split('/')[-1]
+	ticker = ticker.split('/')[0]
 	with open( csv_name, 'r') as csvfile:
 		data_reader = csv.reader(csvfile)
 		for row in data_reader:
@@ -26,7 +28,6 @@ def insert_data(table,csv_name,cursor,db):
 			print sql_insert
 			cursor.execute(sql_insert)
 			db.commit()
-			
 
 if __name__ == '__main__':
 	if len(argv) != 2:
@@ -37,6 +38,6 @@ if __name__ == '__main__':
 	csv_file = str(argv[1])
 
 	db,cursor = connect()
-	insert_data(table,csv_file,cursor,db)
+	insert_data(csv_file,cursor,db)
 
 	close(cursor,db)
