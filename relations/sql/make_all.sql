@@ -28,26 +28,19 @@ CREATE TABLE criteria (
 	FOREIGN KEY (indicator_id) REFERENCES indicator
 );
 CREATE TABLE indicator_reference(
+	trigger_id INTEGER,
+	strategy_id INTEGER,
 	action_security CHAR(6),
 	-- BOOLEAN: Must be 'Y' or 'N'
 	buy_sell CHAR(1),
 	operator char(10),
 	share_amount INTEGER,
-	allocation REAL,
-	cash_value REAL,
+	allocation NUMBER,
+	cash_value NUMBER,
 	-- The user uses the reference
-	indicator_id_1 INTEGER,
-	indicator_id_2 INTEGER,
-	-- Shows which indicator is preceding the operator ('Y' or 'N')
-	-- Constraint: both cannot be equal
-	preceding_operator_1 CHAR(1),
-	preceding_operator_2 CHAR(1),
-	-- tells which data to compare ('Y' or 'N')
-	50_day_mva CHAR(1),
-	200_day_mva CHAR(1),
-	PRIMARY KEY (indicator_id_1, indicator_id_2),
-	FOREIGN KEY (indicator_id_1,preceding_operator_1) REFERENCES indicator,
-	FOREIGN KEY (indicator_id_2,preceding_operator_2) REFERENCES indicator
+	indicator_id INTEGER,
+	PRIMARY KEY (trigger_id),
+	FOREIGN KEY (strategy_id, indicator_id) REFERENCES criteria
 );
 CREATE TABLE raw_data_parsing (
 	strategy_id INTEGER,
