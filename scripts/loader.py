@@ -23,12 +23,22 @@ def get_columns(table,cursor):
 		columns.append(c[0])
 	print columns
 
+def user_data(row):
+	return tuple(row)
+
+def strategy(row):
+	return '({},{})'.format(row[0],row[1])
+
+
+
+
+
 # Reading in csv file contents
 def insert_data(table,data,cursor,db):
 	with open( data, 'r') as csvfile:
 		data_reader = csv.reader(csvfile)
 		for row in data_reader:
-			sql_insert = "INSERT INTO {} VALUES {}".format(table,tuple(row))
+			sql_insert = "INSERT INTO {} VALUES {}".format(table,use(row))
 			print sql_insert
 			cursor.execute(sql_insert)
 			db.commit()
@@ -40,6 +50,10 @@ if __name__ == '__main__':
 		exit(1)
 	# Catching argv variables
 	table = str(argv[1])
+	use=user_data
+	if table=='strategy':
+		use = strategy
+
 	csv_file = str(argv[2])
 
 	db,cursor = connect()
