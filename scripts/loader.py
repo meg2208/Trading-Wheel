@@ -36,7 +36,7 @@ def insert_data(table,data,cursor,db):
 
 if __name__ == '__main__':
 	if len(argv) != 3:
-		print '\tProper Usage:\npython loader.py <table_name> <csv_file_name>' 
+		print 'Proper Usage:\n\tpython loader.py <table_name> <csv_file_name>' 
 		exit(1)
 	# Catching argv variables
 	table = str(argv[1])
