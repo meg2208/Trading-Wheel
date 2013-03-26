@@ -17,7 +17,7 @@ def close(cursor,db):
 
 # DD-MMM-YYYY
 def format_date(date_str):
-	cal = ['jan','feb','mar','apr','may','jun','jul','aug','sep',
+	cal = [None,'jan','feb','mar','apr','may','jun','jul','aug','sep',
 		'oct','nov','dec']
 	date_split = date_str.split('-')
 	date = [date_split[2], cal[int(date_split[1])], date_split[0]]
@@ -44,7 +44,7 @@ def insert_data(csv_name,cursor,db):
 				'NULL'
 				)
 			print data
-			sql_insert = 'INSERT INTO query_data \nVALUES '+data+';';
+			sql_insert = 'BEGIN INSERT INTO query_data \nVALUES '+data+'; END;';
 			print sql_insert
 			cursor.execute(sql_insert)
 			db.commit()
