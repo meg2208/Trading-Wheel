@@ -2,8 +2,7 @@ CREATE TABLE indicator_reference(
 	trigger_id INTEGER,
 	strategy_id INTEGER,
 	action_security CHAR(6),
-	-- BOOLEAN: Must be 'Y' or 'N'
-	buy_sell CHAR(1),
+	buy_sell CHAR(1),	--'Y' or 'N'
 	operator char(10),
 	share_amount INTEGER,
 	allocation NUMBER,
