@@ -40,7 +40,8 @@ CREATE TABLE indicator_reference(
 	-- The user uses the reference
 	indicator_id INTEGER,
 	PRIMARY KEY (trigger_id),
-	FOREIGN KEY (strategy_id, indicator_id) REFERENCES criteria
+	FOREIGN KEY (strategy_id, indicator_id, 'Y') REFERENCES indicator,
+	FOREIGN KEY (strategy_id, indicator_id, 'N') REFERENCES indicator,
 );
 CREATE TABLE raw_data_parsing (
 	strategy_id INTEGER,
