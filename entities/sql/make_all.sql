@@ -18,7 +18,7 @@ CREATE TABLE strategy(
 );
 CREATE TABLE query_data (
 	security CHAR(6),
-	time DATE,
+	time DATE, 	-- DD-MMM-YYYY
 	open NUMBER,
 	high NUMBER,
 	low NUMBER,

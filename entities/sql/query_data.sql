@@ -1,6 +1,6 @@
 CREATE TABLE query_data (
 	security CHAR(6),
-	time DATE,
+	time DATE, 	-- DD-MMM-YYYY
 	open NUMBER,
 	high NUMBER,
 	low NUMBER,
@@ -8,7 +8,7 @@ CREATE TABLE query_data (
 	volume INTEGER,
 	adj_close NUMBER,
 	-- field_data char(10) changed to...
-	50_day_mva NUMBER,
-	200_day_mva NUMBER,
+	fifty_day_mva NUMBER,
+	two_hundred_day_mva NUMBER,
 	PRIMARY KEY (security, time)
 );
