@@ -28,26 +28,28 @@ def format_date(date_str):
 def insert_data(csv_name,cursor,db):
 	ticker = csv_name.split('/')[-1]
 	ticker = ticker.split('.')[0]
+	counter = 0
 	with open( csv_name, 'r') as csvfile:
 		data_reader = csv.reader(csvfile)
 		for row in data_reader:
 			data = '(\'{}\',\'{}\',{},{},{},{},{},{},{},{})'.format(
-				ticker,				#security symbol
-				format_date(row[0]),#date
-				Decimal(row[1]), 	#open
-				Decimal(row[2]),	#high
-				Decimal(row[3]),	#low
-				Decimal(row[4]),	#close
-				int(row[5]),		#volume
-				Decimal(row[6]),	#adj_close
-				'NULL',
-				'NULL'
+				ticker,				# security symbol
+				format_date(row[0]),# date
+				Decimal(row[1]), 	# open
+				Decimal(row[2]),	# high
+				Decimal(row[3]),	# low
+				Decimal(row[4]),	# close
+				int(row[5]),		# volume
+				Decimal(row[6]),	# adj_close
+				'NULL',				# 50 day mva
+				'NULL'				# 200 day mva
 				)
-			print data
 			sql_insert = 'BEGIN INSERT INTO query_data \nVALUES '+data+'; END;';
 			print sql_insert
 			cursor.execute(sql_insert)
 			db.commit()
+			counter += 1
+	print counter,' rows added'		
 
 if __name__ == '__main__':
 	if len(argv) != 2:
