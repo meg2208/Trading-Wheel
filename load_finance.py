@@ -1,5 +1,6 @@
 
 from sys import argv
+from decimal import Decimal
 import csv
 import cx_Oracle as oracle
 from credentials import username,password,server
@@ -14,6 +15,15 @@ def close(cursor,db):
 	cursor.close()
 	db.close()
 
+# DD-MMM-YYYY
+def format_date(date_str):
+	cal = ['jan','feb','mar','apr','may','jun','jul','aug','sep',
+		'oct','nov','dec']
+	date_split = date_str.split('-')
+	date = [date_split[2], cal[int(date_split[1])], date_split[0]]
+	date = '-'.join(date)
+	return date
+
 # Reading in csv file contents
 def insert_data(csv_name,cursor,db):
 	ticker = csv_name.split('/')[-1]
@@ -21,10 +31,20 @@ def insert_data(csv_name,cursor,db):
 	with open( csv_name, 'r') as csvfile:
 		data_reader = csv.reader(csvfile)
 		for row in data_reader:
-			row.insert(0,ticker)
-			row.append('NULL')
-			row.append('NULL')
-			sql_insert = "INSERT INTO query_data VALUES {}".format(tuple(row))
+			data = '(\'{}\',\'{}\',{},{},{},{},{},{},{},{})'.format(
+				ticker,				#security symbol
+				format_date(row[0]),#date
+				Decimal(row[1]), 	#open
+				Decimal(row[2]),	#high
+				Decimal(row[3]),	#low
+				Decimal(row[4]),	#close
+				int(row[5]),		#volume
+				Decimal(row[6]),	#adj_close
+				'NULL',
+				'NULL'
+				)
+			print data
+			sql_insert = 'INSERT INTO query_data \nVALUES '+data+';';
 			print sql_insert
 			cursor.execute(sql_insert)
 			db.commit()
