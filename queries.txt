@@ -11,6 +11,7 @@ All data except the portofolio_statistics is real world data.
 
 
 /* Highest Value any portfolio reaches */ 
+
 SELECT CS.user_id, S.strategy_name, T.portfolio_value 
 
 	FROM trade T, action A, create_strategy CS, strategy S
