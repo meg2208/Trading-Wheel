@@ -1,6 +1,8 @@
 CREATE TABLE trade (
 	trade_id INTEGER,
 	buy_sell CHAR(1),
+	volume NUMBER,
+	price NUMBER,
 	security CHAR(6),
 	time DATE,
 	portfolio_value REAL,
