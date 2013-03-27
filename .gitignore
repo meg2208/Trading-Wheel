@@ -8,5 +8,7 @@ include/
 lib/
 bin/
 *.DS_Store
-expdat.dmp
+*.dmp
+*.zip
+
 
