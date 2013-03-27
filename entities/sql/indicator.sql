@@ -12,4 +12,3 @@ CREATE TABLE indicator(
 	PRIMARY KEY (strategy_id, indicator_id, preceding_operator)
 	FOREIGN KEY (strategy_id) references strategy
 );
-
