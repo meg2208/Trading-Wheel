@@ -28,7 +28,7 @@ def format_date(date_str):
 	cal = [None,'jan','feb','mar','apr','may','jun','jul','aug','sep',
 		'oct','nov','dec']
 	date_split = date_str.split('-')
-	date = [date_split[2], cal[int(date_split[1])], date_split[0]]
+	date = [date_split[1], cal[int(date_split[0])], date_split[2]]
 	date = '-'.join(date)
 	return date
 
