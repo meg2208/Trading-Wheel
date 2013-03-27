@@ -51,6 +51,9 @@ def portfolio_statistics(row):
 	'({},{},{},\'{}\')'.format(row[0],row[1],row[2],row[3])
 
 # RELATIONS
+def create_strategy(row):
+	return '(\'{}\',{})'.format(row[0],row[1])
+
 def criteria(row):
 	return '({},{})'.format(row[0],row[1])
 
@@ -85,7 +88,8 @@ def determine_table():
 	converters ={'user_data':user_data, 'strategy':strategy, 'indicator':indicator, 
 		'criteria':criteria, 'indicator_reference':indicator_reference, 'trade':trade,
 		'action':action, 'portfolio_statistics':portfolio_statistics,
-		'create_portofolio':create_portofolio, 'raw_data_parsing':raw_data_parsing}
+		'create_portofolio':create_portofolio, 'raw_data_parsing':raw_data_parsing,
+		'create_strategy':create_strategy}
 	return converters[argv[1]]
 
 if __name__ == '__main__':
