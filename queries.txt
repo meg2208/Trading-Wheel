@@ -1,0 +1,12 @@
+Nate Brennand: nsb2142
+Matt Garbis: meg228
+
+
+
+
+Code can be found here:
+	https://github.com/nsb2142/Trading-Wheel
+
+All data except the portofolio_statistics is real world data.
+
+
