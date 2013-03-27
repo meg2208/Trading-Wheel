@@ -44,8 +44,8 @@ def indicator(row):
 		row[0],row[1],row[2],row[3],row[4],row[5])
 
 def trade(row):
-	'({},\'{}\',\'{}\',\'{}\',{})'.format(
-		row[0],row[1],row[2],row[3],row[4])
+	return '({},\'{}\',\'{}\',{},{},\'{}\',\'{}\')'.format(
+		row[0],row[1],row[2],row[3],row[4],row[5],row[6])
 
 def portfolio_statistics(row):
 	'({},{},{},\'{}\')'.format(row[0],row[1],row[2],row[3])
