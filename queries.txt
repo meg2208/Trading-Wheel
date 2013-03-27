@@ -8,6 +8,7 @@ Code can be found here:
 
 
 /* Highest Value any portfolio reaches */ 
+<<<<<<< HEAD
 SELECT 
 	CS.user_id, 
 	S.strategy_name, 
@@ -24,6 +25,19 @@ WHERE
 GROUP BY 
 	CS.user_id, 
 	S.strategy_name;
+=======
+
+SELECT CS.user_id, S.strategy_name, T.portfolio_value 
+
+	FROM trade T, action A, create_strategy CS, strategy S
+	
+	WHERE CS.strategy_id = A.strategy_id AND S.strategy_id = CS.strategy_id AND T.trade_id = A.trade_id
+
+	GROUP BY CS.user_id, S.strategy_name, T.portfolio_value
+	
+	HAVING MAX(T.portfolio_value)
+
+>>>>>>> b3b8bc6d590e265e28127d3becbfe4dbd38189cb
 
 
 /* Number of trades made by each strategy for each person */
