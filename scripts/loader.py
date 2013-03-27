@@ -23,6 +23,15 @@ def get_columns(cursor):
 		columns.append(c[0])
 	print columns
 
+# DD-MMM-YYYY
+def format_date(date_str):
+	cal = [None,'jan','feb','mar','apr','may','jun','jul','aug','sep',
+		'oct','nov','dec']
+	date_split = date_str.split('-')
+	date = [date_split[2], cal[int(date_split[1])], date_split[0]]
+	date = '-'.join(date)
+	return date
+
 # ENTITIES
 def user_data(row):
 	return '(\'{}\',\'{}\')'.format(row[0],row[1])
@@ -34,6 +43,12 @@ def indicator(row):
 	return '({},\'{}\',\'{}\',\'{}\',\'{}\',\'{}\')'.format(
 		row[0],row[1],row[2],row[3],row[4],row[5])
 
+def trade(row):
+	'({},\'{}\',\'{}\',\'{}\',{})'.format(
+		row[0],row[1],row[2],row[3],row[4])
+
+def portfolio_statistics(row):
+	'({},{},{},\'{}\')'.format(row[0],row[1],row[2],row[3])
 
 # RELATIONS
 def criteria(row):
@@ -42,6 +57,16 @@ def criteria(row):
 def indicator_reference(row):
 	return '({},{},\'{}\',\'{}\',{},{},{})'.format(
 		row[0],row[1],row[2],row[3],row[4],row[5],row[6])	
+
+def action(row):
+	return '({},{})'.format(row[0],row[1])
+
+def create_portofolio(row):
+	return '({},{},\'{}\')'.format(row[0],row[1],row[2])
+
+def raw_data_parsing(row):
+	return '({},\'{}\',\'{}\')'.format(
+		row[0],row[1],format_date(row[2]))
 
 
 
@@ -58,7 +83,9 @@ def insert_data(data,cursor,db,use):
 
 def determine_table():
 	converters ={'user_data':user_data, 'strategy':strategy, 'indicator':indicator, 
-		'criteria':criteria, 'indicator_reference':indicator_reference}
+		'criteria':criteria, 'indicator_reference':indicator_reference, 'trade':trade,
+		'action':action, 'portfolio_statistics':portfolio_statistics,
+		'create_portofolio':create_portofolio, 'raw_data_parsing':raw_data_parsing}
 	return converters[argv[1]]
 
 if __name__ == '__main__':
