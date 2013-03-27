@@ -1,8 +1,7 @@
 CREATE TABLE portfolio_statistics (
-	version INTEGER,
+	port_id INTEGER,
 	sharpe_ratio REAL,
 	returns REAL,
 	user_id CHAR(20),
-	PRIMARY KEY(user_id, version),
-	FOREIGN KEY (user_id) REFERENCES user_data
+	PRIMARY KEY(port_id)
 );
