@@ -28,20 +28,17 @@ CREATE TABLE criteria (
 	FOREIGN KEY (indicator_id) REFERENCES indicator
 );
 CREATE TABLE indicator_reference(
-	trigger_id INTEGER,
-	strategy_id INTEGER,
 	action_security CHAR(6),
-	-- BOOLEAN: Must be 'Y' or 'N'
-	buy_sell CHAR(1),
+	buy_sell CHAR(1),	--'Y' or 'N'
 	operator char(10),
 	share_amount INTEGER,
 	allocation NUMBER,
 	cash_value NUMBER,
-	-- The user uses the reference
-	indicator_id INTEGER,
-	PRIMARY KEY (trigger_id),
-	FOREIGN KEY (strategy_id, indicator_id, 'Y') REFERENCES indicator,
-	FOREIGN KEY (strategy_id, indicator_id, 'N') REFERENCES indicator
+	L_indicator_id INTEGER,
+	R_indicator_id INTEGER,
+	PRIMARY KEY (L_indicator_id,R_indicator_id),
+	FOREIGN KEY (L_indicator_id) REFERENCES indicator,
+	FOREIGN KEY (R_indicator_id) REFERENCES indicator
 );
 CREATE TABLE raw_data_parsing (
 	strategy_id INTEGER,
