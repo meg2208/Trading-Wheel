@@ -24,7 +24,7 @@ def get_columns(table,cursor):
 	print columns
 
 def user_data(row):
-	return tuple(row)
+	return '(\'{}\',\'{}\')'.format(row[0],row[1])
 
 def strategy(row):
 	return '({},\'{}\')'.format(row[0],row[1])
@@ -32,6 +32,10 @@ def strategy(row):
 def indicator(row):
 	return '({},\'{}\',\'{}\',\'{}\',\'{}\',\'{}\')'.format(
 		row[0],row[1],row[2],row[3],row[4],row[5])
+
+def criteria(row):
+	return '({},{})'.format(row[0],row[1])
+
 
 
 
