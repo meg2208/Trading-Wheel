@@ -48,7 +48,7 @@ def trade(row):
 		row[0],row[1],row[2],row[3],row[4],row[5],row[6])
 
 def portfolio_statistics(row):
-	'({},{},{},\'{}\')'.format(row[0],row[1],row[2],row[3])
+	return '({},{},{},\'{}\')'.format(row[0],row[1],row[2],row[3])
 
 # RELATIONS
 def create_strategy(row):
@@ -64,8 +64,8 @@ def indicator_reference(row):
 def action(row):
 	return '({},{})'.format(row[0],row[1])
 
-def create_portofolio(row):
-	return '({},{},\'{}\')'.format(row[0],row[1],row[2])
+def create_portfolio(row):
+	return '({},{})'.format(row[0],row[1])
 
 def raw_data_parsing(row):
 	return '({},\'{}\',\'{}\')'.format(
@@ -88,7 +88,7 @@ def determine_table():
 	converters ={'user_data':user_data, 'strategy':strategy, 'indicator':indicator, 
 		'criteria':criteria, 'indicator_reference':indicator_reference, 'trade':trade,
 		'action':action, 'portfolio_statistics':portfolio_statistics,
-		'create_portofolio':create_portofolio, 'raw_data_parsing':raw_data_parsing,
+		'create_portfolio':create_portfolio, 'raw_data_parsing':raw_data_parsing,
 		'create_strategy':create_strategy}
 	return converters[argv[1]]
 
