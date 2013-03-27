@@ -27,9 +27,11 @@ def user_data(row):
 	return tuple(row)
 
 def strategy(row):
-	return '({},{})'.format(row[0],row[1])
+	return '({},\'{}\')'.format(row[0],row[1])
 
-
+def indicator(row):
+	return '({},\'{}\',\'{}\',\'{}\',\'{}\',\'{}\')'.format(
+		row[0],row[1],row[2],row[3],row[4],row[5])
 
 
 
