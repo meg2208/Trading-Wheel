@@ -6,12 +6,11 @@ CREATE TABLE action (
 	FOREIGN KEY (trade_id) REFERENCES trade
 );
 CREATE TABLE create_portfolio (
+	port_id INTEGER,
 	strategy_id INTEGER,
-	version INTEGER,
-	user_id CHAR(20),
-	PRIMARY KEY (strategy_id, user_id, version),
+	PRIMARY KEY (port_id),
 	FOREIGN KEY (strategy_id) REFERENCES strategy,
-	FOREIGN KEY (user_id, version) REFERENCES portfolio_statistics
+	FOREIGN KEY (port_id) REFERENCES portfolio_statistics
 );
 CREATE TABLE create_strategy (
 	user_id CHAR(20),
@@ -32,8 +31,8 @@ CREATE TABLE indicator_reference(
 	R_indicator_id INTEGER,
 	buy_sell CHAR(1),	--'B' or 'S'
 	operator CHAR(10),
-	share_amount INTEGER,
-	allocation NUMBER,
+	share_amount INTEGER,	--NULL
+	allocation NUMBER,		--100
 	cash_value NUMBER,
 	PRIMARY KEY (L_indicator_id,R_indicator_id,buy_sell),
 	FOREIGN KEY (L_indicator_id) REFERENCES indicator,
@@ -43,7 +42,7 @@ CREATE TABLE raw_data_parsing (
 	strategy_id INTEGER,
 	security CHAR(6),
 	time DATE,
-	PRIMARY KEY (strategy_id, security),
+	PRIMARY KEY (strategy_id, security,time),
 	FOREIGN KEY (strategy_id) REFERENCES strategy,
 	FOREIGN KEY (security, time) REFERENCES query_data
 );

@@ -5,8 +5,10 @@ CREATE TABLE user_data(
 );
 CREATE TABLE trade (
 	trade_id INTEGER,
-	buy_sell CHAR(1),
 	security CHAR(6),
+	buy_sell CHAR(1),
+	share_amount NUMBER,
+	price NUMBER,
 	time DATE,
 	portfolio_value REAL,
 	PRIMARY KEY (trade_id)
@@ -31,12 +33,11 @@ CREATE TABLE query_data (
 	PRIMARY KEY (security, time)
 );
 CREATE TABLE portfolio_statistics (
-	version INTEGER,
+	port_id INTEGER,
 	sharpe_ratio REAL,
 	returns REAL,
 	user_id CHAR(20),
-	PRIMARY KEY(user_id, version),
-	FOREIGN KEY (user_id) REFERENCES user_data
+	PRIMARY KEY(port_id)
 );
 CREATE TABLE indicator(
 	indicator_id INTEGER,
