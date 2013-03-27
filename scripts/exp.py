@@ -22,7 +22,7 @@ tables = [
 tables = ','.join(tables)
 
 command = """
-exp dump={}/{}@{} TABLES={} ROWS=Y
+exp userid={}/{}@{} TABLES={} ROWS=Y
 """.format(username,password,server,tables)
 
 sys( command )
