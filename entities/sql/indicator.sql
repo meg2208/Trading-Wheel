@@ -9,6 +9,6 @@ CREATE TABLE indicator(
 	-- tells which data to compare ('Y' or 'N')
 	mva_50_day CHAR(1),
 	mva_200_day CHAR(1),
-	PRIMARY KEY (strategy_id, indicator_id, preceding_operator)
+	PRIMARY KEY (strategy_id, indicator_id, preceding_operator),
 	FOREIGN KEY (strategy_id) references strategy
 );
