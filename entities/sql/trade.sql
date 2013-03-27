@@ -1,9 +1,9 @@
 CREATE TABLE trade (
 	trade_id INTEGER,
-	buy_sell CHAR(1),
-	volume NUMBER,
-	price NUMBER,
 	security CHAR(6),
+	buy_sell CHAR(1),
+	share_amount NUMBER,
+	price NUMBER,
 	time DATE,
 	portfolio_value REAL,
 	PRIMARY KEY (trade_id)
