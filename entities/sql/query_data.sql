@@ -8,7 +8,7 @@ CREATE TABLE query_data (
 	volume INTEGER,
 	adj_close NUMBER,
 	-- field_data char(10) changed to...
-	mva_50_day NUMBER,
-	mva_200_day NUMBER,
+	mva_10_day NUMBER,
+	mva_25_day NUMBER,
 	PRIMARY KEY (security, time)
 );
