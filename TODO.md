@@ -1,3 +1,8 @@
+<!-- 
+Guide to Markdown:
+	http://www.darkcoding.net/software/markdown-quick-reference/
+-->
+
 #TO DO
 
 Testing
