@@ -1,11 +1,4 @@
-CREATE TABLE action (
-	strategy_id INTEGER,
-	trade_id INTEGER,
-	PRIMARY KEY (strategy_id, trade_id),
-	FOREIGN KEY (strategy_id) REFERENCES strategy,
-	FOREIGN KEY (trade_id) REFERENCES trade
-);
-CREATE TABLE create_portfolio (
+CREATE TABLE calculate_statistics (
 	port_id INTEGER,
 	strategy_id INTEGER,
 	PRIMARY KEY (port_id),
@@ -26,6 +19,20 @@ CREATE TABLE criteria (
 	FOREIGN KEY (strategy_id) REFERENCES strategy,
 	FOREIGN KEY (indicator_id) REFERENCES indicator
 );
+CREATE TABLE portfolio_securities(
+	portfolio_id INTEGER,
+	state_id INTEGER,
+	PRIMARY KEY (portfolio_id,state_id),
+	current_portfolio REFERENCES current_portfolio,
+	state_id REFERENCES security_state
+);
+CREATE TABLE day_to_day (
+	strategy_id INTEGER,
+	portfolio_id INTEGER,
+	PRIMARY KEY (strategy_id, portfolio_id),
+	FOREIGN KEY (strategy_id) REFERENCES strategy,
+	FOREIGN KEY (portfolio_id) 	REFERENCES current_portfolio 
+);
 CREATE TABLE indicator_reference(
 	L_indicator_id INTEGER,
 	R_indicator_id INTEGER,
@@ -37,6 +44,13 @@ CREATE TABLE indicator_reference(
 	PRIMARY KEY (L_indicator_id,R_indicator_id,buy_sell),
 	FOREIGN KEY (L_indicator_id) REFERENCES indicator,
 	FOREIGN KEY (R_indicator_id) REFERENCES indicator
+);
+CREATE TABLE makes_trade (
+	portfolio_id INTEGER,
+	trade_id INTEGER,
+	PRIMARY KEY(portfolio_id,trade_id),
+	FOREIGN KEY (trade_id) REFERENCES trade,
+	FOREIGN KEY (portfolio_id) REFERENCES current_portfolio
 );
 CREATE TABLE raw_data_parsing (
 	strategy_id INTEGER,

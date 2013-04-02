@@ -6,6 +6,5 @@ CREATE TABLE current_portfolio(
 	securites_value NUMBER,	-- value of all securites in portfolio
 	free_cash NUMBER,		-- cash not invested
 	portfolio_value_change NUMBER,	-- day to day change in value
-	-- Following only 
 	PRIMARY KEY (portfolio_id)
 );
