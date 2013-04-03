@@ -26,6 +26,12 @@ CREATE TABLE day_to_day (
 	FOREIGN KEY (strategy_id) REFERENCES strategy,
 	FOREIGN KEY (portfolio_id) 	REFERENCES current_portfolio 
 );
+CREATE TABLE portfolio_contents (
+	state_id INTEGER;
+	portfolio_id INTEGER;
+	PRIMARY KEY (state_id, portfolio_id),
+	FOREIGN KEY (state_id) REFERENCES security_state,
+	FOREIGN KEY (portfolio_id) REFERENCES aggregate_portfolio;
 CREATE TABLE indicator_reference(
 	L_indicator_id INTEGER,
 	R_indicator_id INTEGER,
