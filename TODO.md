@@ -28,12 +28,6 @@ Guide to Markdown:
 
 #TO DO
 
-Testing
-
------------
-* Drop all the old tables
-* Make them all
-* Fix everything where there's an error
 
 Queries
 
@@ -71,3 +65,11 @@ Web Front End
 # Done
 
 --------
+
+Testing
+
+-----------
+* Drop all the old tables
+* Make them all
+* Fix everything where there's an error
+
