@@ -46,6 +46,15 @@ CREATE TABLE portfolio_statistics (
 	user_id CHAR(20),
 	PRIMARY KEY(port_id)
 );
+CREATE TABLE indicator(
+	indicator_id INTEGER,
+	start_time DATE,	-- DD-MMM-YYYY
+	end_time DATE,		-- DD-MMM-YYYY
+	security CHAR(6),
+	mva_50_day CHAR(1),
+	mva_200_day CHAR(1),
+	PRIMARY KEY (indicator_id)
+);
 CREATE TABLE current_portfolio(
 	portfolio_id INTEGER,
 	time DATE,				-- DD-MMM-YYYY
