@@ -3,6 +3,29 @@ Guide to Markdown:
 	http://www.darkcoding.net/software/markdown-quick-reference/
 -->
 
+#Timeline
+
+* Thursday 4/4
+    * all sql tables functioning
+
+* Monday 4/8
+  * meeting scheduled w/ Hahn for that Thursday/Friday (this is when we show off the project for grading)
+
+* Tuesday 4/9
+  * Basic Flask app running, not w/ all functionalities
+  * Templates for all pages made
+  * CSS   interfaced properly
+
+* Wednesday 4/10
+  * Vast majority of flask functioning
+  
+* Thursday 4/11
+  * Finetuning and polishing
+
+* Friday 4/12
+  * Everything done 
+
+
 #TO DO
 
 Testing
@@ -12,7 +35,7 @@ Testing
 * Make them all
 * Fix everything where there's an error
 
-PL / SQL
+Queries
 
 --------------
 
@@ -42,8 +65,7 @@ Improvements
 Web Front End
 
 ------
-*Everything….
-
+*Everything… 
 
 
 # Done
