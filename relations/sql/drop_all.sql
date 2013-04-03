@@ -7,4 +7,3 @@ DROP TABLE day_to_day;
 DROP TABLE indicator_reference;
 DROP TABLE makes_trade;
 DROP TABLE raw_data_parsing;
-
