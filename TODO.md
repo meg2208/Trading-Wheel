@@ -5,6 +5,11 @@ Guide to Markdown:
 
 #Timeline
 
+* Wednesday
+  * I (Matt) am updating all .csv files to match current then will load them into the sql db so we can use 
+  * 	for testing
+  * Also updating exp.py and loader.py to contain updated table names
+
 * Thursday 4/4
     * all sql tables functioning
 
