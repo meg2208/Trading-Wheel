@@ -56,7 +56,7 @@ CREATE TABLE indicator(
 	mva_25_day CHAR(1),
 	PRIMARY KEY (indicator_id)
 );
-CREATE TABLE current_portfolio(
+CREATE TABLE aggregate_portfolio(
 	portfolio_id INTEGER,
 	time DATE,				-- DD-MMM-YYYY
 	portfolio_value NUMBER, -- current cash + value of securites in market
