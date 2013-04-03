@@ -1,4 +1,5 @@
 -- Drops all relations tables
+DROP TABLE portfolio_contents;
 DROP TABLE calculate_statistics;
 DROP TABLE create_strategy;
 DROP TABLE criteria;
