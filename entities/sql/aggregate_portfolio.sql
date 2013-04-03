@@ -1,4 +1,4 @@
-CREATE TABLE current_portfolio(
+CREATE TABLE aggregate_portfolio(
 	portfolio_id INTEGER,
 	time DATE,				-- DD-MMM-YYYY
 	portfolio_value NUMBER, -- current cash + value of securites in market
