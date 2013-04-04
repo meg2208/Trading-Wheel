@@ -22,7 +22,6 @@ def make_url(ticker_symbol):
 #puts files in current dir unless first arg is desired dir
 def make_filename(ticker_symbol):
     file_path = "entities/securities/{}.csv".format(ticker_symbol)
-    print file_path
     return file_path
 
 def pull_historical_data(ticker_symbol):
