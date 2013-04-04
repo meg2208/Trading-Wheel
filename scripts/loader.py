@@ -33,39 +33,56 @@ def format_date(date_str):
 	return date
 
 # ENTITIES
-def user_data(row):
-	return '(\'{}\',\'{}\')'.format(row[0],row[1])
-
-def strategy(row):
-	return '({},\'{}\')'.format(row[0],row[1])
+def aggregate_portfolio(row):
+    return '({},\'{}\',{},{},{},{},{})'.format(row[0],row[1],
+       row[2],row[3],row[4],row[5],row[6])
 
 def indicator(row):
 	return '({},\'{}\',\'{}\',\'{}\',\'{}\',\'{}\')'.format(
 		row[0],row[1],row[2],row[3],row[4],row[5])
 
-def trade(row):
-	return '({},\'{}\',\'{}\',{},{},\'{}\',\'{}\')'.format(
-		row[0],row[1],row[2],row[3],row[4],row[5],row[6])
-
 def portfolio_statistics(row):
 	return '({},{},{},\'{}\')'.format(row[0],row[1],row[2],row[3])
 
+def query_data(row):
+    print 'Use load_finance.py!'
+    exit(1)
+
+def security_state(row):
+    return '({},\'{}\',{},{})'.format(row[0],row[1],row[2],row[3])
+
+def strategy(row):
+	return '({},\'{}\')'.format(row[0],row[1])
+
+def trade(row):
+	return '({},\'{}\',\'{}\',{},{},\'{}\')'.format(
+		row[0],row[1],row[2],row[3],row[4],row[5])
+
+def user_data(row):
+	return '(\'{}\',\'{}\')'.format(row[0],row[1])
+
 # RELATIONS
+def calculate_statistics(row):
+    return '({},{})'.format(row[0],row[1])
+
 def create_strategy(row):
 	return '(\'{}\',{})'.format(row[0],row[1])
 
 def criteria(row):
 	return '({},{})'.format(row[0],row[1])
 
+def day_to_day(row):
+    return '({},{})'.format(row[0],row[1])
+
 def indicator_reference(row):
 	return '({},{},\'{}\',\'{}\',{},{},{})'.format(
 		row[0],row[1],row[2],row[3],row[4],row[5],row[6])	
 
-def action(row):
-	return '({},{})'.format(row[0],row[1])
+def makes_trade(row):
+    return '({},{})'.format(row[0],row[1])
 
-def create_portfolio(row):
-	return '({},{})'.format(row[0],row[1])
+def portfolio_contents(row):
+	return '({},{},\'{}\')'.format(row[0],row[1],row[2])
 
 def raw_data_parsing(row):
 	return '({},\'{}\',\'{}\')'.format(
