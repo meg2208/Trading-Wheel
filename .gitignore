@@ -10,5 +10,5 @@ bin/
 *.DS_Store
 *.dmp
 *.zip
-
+entities/securities/*.csv
 
