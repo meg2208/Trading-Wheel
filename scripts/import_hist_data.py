@@ -1,4 +1,4 @@
-import urllib
+import urllib2
 import sys
 import os
 
@@ -9,31 +9,37 @@ import os
 base_url = "http://ichart.finance.yahoo.com/table.csv?s="
 contains_dir = False
 
+# Checks securites folder for csv file with matching ticker
+def check_if_exists(ticker_symbol):
+    for security in os.listdir('entities/securities'):
+        if security.split('.')[0].lower() == ticker_symbol.lower():
+            return True
+    return False
+
 def make_url(ticker_symbol):
     return base_url + ticker_symbol
 
 #puts files in current dir unless first arg is desired dir
 def make_filename(ticker_symbol):
-	if sys.argv[0][0] == "/":
-		contains_dir = True
-		file_path = "/" + sys.argv[1] + "/" + ticker_symbol + ".csv"
-	else:
-		file_path = os.getcwd() + "/" + ticker_symbol + ".csv"
-	return file_path
+    file_path = "entities/securities/{}.csv".format(ticker_symbol)
+    print file_path
+    return file_path
 
 def pull_historical_data(ticker_symbol):
     try:
-        urllib.urlretrieve(make_url(ticker_symbol), make_filename(ticker_symbol))
-    except urllib.ContentTooShortError as e:
-        outfile = open(make_filename(ticker_symbol, directory), "w")
-        outfile.write(e.content)
-        outfile.close()
+        yahoo_data = urllib2.urlopen( make_url(ticker_symbol))
+        first = True
+        with file( make_filename(ticker_symbol), 'w+' ) as sec:
+            for line in yahoo_data:
+                if not first:
+                    sec.write( line )
+                first = False
+    except URLError as e:
+        print e
 
 # 2nd, 3rd, ... args are stocks to query for
 if __name__ == '__main__':
-	if contains_dir == True:
-		for stocks in sys.argv[2:]:
-			pull_historical_data(stocks)
-	else:
-		for stocks in sys.argv[1:]:
-			pull_historical_data(stocks)
+    for stock in sys.argv[1:]:
+        if not check_if_exists( stock ):
+            pull_historical_data( stock )
+
