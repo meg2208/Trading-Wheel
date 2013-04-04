@@ -2,7 +2,7 @@ import urllib
 import sys
 import os
 
-# querys for csv of historical stock data
+# queries for csv of historical stock data
 # saves in users/... --> python import_hist_data.py /users/whateveryouwant aapl goog
 # saves in current dir -->  python import_hist_data.py aapl goog
 
