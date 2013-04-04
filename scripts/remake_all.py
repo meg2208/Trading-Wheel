@@ -1,25 +1,24 @@
 
-from os import system
+# remake_all
+#
+# Reads in the contents of the entitites and relations sql folders.
+# Uses these to create a master sql file that drops and remakes all
+# tables from the database.
+# Checks for len != 0 are to prevent DS_Store from being added.
 
-entities = [
-	"user_data",
-	"trade",
-	"strategy",
-	"security_state",
-	"query_data",
-	"portfolio_statistics",
-	"indicator",
-	"aggregate_portfolio"]
+import os
 
-relations = [
-	"calculate_statistics",
-	"create_strategy",
-	"criteria",
-	"day_to_day",
-	"indicator_reference",
-	"makes_trade",
-	"portfolio_contents",
-	"raw_data_parsing"]
+entities = []
+for entity in os.listdir('entities/sql'):
+	entity = entity.split('.')[0]
+	if len(entity) != 0:
+		entities.append( entity )
+
+relations = []
+for relation in os.listdir('relations/sql'):
+	relation = relation.split('.')[0]
+	if len(relation) != 0:
+		relations.append( relation )
 
 with open("remake_all.sql",'w+') as f:
 
