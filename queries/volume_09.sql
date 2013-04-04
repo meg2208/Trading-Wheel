@@ -1,9 +1,9 @@
 Select Distinct 
-	Q.security, 
-	SUM(Q.volume)
+    Q.security, 
+    SUM(Q.volume)
 FROM 
-	query_data Q
+    query_data Q
 WHERE
-	extract(year from Q.time) = 2009
+    extract(year from Q.time) = 2009
 GROUP BY 
-	Q.security;
+    Q.security;
