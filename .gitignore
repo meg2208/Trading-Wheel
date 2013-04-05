@@ -11,4 +11,5 @@ bin/
 *.dmp
 *.zip
 entities/securities/*.csv
+templates/template
 
