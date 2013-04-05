@@ -1,8 +1,8 @@
 
 from sys import argv
 from decimal import Decimal
-import csv
 import cx_Oracle as oracle
+import urllib2
 from credentials import username,password,server
 
 # Connecting to oracle database
@@ -11,9 +11,19 @@ def connect():
     cursor = db.cursor()
     return db,cursor
 
-def close(cursor,db):
+#Closing connections
+def close(db,cursor):
     cursor.close()
     db.close()
+
+def check_if_exists(ticker_symbol,cursor):
+    sql_query = 'SELECT DISTINCT security FROM query_data'
+    cursor.execute( sql_query )
+    for security in cursor.fetchall():
+        if ticker_symbol.upper() in str(security[0]):
+            print 'Already loaded!'
+            return True
+    return False
 
 # DD-MMM-YYYY
 def format_date(date_str):
@@ -24,42 +34,55 @@ def format_date(date_str):
     date = '-'.join(date)
     return date
 
-# Reading in csv file contents
-def insert_data(csv_name,cursor,db):
-    ticker = csv_name.split('/')[-1]
-    ticker = ticker.split('.')[0]
-    counter = 0
-    with open( csv_name, 'r') as csvfile:
-        data_reader = csv.reader(csvfile)
-        for row in data_reader:
-            data = '(\'{}\',\'{}\',{},{},{},{},{},{},{},{})'.format(
-                ticker,				# security symbol
-                format_date(row[0]),# date
-                Decimal(row[1]),	# open
-                Decimal(row[2]),    # high
-                Decimal(row[3]),    # low
-                Decimal(row[4]),    # close
-                int(row[5]),        # volume
-                Decimal(row[6]),    # adj_close
-                'NULL',				# 10 day mva
-                'NULL'				# 25 day mva
-                )
-            sql_insert = 'BEGIN INSERT INTO query_data \nVALUES '+data+'; END;';
-            print sql_insert
-            cursor.execute(sql_insert)
-            db.commit()
-            counter += 1
-    print counter,' rows added'        
+def get_data(ticker_symbol,db,cursor):
+    url = "http://ichart.finance.yahoo.com/table.csv?s="+ticker_symbol
+    counter =  0
+    try:
+        yahoo_data = urllib2.urlopen( url )
+        first = True
+
+        for line in yahoo_data:
+            if not first:
+                row = line.split(',')
+                data = '(\'{}\',\'{}\',{},{},{},{},{},{},{},{})'.format(
+                    ticker_symbol,      # security symbol
+                    format_date(row[0]),# date
+                    Decimal(row[1]),    # open
+                    Decimal(row[2]),    # high
+                    Decimal(row[3]),    # low
+                    Decimal(row[4]),    # close
+                    int(row[5]),        # volume
+                    Decimal(row[6]),    # adj_close
+                    'NULL',             # 10 day mva
+                    'NULL'              # 25 day mva
+                    )
+                sql_insert = 'INSERT INTO query_data VALUES '+data
+                print sql_insert
+                cursor.execute(sql_insert)
+                db.commit()
+                counter += 1
+            first = False
+
+    except urllib2.URLError as e:
+        print e
+
+    print counter,' rows added'       
+
+def upload_ticker(ticker):
+    ticker - ticker.upper()
+    db,cursor = connect()
+    if check_if_exists(ticker,cursor) is False:
+        get_data(ticker.upper(),db,cursor)
+    close(db,cursor)
+
 
 if __name__ == '__main__':
     if len(argv) != 2:
-        print '\tProper Usage:\npython loader_finance.py <ticker.csv>' 
+        print '\tProper Usage:\npython loader_finance.py <ticker name>' 
         exit(1)
-
-    # Catching argv variables
-    csv_file = str(argv[1])
+    ticker_name = str(argv[1]).upper()
 
     db,cursor = connect()
-    insert_data(csv_file,cursor,db)
-
-    close(cursor,db)
+    if check_if_exists(ticker_name,cursor) is False:
+        get_data(ticker_name,db,cursor)
+    close(db,cursor)
