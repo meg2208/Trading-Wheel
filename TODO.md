@@ -13,6 +13,11 @@ Guide to Markdown:
 * Thursday 4/4
     * all sql tables functioning
 
+* Friday 4/5
+  * Matt: I am going to work on script that will use command line prompts (which will later be replaced
+  *   by the front-end) to: fill new user info in the db, 
+  *   fill new strategy criteria in the db, calculate trades and portfolio values (run backtest)
+
 * Monday 4/8
   * meeting scheduled w/ Hahn for that Thursday/Friday (this is when we show off the project for grading)
 
@@ -77,4 +82,5 @@ Testing
 * Drop all the old tables
 * Make them all
 * Fix everything where there's an error
+
 
