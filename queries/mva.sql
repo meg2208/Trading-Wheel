@@ -1,19 +1,22 @@
--- IT WORKS, BUT IT IS REDICULOUSLY SLOW
-  UPDATE query_data q
-	SET (q.security, q.time, q.MVA_10_DAY, q.MVA_25_DAY) = 
-		(SELECT q2.security, q2.time, other.mv10, other.mv25
-			FROM query_data q2 LEFT OUTER JOIN 
-				(SELECT q1.security, q1.time as time, AVG(q1.adj_close) 
-					OVER(ORDER BY q1.time ROWS BETWEEN 9 PRECEDING 
-					AND CURRENT ROW) AS mv10, AVG(q1.adj_close) 
-					OVER(ORDER BY q1.time ROWS BETWEEN 24 PRECEDING 
-					AND CURRENT ROW) AS mv25 FROM query_data q1
-					WHERE q1.security = 'AAPL') other ON (other.time = q2.time)
-			WHERE q2.security = 'AAPL' AND q.security = q2.security AND
-			q.time = q2.time)
-			WHERE EXISTS (SELECT 1 from query_data
-				where time = q.time AND q.security = 'AAPL'
-			AND security = q.security);
+-- quickly calculates and populates mva data
+MERGE INTO query_data A 
+USING (SELECT DISTINCT q.time, AVG(q.adj_close) OVER(ORDER BY q.time ROWS BETWEEN 9 PRECEDING 
+			AND CURRENT ROW) AS mv10,
+			AVG(q.adj_close) OVER(ORDER BY q.time ROWS BETWEEN 24 PRECEDING 
+			AND CURRENT ROW) AS mv25 
+		FROM query_data q
+		WHERE q.security = 'AAPL') B
+	ON (A.time = B.time AND A.security = 'AAPL')
+	WHEN MATCHED THEN UPDATE SET A.MVA_10_day = B.mv10, A.MVA_25_DAY = B.mv25;
+
+
+
+-- deletes row	
+-- UPDATE query_data SET MVA_10_day = NULL, MVA_25_DAY = NULL where security = 'AAPL';
+
+-- queries data
+-- SELECT * from query_data where security = 'AAPL' order by time;
+
 
 -- working query for mva
 --SELECT q1.security, q1.time , q1.adj_close, q1.MVA_10_day, q1.MVA_25_DAY, AVG(q1.adj_close) 
