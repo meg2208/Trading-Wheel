@@ -39,11 +39,24 @@ def get_data(ticker_symbol,db,cursor):
     counter =  0
     try:
         yahoo_data = urllib2.urlopen( url )
-        first = True
+        closing_10 = [0]*10
+        closing_25 = [0]*25
 
-        for line in yahoo_data:
-            if not first:
+        for line in reversed(yahoo_data.readlines()):
+            if line[0:4] != 'Date':
                 row = line.split(',')
+
+                closing_10[counter%10] = Decimal(row[4])
+                if counter > 9:
+                    mva_10_day = sum(closing_10)/10
+                else:
+                    mva_10_day = 'NULL'
+                closing_25[counter%25] = Decimal(row[4])
+                if counter > 24:
+                    mva_25_day = sum(closing_25)/25
+                else:
+                    mva_25_day = 'NULL'
+
                 data = '(\'{}\',\'{}\',{},{},{},{},{},{},{},{})'.format(
                     ticker_symbol,      # security symbol
                     format_date(row[0]),# date
@@ -53,15 +66,14 @@ def get_data(ticker_symbol,db,cursor):
                     Decimal(row[4]),    # close
                     int(row[5]),        # volume
                     Decimal(row[6]),    # adj_close
-                    'NULL',             # 10 day mva
-                    'NULL'              # 25 day mva
+                    mva_10_day,         # 10 day mva
+                    mva_25_day          # 25 day mva
                     )
                 sql_insert = 'INSERT INTO query_data VALUES '+data
                 print sql_insert
                 cursor.execute(sql_insert)
                 db.commit()
                 counter += 1
-            first = False
 
     except urllib2.URLError as e:
         print e
@@ -86,3 +98,4 @@ if __name__ == '__main__':
     if check_if_exists(ticker_name,cursor) is False:
         get_data(ticker_name,db,cursor)
     close(db,cursor)
+
