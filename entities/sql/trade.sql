@@ -1,7 +1,7 @@
 CREATE TABLE trade (
     trade_id INTEGER,
     security CHAR(6),
-    buy_sell CHAR(1),   --'B' or 'S'
+    action CHAR(3),   --'B'/'S'/'X_B'/'X_U'
     share_amount NUMBER,    -- Shares purchased in this trade
     price NUMBER,
     time DATE,
