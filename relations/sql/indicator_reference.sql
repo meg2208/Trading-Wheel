@@ -13,3 +13,4 @@ CREATE TABLE indicator_reference(
     FOREIGN KEY (L_indicator_id) REFERENCES indicator,
     FOREIGN KEY (R_indicator_id) REFERENCES indicator
 );
+
