@@ -2,28 +2,45 @@
 <html>
 
 <head>
-	<title>
-	{% block title %}
-	{% endblock %}
-	</title>
+    <title>
+    {% block title %}
+    {% endblock %}
+    </title>
 </head>
 
-<body>
-	{% block body %}
-	{% endblock %}
-    
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul class=flashes>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
+<div class=page>>
+    <div class=nav>
+    {% if g.user %}
+        <a href="{{ url_for('home') }}">home</a> |
+        <a href="{{ url_for('strategies') }}">strategies</a> |
+        <a href="{{ url_for('logout') }}">logout</a>
+    {% else %}
+        <a href="{{ url_for('home') }}">home</a> |
+        <a href="{{ url_for('login') }}">login</a> |
+        <a href="{{ url_for('register') }}">register</a>
+    {% endif %}
+    </div>
+
+
+   {% with messages = get_flashed_messages() %}
+       {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+           <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
         {% endif %}
     {% endwith %}
 
-</body>
+    {% block body %}
+    {% endblock %}
+</div>
 
 {% block script %}
 {% endblock %}
+
+<div class=footer>
+Trading Wheel
+</div>
 
 </html>
