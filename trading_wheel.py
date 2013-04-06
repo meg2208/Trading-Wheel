@@ -1,7 +1,8 @@
 
-from flask import Flask, render_template
+from flask import Flask, render_template, flash
 
 app = Flask(__name__)
+app.config.from_object('flask_settings')
 
 @app.route('/')
 def index():
@@ -9,5 +10,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.debug = True
     app.run()

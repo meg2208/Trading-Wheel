@@ -12,4 +12,5 @@ bin/
 *.zip
 entities/securities/*.csv
 templates/template
+flask_settings.py
 
