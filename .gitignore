@@ -14,3 +14,5 @@ entities/securities/*.csv
 templates/template
 flask_settings.py
 
+
+queries/test.sql

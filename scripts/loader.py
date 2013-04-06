@@ -38,8 +38,8 @@ def aggregate_portfolio(row):
        row[2],row[3],row[4],row[5],row[6])
 
 def indicator(row):
-    return '({},\'{}\',\'{}\',\'{}\',\'{}\',\'{}\')'.format(
-        row[0],row[1],row[2],row[3],row[4],row[5])
+    return '({},\'{}\',\'{}\',\'{}\')'.format(
+        row[0],row[1],row[2],row[3])
 
 def portfolio_statistics(row):
     return '({},{},{},\'{}\')'.format(row[0],row[1],row[2],row[3])
@@ -75,8 +75,8 @@ def day_to_day(row):
     return '({},{})'.format(row[0],row[1])
 
 def indicator_reference(row):
-    return '({},{},\'{}\',\'{}\',{},{},{})'.format(
-        row[0],row[1],row[2],row[3],row[4],row[5],row[6])    
+    return '(\'{}\',\'{}\',{},{},\'{}\',\'{}\',\'{}\',{},{},{})'.format(
+        format_date(row[0]),format_date(row[1]),row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9])    
 
 def makes_trade(row):
     return '({},{})'.format(row[0],row[1])
