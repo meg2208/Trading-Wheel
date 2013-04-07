@@ -47,7 +47,7 @@ def register():
     if request.method == 'POST' and reg_form.validate():
         user = [ reg_form.username.data, reg_form.password.data ]
         add_data('user_data',user)
-        flash('Thanks for registering')
+        flash('Thanks for registering, {}'.format(user[0]) )
         return redirect( url_for('home') )
     return render_template('register.html', form=reg_form)
 
