@@ -1,6 +1,6 @@
 
 from flask import Flask, render_template, flash, \
-	url_for, g, redirect, request
+	url_for, g, redirect, request, session
 import forms
 import cx_Oracle as oracle
 from scripts import credentials,loader,load_finance
@@ -25,6 +25,7 @@ def close_db(db,cursor):
 def add_data(table_name,data):
    loader.insert_data( table_name, data ) 
 
+
 @app.errorhandler(404)
 def not_found(error):
     return render_template('error.html')
@@ -33,10 +34,11 @@ def not_found(error):
 @app.route('/login', methods=['GET','POST'])
 def login():
     login_form = forms.Login_Form(request.form)
-    if request.methods == 'POST' and login_form.validate():
-        user = login_form.username.data
-
-    return redirect( url_for('home') )
+    if request.method == 'POST' and login_form.validate():
+        session['user_id'] = login_form.username.data
+        flash( "You're logged in as {}".format(session['user_id']))
+        return redirect( url_for('home') )
+    return render_template('log_in.html', form=login_form)
 
 
 @app.route('/register', methods=['GET','POST'])
@@ -48,6 +50,12 @@ def register():
         flash('Thanks for registering')
         return redirect( url_for('home') )
     return render_template('register.html', form=reg_form)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id',None)
+    return redirect( url_for('home') )
 
 
 @app.route('/')

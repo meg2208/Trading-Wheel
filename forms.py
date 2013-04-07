@@ -38,11 +38,37 @@ class Register_Form(Form):
         db,cursor = connect()
         data = cursor.execute( sql_query ).fetchall()
         close(db,cursor)
-        print data
         if len( data ) == 1:
             raise ValidationError('Username already in use')
 
 class Login_Form(Form):
     username    = TextField('Username' )
+    password    = PasswordField('Password' )
 
+    def validate_username(form,field):
+        sql_query = """
+        SELECT user_id
+        FROM 
+            user_data
+        WHERE 
+            user_id = '{}' """.format( field.data )
+        db,cursor = connect()
+        data = cursor.execute( sql_query ).fetchall()
+        close(db,cursor)
+        if len( data ) != 1:
+            raise StopValidation("Wrong username")
+
+    def validate_password(form,field):
+        sql_query = """
+        SELECT password
+        FROM 
+            user_data
+        WHERE 
+            user_id = '{}' """.format( form.username.data )
+        db,cursor = connect()
+        data = cursor.execute( sql_query ).fetchall()
+        close(db,cursor)
+        if data[0][0] != field.data:
+            raise ValidationError('Wrong password')
+        
 
