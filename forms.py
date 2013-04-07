@@ -1,7 +1,7 @@
 from wtforms import Form, BooleanField, TextField, PasswordField, \
     validators, ValidationError
 import cx_Oracle as oracle
-import credentials 
+from scripts import credentials 
 
 # Connecting to oracle database
 def connect():
@@ -17,16 +17,30 @@ def close(db,cursor):
 
 
 class Register_Form(Form):
-    username    = TextField('Username', [validators.Length(min=5,max=20)]) 
+    username    = TextField( 'Username' ) 
     password 	= PasswordField('New Password', [
     	validators.Required(),
-    	validators.EqualTo('confirm', message='Passowrds must match')])
+    	validators.EqualTo('confirm', message='Passwords must match')])
     confirm		= PasswordField('Confirm Password')
     accept_tos	= BooleanField('I accept the terms of service',[
     	validators.Required()])
 
     def validate_username(form,field):
-        raise ValidationError('testing')
+        if len(field.data) > 20 or len(field.data) < 4:
+            raise ValidationError('Username must between 5 and 20 '+
+                'characters')
+        sql_query = """
+        SELECT *
+        FROM 
+            user_data
+        WHERE 
+            user_id = '{}'""".format( field.data )
+        db,cursor = connect()
+        data = cursor.execute( sql_query ).fetchall()
+        close(db,cursor)
+        print data
+        if len( data ) == 1:
+            raise ValidationError('Username already in use')
 
 class Login_Form(Form):
     username    = TextField('Username' )

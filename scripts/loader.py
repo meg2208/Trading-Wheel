@@ -121,7 +121,7 @@ def insert_data(table_name,data,db=None,cursor=None):
     cursor.execute(sql_insert)
     db.commit()
 
-    if close_at_end:
+    if close_at_end: #closing for single use times
         close(db,cursor)
 
 # Reading in csv file contents
