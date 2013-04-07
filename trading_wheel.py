@@ -25,10 +25,18 @@ def close_db(db,cursor):
 def add_data(table_name,data):
    loader.insert_data( table_name, data ) 
 
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('error.html')
+
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-   return url_for('home')
+    login_form = forms.Login_Form(request.form)
+    if request.methods == 'POST' and login_form.validate():
+        user = login_form.username.data
+
+    return redirect( url_for('home') )
 
 
 @app.route('/register', methods=['GET','POST'])
