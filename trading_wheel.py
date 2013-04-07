@@ -1,25 +1,46 @@
 
 from flask import Flask, render_template, flash, \
-	url_for, g, redirect
+	url_for, g, redirect, request
 import forms
+import credentials
+import cx_Oracle as oracle
 
 
 app = Flask(__name__)
 app.config.from_object('flask_settings')
 
-@app.route('/register', methods=['GET','POST']):
+# Opens SQL*Plus db and cursor connections
+def connect_db():
+    db = oracle.connect("{}/{}@{}".format(credentials.username,
+        credentials.password, credentials.server ))
+    cursor = db.cursor()
+    return db,cursor
+
+
+# Closes SQL*Plus db and cursor connections
+def close_db(db,cursor):
+    cursor.close()
+    db.close()
+
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+   return url_for('home')
+
+
+@app.route('/register', methods=['GET','POST'])
 def register():
     reg_form = forms.Register_Form(request.form)
-    if request.method == 'POST' and form.validate():
-        user = User(form.username.data, form.password.data)
+    if request.method == 'POST' and reg_form.validate():
+        user = [ reg_form.username.data, reg_form.password.data ]
         flash('Thanks for registering')
-        return redirect( url_for('login'))
+        return redirect( url_for('login') )
     return render_template('register.html', form=reg_form)
 
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template( 'home.html' )
 
 
 

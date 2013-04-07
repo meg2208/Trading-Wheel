@@ -2,26 +2,25 @@
 <html>
 
 <head>
+    <link rel='shortcut icon' href="../static/assets/images/favicon2.ico">
     <title>
     {% block title %}
     {% endblock %}
     </title>
 </head>
 
-<div class=page>>
+<div class=page>
     <div class=nav>
     {% if g.user %}
         <a href="{{ url_for('home') }}">home</a> |
-        <a href="{{ url_for('strategies') }}">strategies</a> |
-        <a href="{{ url_for('logout') }}">logout</a>
     {% else %}
         <a href="{{ url_for('home') }}">home</a> |
-        <a href="{{ url_for('login') }}">login</a> |
-        <a href="{{ url_for('register') }}">register</a>
+        <a href="{{ url_for('register') }}">register</a> 
     {% endif %}
     </div>
 
 
+<!-- Flash messages -->
    {% with messages = get_flashed_messages() %}
        {% if messages %}
         <ul class=flashes>
