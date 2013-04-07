@@ -1,5 +1,5 @@
 CREATE TABLE query_data (
-    security CHAR(6),
+    security VARCHAR2(6),
     time DATE,  -- DD-MMM-YYYY
     open NUMBER,
     high NUMBER,

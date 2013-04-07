@@ -4,8 +4,8 @@ CREATE TABLE indicator_reference(
     L_indicator_id INTEGER,
     R_indicator_id INTEGER,
     buy_sell CHAR(1),   --'B' or 'S'
-    operator CHAR(10),
-    action_security CHAR(6),
+    operator VARCHAR2(10),
+    action_security VARCHAR2(6),
     share_amount INTEGER,   --NULL
     allocation NUMBER,      --100
     cash_value NUMBER, -- Starting cash amt

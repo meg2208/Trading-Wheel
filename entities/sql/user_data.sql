@@ -1,5 +1,5 @@
 CREATE TABLE user_data(
-    user_id CHAR(20),
-    password CHAR(20),
+    user_id VARCHAR2(20),
+    password VARCHAR2(20),
     PRIMARY KEY (user_id)
 );
