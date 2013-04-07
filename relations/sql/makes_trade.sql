@@ -3,5 +3,5 @@ CREATE TABLE makes_trade (
     trade_id INTEGER,
     PRIMARY KEY(portfolio_id,trade_id),
     FOREIGN KEY (trade_id) REFERENCES trade,
-    FOREIGN KEY (portfolio_id) REFERENCES current_portfolio
+    FOREIGN KEY (portfolio_id) REFERENCES aggregate_portfolio
 );

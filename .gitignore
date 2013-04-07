@@ -13,6 +13,6 @@ bin/
 entities/securities/*.csv
 templates/template
 flask_settings.py
+remake_all.sql
 
-
-queries/test.sql
+remake_all.sql
