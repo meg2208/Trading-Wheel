@@ -26,9 +26,9 @@ CREATE TABLE aggregate_portfolio(
 );
 CREATE TABLE indicator(
     indicator_id INTEGER,
-    security CHAR(6),
-    mva_10_day CHAR(1), -- T or F --
-    mva_25_day CHAR(1), -- T or F --
+    security VARCHAR2(6),
+    mva_10_day VARCHAR2(1), -- T or F --
+    mva_25_day VARCHAR2(1), -- T or F --
     PRIMARY KEY (indicator_id)
 );
 
@@ -38,11 +38,11 @@ CREATE TABLE portfolio_statistics (
     end_date DATE,
     sharpe_ratio REAL,
     returns REAL,
-    user_id CHAR(20),
+    user_id VARCHAR(20),
     PRIMARY KEY(port_id)
 );
 CREATE TABLE query_data (
-    security CHAR(6),
+    security VARCHAR2(6),
     time DATE,  -- DD-MMM-YYYY
     open NUMBER,
     high NUMBER,
@@ -57,28 +57,28 @@ CREATE TABLE query_data (
 );
 CREATE TABLE security_state (
     state_id INTEGER,
-    security CHAR(6),
+    security VARCHAR2(6),
     security_price NUMBER,
     share_amount NUMBER,
     PRIMARY KEY(state_id,security)
 );
 CREATE TABLE strategy(
     strategy_id INTEGER,
-    strategy_name CHAR(200),
+    strategy_name VARCHAR2(200),
     PRIMARY KEY (strategy_id)
 );
 CREATE TABLE trade (
     trade_id INTEGER,
-    security CHAR(6),
-    action CHAR(3),   --'B'/'S'/'X_B'/'X_U'
+    security VARCHAR2(6),
+    action VARCHAR2(3),   --'B'/'S'/'X_B'/'X_U'
     share_amount NUMBER,    -- Shares purchased in this trade
     price NUMBER,
     time DATE,
     PRIMARY KEY(trade_id)
 );
 CREATE TABLE user_data(
-    user_id CHAR(20),
-    password CHAR(20),
+    user_id VARCHAR2(20),
+    password VARCHAR2(20),
     PRIMARY KEY (user_id)
 );
 CREATE TABLE calculate_statistics (
@@ -89,7 +89,7 @@ CREATE TABLE calculate_statistics (
     FOREIGN KEY (port_id) REFERENCES portfolio_statistics
 );
 CREATE TABLE create_strategy (
-    user_id CHAR(20),
+    user_id VARCHAR2(20),
     strategy_id INTEGER,
     PRIMARY KEY (user_id, strategy_id ),
     FOREIGN KEY (user_id) REFERENCES user_data,
@@ -115,8 +115,8 @@ CREATE TABLE indicator_reference(
     L_indicator_id INTEGER,
     R_indicator_id INTEGER,
     buy_sell CHAR(1),   --'B' or 'S'
-    operator CHAR(10),
-    action_security CHAR(6),
+    operator VARCHAR2(10),
+    action_security VARCHAR2(6),
     share_amount INTEGER,   --NULL
     allocation NUMBER,      --100
     cash_value NUMBER, -- Starting cash amt
@@ -135,14 +135,14 @@ CREATE TABLE makes_trade (
 CREATE TABLE portfolio_contents (
     state_id INTEGER,
     portfolio_id INTEGER,
-    security CHAR(6),
+    security VARCHAR2(6),
     PRIMARY KEY (state_id, portfolio_id),
     FOREIGN KEY (state_id,security) REFERENCES security_state,
     FOREIGN KEY (portfolio_id) REFERENCES aggregate_portfolio
 );
 CREATE TABLE raw_data_parsing (
     strategy_id INTEGER,
-    security CHAR(6),
+    security VARCHAR2(6),
     time DATE,
     PRIMARY KEY (strategy_id, security,time),
     FOREIGN KEY (strategy_id) REFERENCES strategy,
