@@ -16,7 +16,7 @@ def update_mva(ticker,ref,mva,num):
 	db,cursor = connect()
 
 	with file('queries/mva_mod.sql','r') as update:
-		sql_update = update.read().format(ticker,ref,mva,num)
+		sql_update = update.read().format("'"+ticker+"'",ref,mva,num)
 		cursor.execute( sql_update )
 		db.commit()
 		
@@ -35,6 +35,6 @@ if __name__ == '__main__':
 	mva = argv[3]
 	num_days = argv[4]
 
-	update_mva(ticker,reference,mva, num_days)
+	update_mva(ticker,reference,mva,num_days)
 	exit(0)
 	

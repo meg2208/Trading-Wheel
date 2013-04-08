@@ -45,7 +45,6 @@ def get_data(ticker_symbol,db,cursor):
         for line in reversed(yahoo_data.readlines()):
             if line[0:4] != 'Date':
                 row = line.split(',')
-
                 closing_10[counter%10] = Decimal(row[4])
                 if counter > 9:
                     mva_10_day = sum(closing_10)/10
@@ -56,7 +55,6 @@ def get_data(ticker_symbol,db,cursor):
                     mva_25_day = sum(closing_25)/25
                 else:
                     mva_25_day = 'NULL'
-
                 data = '(\'{}\',\'{}\',{},{},{},{},{},{},{},{})'.format(
                     ticker_symbol,      # security symbol
                     format_date(row[0]),# date
@@ -66,8 +64,8 @@ def get_data(ticker_symbol,db,cursor):
                     Decimal(row[4]),    # close
                     int(row[5]),        # volume
                     Decimal(row[6]),    # adj_close
-                    mva_10_day,         # 10 day mva
-                    mva_25_day          # 25 day mva
+                    'NULL',         # 10 day mva
+                    'NULL'          # 25 day mva
                     )
                 sql_insert = 'INSERT INTO query_data VALUES '+data
                 print sql_insert
