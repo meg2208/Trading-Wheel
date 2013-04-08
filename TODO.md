@@ -20,6 +20,8 @@ Guide to Markdown:
 
 * Monday 4/8
   * meeting scheduled w/ Hahn for that Thursday/Friday (this is when we show off the project for grading)
+  * get the nag bar to display accordingly when the user is logged in.
+
 
 * Tuesday 4/9
   * Basic Flask app running, not w/ all functionalities
