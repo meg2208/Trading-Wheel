@@ -1,7 +1,8 @@
+
 from wtforms import Form, BooleanField, TextField, PasswordField, \
     validators, ValidationError
 import cx_Oracle as oracle
-from scripts import credentials 
+from scripts import credentials
 
 # Connecting to oracle database
 def connect():
@@ -16,6 +17,9 @@ def close(db,cursor):
     db.close()
 
 
+"""
+Register User Form
+"""
 class Register_Form(Form):
     username    = TextField( 'Username' ) 
     password 	= PasswordField('New Password', [
@@ -41,7 +45,11 @@ class Register_Form(Form):
         if len( data ) == 1:
             raise ValidationError('Username already in use')
 
-class Login_Form(Form):
+
+"""
+Log in user form
+"""
+class Log_in_Form(Form):
     username    = TextField('Username' )
     password    = PasswordField('Password' )
 
@@ -56,7 +64,7 @@ class Login_Form(Form):
         data = cursor.execute( sql_query ).fetchall()
         close(db,cursor)
         if len( data ) != 1:
-            raise StopValidation("Wrong username")
+            raise ValidationError("Wrong username")
 
     def validate_password(form,field):
         sql_query = """
@@ -70,5 +78,49 @@ class Login_Form(Form):
         close(db,cursor)
         if data[0][0] != field.data:
             raise ValidationError('Wrong password')
-        
+
+
+"""
+Create Strategy form
+"""
+class Create_Strategy_Form(Form):
+    strat_name  = TextField('Strategy Name', [
+        validators.Required(),
+        validators.Length(min=10,max=200)])
+
+"""
+Create Indicator form
+"""
+class Create_Indicator_Form(Form):
+    security    = TextField('Ticker Name', [
+        validators.Required(),
+        validators.Length(min=1,max=6)])
+    mva_10      = BooleanField('10 day moving average')
+    mva_25      = BooleanField('25 day moving average')
+
+    def validate_mva_10(form,field):
+        if form.mva_25.data == True and field.data == True:
+            raise ValidationError('You can only choose one reference')
+        if form.mva_25.data == False and field.data == False:
+            raise ValidationError('You must choose at least one reference')
+
+#    def get_strategies(username):
+#        sql_query ="""
+#        SELECT S.strategy
+#        FROM user_data U, create_strategy CS, strategy S,
+#        WHERE user_id = {} AND
+#            user_data.user_id = CS.user_id AND
+#            CS.strategy_id = S.strategy_id
+#        """.format( username )
+#        db,cursor = connect()
+#        cursor.execute(sql_query)
+#        data = cursor.fetchall()[0][0]
+
+
+
+
+
+
+
+
 

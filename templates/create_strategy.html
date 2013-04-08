@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create Strategy
+{% endblock %}
+
+{% block body %}
+<h1>Create a New Strategy!</h1>
+{% from "_formhelper.html" import render_field %}
+
+<form method=post action='/create_strategy'>
+	<dl>
+		{{ render_field( form.strat_name ) }}
+	</dl>
+	<p><input type=submit value=Create>
+</form>
+{% endblock %}
+
+

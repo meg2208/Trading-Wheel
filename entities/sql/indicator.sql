@@ -5,4 +5,3 @@ CREATE TABLE indicator(
     mva_25_day VARCHAR2(1), -- T or F --
     PRIMARY KEY (indicator_id)
 );
-

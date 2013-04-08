@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create Indicator
+{% endblock %}
+
+{% block body %}
+
+{% from "_formhelper.html" import render_field %}
+<form method=post action='/create_indicator'>
+	<dl>
+		{{ render_field( form.security ) }}
+		{{ render_field( form.mva_10 ) }}
+		{{ render_field( form.mva_25 ) }}
+	</dl>
+	<p><input type=submit value=Create>
+</form>
+
+{% endblock %}

@@ -7,7 +7,7 @@ Log In
 {% block body %}
 
 {% from "_formhelper.html" import render_field %}
-<form method=post action='/login'>
+<form method=post action='/log_in'>
 	<dl>
 		{{ render_field( form.username ) }}
 		{{ render_field( form.password ) }}
