@@ -13,3 +13,7 @@ bin/
 entities/securities/*.csv
 templates/template
 flask_settings.py
+
+test.sql
+test.py
+scripts/populate_trades.py
