@@ -23,6 +23,7 @@ Guide to Markdown:
   * have the session cookie update at login
   * add functionality to create indicator references
   * pull down menu for tying a indicator to a strategy
+  * Matt: fill out queries/explanation.md with concise descriptions of the functionality of each query
 
 
 * Tuesday 4/9
