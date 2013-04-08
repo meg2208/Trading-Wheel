@@ -20,7 +20,9 @@ Guide to Markdown:
 
 * Monday 4/8
   * meeting scheduled w/ Hahn for that Thursday/Friday (this is when we show off the project for grading)
-  * get the nag bar to display accordingly when the user is logged in.
+  * have the session cookie update at login
+  * add functionality to create indicator references
+  * pull down menu for tying a indicator to a strategy
 
 
 * Tuesday 4/9

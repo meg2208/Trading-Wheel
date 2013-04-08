@@ -19,7 +19,7 @@
         <a href="{{ url_for( 'home') }}">home</a>
         | <a href="{{ url_for( 'logout' ) }}">log out</a>
         | <a href="{{ url_for( 'create_strategy' ) }}">create strategy</a>
-        {% if session['strategy'] %}
+        {% if 'strategy' in session %}
             | <a href="{{ url_for( 'create_indicator' ) }}">create indicator</a>
         {% endif %}
     {% else %}
