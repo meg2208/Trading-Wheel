@@ -2,7 +2,7 @@
 import cx_Oracle as oracle
 from scripts import credentials
 from wtforms import Form, BooleanField, TextField, PasswordField, \
-    validators, ValidationError, SelectField
+    validators, ValidationError  # , SelectField
 
 
 # Connecting to oracle database

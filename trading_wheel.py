@@ -93,35 +93,36 @@ def not_found(error):
 #####################################################################
 # Create Indicator form
 #####################################################################
-def CreateIndicatorForm():
-    class Create_Indicator_Form(Form):
-        security = TextField('Ticker Name', [
-                             validators.Required(),
-                             validators.Length(min=1, max=6)])
-        mva_10 = BooleanField('10 day moving average')
-        mva_25 = BooleanField('25 day moving average')
-        strategy = SelectField('strategy', choices=session['strategy'])
+def CreateForm(name):
+    if name == 'indicator':
+        class Create_Indicator_Form(Form):
+            security = TextField('Ticker Name', [
+                                 validators.Required(),
+                                 validators.Length(min=1, max=6)])
+            mva = SelectField('MVA', choices=[('mva_10_day', u'10 Day'), ('mva_25_day', u'25 Day')])
+            strategies = []
+            for s in session['strategy']:
+                strategies.append((unicode(s[0]), s[1]))
+            strategy = SelectField('strategy', choices=strategies)
 
-        def validate_mva_10(form, field):
-            if form.mva_25.data is True and field.data is True:
-                raise ValidationError('You can only choose one reference')
-            if form.mva_25.data is False and field.data is False:
-                raise ValidationError('You must choose at least one reference')
-    return Create_Indicator_Form(request.form)
+        return Create_Indicator_Form(request.form)
+#    elif name == 'indicator_ref':
+#        class Create_Indicator_Reference(Form):
 
 
 @app.route('/create_indicator', methods=['GET', 'POST'])
 def create_indicator():
     check_if_logged_in()
-    create_indicator_form = CreateIndicatorForm()
-    print 'HERE', type(create_indicator_form)
+    create_indicator_form = CreateForm('indicator')
 
-    print session['strategy']
+    print create_indicator_form.security.data
+    print create_indicator_form.mva.data
+    print create_indicator_form.strategy.data
 
     if request.method == 'POST' and create_indicator_form.validate():
         indicator_id = get_next_index('indicator', 'indicator_id')
         ticker = create_indicator_form.security.data
-        if create_indicator_form.mva_10.data is True:
+        if create_indicator_form.mva.data is '10 day':
             mva_10_day = 'Y'
             mva_25_day = 'N'
         else:
@@ -130,7 +131,7 @@ def create_indicator():
         row = [indicator_id, ticker, mva_10_day, mva_25_day]
         add_data('indicator', row)
         # adding relation
-        criteria_row = [session['strategy'][0], indicator_id]
+        criteria_row = [create_indicator_form.strategy.data, indicator_id]
         add_data('criteria', criteria_row)
         return redirect(url_for('home'))
 
@@ -159,9 +160,9 @@ def create_strategy():
         add_data('create_strategy', [session['user_id'], strat_id])
 
         if 'strategy' in session:
-            session['strategy'].append(strat_id)
+            session['strategy'].append((strat_id, strat_name))
         else:
-            session['strategy'] = [strat_id]
+            session['strategy'] = [(strat_id, strat_name)]
         flash('New strategy, {}, created'.format(strat_name))
         return redirect(url_for('home'))
 
