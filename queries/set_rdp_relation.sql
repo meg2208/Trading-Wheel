@@ -1,5 +1,4 @@
-INSERT INTO RAW_DATA_PARSING (strategy_id, 
-	security, time) 
+INSERT INTO RAW_DATA_PARSING (strategy_id, security, time) 
 	SELECT {0}, q.security, q.time
 	FROM indicator_reference ir, criteria c,
 		criteria c1, query_data q
