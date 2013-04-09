@@ -1,12 +1,12 @@
 
-from wtforms import Form, BooleanField, TextField, PasswordField, \
-    validators, ValidationError, SelectField
 import cx_Oracle as oracle
 from scripts import credentials
+from wtforms import Form, BooleanField, TextField, PasswordField, \
+    validators, ValidationError, SelectField
 
 
 # Connecting to oracle database
-def connect():
+def connect_db():
     db = oracle.connect("{}/{}@{}".format(credentials.username,
                                           credentials.password,
                                           credentials.server))
@@ -15,14 +15,14 @@ def connect():
 
 
 #Closing connections
-def close(db, cursor):
+def close_db(db, cursor):
     cursor.close()
     db.close()
 
 
-######
+##################################
 #Register User Form
-######
+##################################
 class Register_Form(Form):
     username = TextField('Username')
     Password = PasswordField('New Password', [
@@ -42,9 +42,9 @@ class Register_Form(Form):
             user_data
         WHERE
             user_id = '{}'""".format(field.data)
-        db, cursor = connect()
+        db, cursor = connect_db()
         data = cursor.execute(sql_query).fetchall()
-        close(db, cursor)
+        close_db(db, cursor)
         if len(data) is 1:
             raise ValidationError('Username already in use')
 
@@ -63,9 +63,9 @@ class Log_in_Form(Form):
             user_data
         WHERE
             user_id = '{}' """.format(field.data)
-        db, cursor = connect()
+        db, cursor = connect_db()
         data = cursor.execute(sql_query).fetchall()
-        close(db, cursor)
+        close_db(db, cursor)
         if len(data) != 1:
             raise ValidationError("Wrong username")
 
@@ -76,9 +76,9 @@ class Log_in_Form(Form):
             user_data
         WHERE
             user_id = '{}' """.format(form.username.data)
-        db, cursor = connect()
+        db, cursor = connect_db()
         data = cursor.execute(sql_query).fetchall()
-        close(db, cursor)
+        close_db(db, cursor)
         if data[0][0] != field.data:
             raise ValidationError('Wrong password')
 
@@ -92,22 +92,7 @@ class Create_Strategy_Form(Form):
         validators.Length(min=10, max=200)])
 
 
-###########################################
-# Create Indicator form
-#########################################
-class Create_Indicator_Form(Form):
-    security = TextField('Ticker Name', [
-                         validators.Required(),
-                         validators.Length(min=1, max=6)])
-    mva_10 = BooleanField('10 day moving average')
-    mva_25 = BooleanField('25 day moving average')
-    #strategy = SelectField('Strategy', )
 
-    def validate_mva_10(form, field):
-        if form.mva_25.data is True and field.data is True:
-            raise ValidationError('You can only choose one reference')
-        if form.mva_25.data is False and field.data is False:
-            raise ValidationError('You must choose at least one reference')
 
 
 #    def get_strategies(username):
@@ -118,6 +103,6 @@ class Create_Indicator_Form(Form):
 #            user_data.user_id = CS.user_id AND
 #            CS.strategy_id = S.strategy_id
 #        """.format( username )
-#        db,cursor = connect()
+#        db,cursor = connect_db()
 #        cursor.execute(sql_query)
 #        data = cursor.fetchall()[0][0]
