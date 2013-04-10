@@ -3,6 +3,6 @@ Trading-Wheel
 
 Spring coms4111 Project by Nate Brennand and Matt Garbis.
 
-Utilizes a SQL*Plus database and the web server is running the Python Flask framework.
+Utilizes an Oracle SQL 10g database and the web server is running the Python Flask framework.
 
 [Various SQL*Plus queries](queries/explanation.md)
