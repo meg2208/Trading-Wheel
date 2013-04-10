@@ -18,9 +18,8 @@ SELECT portfolio_id, a.security, a.buy_sell, a.share_amount, a.allocation, a.adj
 			AND ir.buy_sell = 'B' 
 			AND rd.time = q.time 
 			AND ir.operator = 'x_over' 
-			AND q.security = ir.action_security
-			AND L_ind.indicator_id = 1 ) a,
-  		(SELECT ag.portfolio_id, ag.time, dtd.strategy_id
+			AND q.security = ir.action_security ) a,
+  	  (SELECT ag.portfolio_id, ag.time, dtd.strategy_id
   			FROM aggregate_portfolio ag, day_to_day dtd
   			WHERE ag.time = time
   				AND ag.portfolio_id = dtd.portfolio_id

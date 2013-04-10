@@ -6,7 +6,11 @@ INSERT INTO TRADE (trade_id, security, action, share_amount, allocation, price, 
 				SUM(q.MVA_25_DAY) OVER(ORDER BY q.time ROWS BETWEEN 1 PRECEDING 
 					AND CURRENT ROW) - q.MVA_25_DAY AS yestmva2, q.MVA_25_DAY AS mva2
 			FROM indicator L_ind, indicator R_ind, query_data q, indicator_reference ir, raw_data_parsing rd
-			WHERE q.security = ir.action_security AND L_ind.MVA_10_DAY = 'F' AND R_ind.MVA_25_DAY = 'T' AND
-					ir.buy_sell = 'S' AND rd.time = q.time AND ir.operator = 'x_under' 
-					AND q.security = ir.action_security)
+			WHERE q.security = ir.action_security 
+			AND L_ind.MVA_10_DAY = 'F' 
+			AND R_ind.MVA_25_DAY = 'T' 
+			AND ir.buy_sell = 'S' 
+			AND rd.time = q.time 
+			AND ir.operator = 'x_under' 
+			AND q.security = ir.action_security)
 		WHERE mva1 < mva2 AND yestmva1 > yestmva2;
