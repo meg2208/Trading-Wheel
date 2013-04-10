@@ -8,4 +8,4 @@ INSERT ALL
 		VALUES(1000, seq_portfolio_id.currval)
 	SELECT DISTINCT time, strategy_id
 		FROM (raw_data_parsing rd)
-		WHERE rd.strategy_id = 1000;
+		WHERE rd.strategy_id = 1000; --make modular
