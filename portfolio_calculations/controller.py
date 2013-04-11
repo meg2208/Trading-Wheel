@@ -126,7 +126,7 @@ def backtest(portfolios):
     cursor = db.cursor()
     #   db, cursor = connect()
     for i in portfolios:
-        i.import_trades()
+        i.import_trades(db)
         print 'imported trades'
     a = 0
     print 'got here...'
