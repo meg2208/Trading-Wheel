@@ -3,18 +3,22 @@
 
 <head>
     <link rel='shortcut icon' href="../static/assets/images/favicon2.ico">
+    <link href="../static/assets/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+    body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        padding-left: 40px;
+    }
+    </style>
+
     <title>
     {% block title %}
     {% endblock %}
     </title>
 </head>
 
-<body>
-<div class=page>
-    <!-- Fork Me Ribbon -->
-    <a href="https://github.com/nsb2142/trading-wheel"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
-
-    <div class=nav>
+<div class="btn btn-navbar">
     {% if session['user_id'] %}
         <a href="{{ url_for( 'home') }}">home</a>
         | <a href="{{ url_for( 'logout' ) }}">log out</a>
@@ -22,7 +26,13 @@
             | <a href="{{ url_for( 'create_strategy' ) }}">create strategy</a>
         {% else %}
             | <a href="{{ url_for( 'create_indicator' )}}">create indicator</a>
+
+            | {% if session['indicator'][1] %}
+                <a href="{{ url_for( 'indicator_reference' ) }}">create trigger</a>
+            {% endif %}
+
         {% endif %}
+
     {% else %}
         <a href="{{ url_for( 'home') }}">home</a> |
         <a href="{{ url_for( 'register' ) }}">register</a> |
@@ -30,8 +40,9 @@
     {% endif %}
     </div>
 
+<body class="preview">
 
-<!-- Flash messages -->
+    <!-- Flash messages -->
    {% with messages = get_flashed_messages() %}
        {% if messages %}
         <ul class=flashes>
@@ -44,13 +55,28 @@
 
     {% block body %}
     {% endblock %}
+<div class=page>
+
+
+
+
+    
+<!-- Fork Me Ribbon -->
+<a href="https://github.com/nsb2142/trading-wheel">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+<!-- End ribbon -->
+    
+
+
+
 </div>
 {% block script %}
 {% endblock %}
 
-<div class=footer>
-Trading Wheel
-</div>
+<footer>
+<p>Trading Wheel</p>
+</footer>
+
 </body>
 
 </html>

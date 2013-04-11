@@ -5,6 +5,7 @@ Indicator Reference
 {% endblock %}
 
 {% block body %}
+<h1>Create a Trigger!</h1>
 
 {% from "_formhelper.html" import render_field %}
 <form method=post action='/indicator_reference'>
@@ -14,9 +15,12 @@ Indicator Reference
 		{{ render_field( form.ind_2 ) }}
 		{{ render_field( form.action ) }}
 		{{ render_field( form.operator ) }}
+		<p>When this is triggered, you'll buy/sell the action_security.</p>
+		{{ render_field( form.action_security ) }}
+		<p><strong>Only choose one of the following choices!</strong></p>
 		{{ render_field( form.share_amount ) }}
 		{{ render_field( form.allocation ) }}
-		{{ render_field( form.cash ) }}
+		{{ render_field( form.cash_value ) }}
 	</dl>
 	<p><input type=submit value=Create>
 </form>

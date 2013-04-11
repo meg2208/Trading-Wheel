@@ -199,10 +199,15 @@ def CreateForm(name):
             ind_2 = SelectField('Indicator 2', choices=session['indicator'])
             action = SelectField('Buy/Sell', choices=[('B', u'Buy'),
                                                       ('S', u'Sell')])
-            operator = SelectField('Trigger', choices=[('x_under',
-                                   u'1 under 2'), ('x_over', u'1 over 2')])
+            operator = SelectField('Trigger', choices=[
+                                   ('x_under', u'1 crosses under 2'),
+                                   ('x_over', u'1 crosses over 2')])
+            action_security = TextField('Action Security Ticker', [
+                                        validators.Required(),
+                                        validators.Length(min=1, max=6)])
             share_amount = IntegerField('Number of shares', default=0)
-            allocation = DecimalField('Allocation', default=0.0)
+            allocation = DecimalField('Allocation (decimal)', default=0.0)
+            cash_value = IntegerField('Starting cash amount', default=0)
 
         return Create_Indicator_Reference(request.form)
 
