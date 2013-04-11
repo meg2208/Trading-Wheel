@@ -27,48 +27,6 @@ def close_db(db, cursor):
     db.close()
 
 
-def populate_cookie(user_id):
-    db, cursor = connect_db()
-
-    #get all strategies
-    session.pop('strategy', None)
-    cursor.execute("""  SELECT S.strategy_id, S.strategy_name
-                        FROM create_strategy C, strategy S
-                        WHERE C.strategy_id = S.strategy_id
-                            AND C.user_id = '{}'
-                        """.format(user_id))
-    data = cursor.fetchall()
-    only_strategy = data[0]
-    session['strategy'] = (only_strategy[0], unicode(only_strategy[0]))
-    # limiting to one strategy for now
-    #strategies = []
-    #for strat in data:
-    #    print strat
-    #    strategies.append((strat[0], unicode(strat[1])))
-    #if len(strategies) > 0:
-    #    session['strategy'] = strategies
-
-    # get all indicators
-    session.pop('indicator', None)
-    indicators = []
-    for strat in session['strategy']:
-        cursor.execute("""  SELECT C.indicator_id, I.security,I.mva_10_day
-                            FROM criteria C, indicator I
-                            WHERE C.strategy_id = '{}'
-                                AND C.indicator_id = I.indicator_id
-                            """.format(strat[0]))
-        for ind in cursor.fetchall():
-            print ind
-            if ind[2] is 'T':
-                temp = '10 day'
-            else:
-                temp = '25 day'
-            # Storing (indicator_id, ticker)
-            indicators.append((ind[0], unicode("{} {}".format(ind[1], temp))))
-    session['indicator'] = indicators
-    print indicators
-
-
 def add_data(table_name, data):
     print table_name
     print data
@@ -105,6 +63,52 @@ def not_found(error):
 
 
 #####################################################################
+# COOKIEZ
+#####################################################################
+def populate_cookie(user_id):
+    db, cursor = connect_db()
+
+    #get all strategies
+    session.pop('strategy', None)
+    cursor.execute("""  SELECT S.strategy_id, S.strategy_name
+                        FROM create_strategy C, strategy S
+                        WHERE C.strategy_id = S.strategy_id
+                            AND C.user_id = '{}'
+                        """.format(user_id))
+    data = cursor.fetchall()
+    only_strategy = data[0]
+    session['strategy'] = [(only_strategy[0], only_strategy[1])]
+    #session['strategy'] = [(only_strategy[0], unicode(only_strategy[1]))]
+    # limiting to one strategy for now
+    #strategies = []
+    #for strat in data:
+    #    print strat
+    #    strategies.append((strat[0], unicode(strat[1])))
+    #if len(strategies) > 0:
+    #    session['strategy'] = strategies
+
+    # get all indicators
+    session.pop('indicator', None)
+    indicators = []
+    for strat in session['strategy']:
+        cursor.execute("""  SELECT C.indicator_id, I.security,I.mva_10_day
+                            FROM criteria C, indicator I
+                            WHERE C.strategy_id = '{}'
+                                AND C.indicator_id = I.indicator_id
+                            """.format(strat[0]))
+        for ind in cursor.fetchall():
+            print ind
+            if ind[2] is 'T':
+                temp = '10 day'
+            else:
+                temp = '25 day'
+            # Storing (indicator_id, ticker)
+            indicators.append((ind[0], unicode("{} {}".format(ind[1], temp))))
+    session['indicator'] = indicators
+    print indicators
+
+
+#####################################################################
 # Create Forms
 #####################################################################
 def CreateForm(name):
@@ -113,10 +117,11 @@ def CreateForm(name):
             security = TextField('Ticker Name', [
                                  validators.Required(),
                                  validators.Length(min=1, max=6)])
-            mva = SelectField('MVA', choices=[('mva_10_day', u'10 Day'),
-                                              ('mva_25_day', u'25 Day')])
-            strategies = []
-            strategy = SelectField('strategy', choices=session['strategy'])
+            mva = SelectField('MVA',
+                              choices=[('mva_10_day', u'10 Day'),
+                                       ('mva_25_day', u'25 Day')])
+            strategy = SelectField('strategy', choices=session['strategy'],
+                                   coerce=int)
         return Create_Indicator_Form(request.form)
 
     elif name is 'strategy':
@@ -244,6 +249,7 @@ def indicator_reference():
 def create_indicator():
     check_if_logged_in()
     create_indicator_form = CreateForm('indicator')
+    print session['strategy']
 
     if request.method == 'POST' and create_indicator_form.validate():
         indicator_id = get_next_index('indicator', 'indicator_id')
