@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+Indicator Reference
+{% endblock %}
+
+{% block body %}
+
+{% from "_formhelper.html" import render_field %}
+<form method=post action='/indicator_reference'>
+	<dl>
+		{{ render_field( form.start_year) }}
+		{{ render_field( form.ind_1 ) }}
+		{{ render_field( form.ind_2 ) }}
+		{{ render_field( form.action ) }}
+		{{ render_field( form.operator ) }}
+		{{ render_field( form.share_amount ) }}
+		{{ render_field( form.allocation ) }}
+		{{ render_field( form.cash ) }}
+	</dl>
+	<p><input type=submit value=Create>
+</form>
+
+{% endblock %}
