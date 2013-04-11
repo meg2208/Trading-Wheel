@@ -62,11 +62,13 @@ class controller():
             sql_update = update.read().format(strategy_id)
         with file('../queries/pop_temp_s_x_under.sql','r') as update:
             sql_update = update.read().format(strategy_id)
+        close(db,cursor)
 
     def set_start_vals(strategy_id):
         db, cursor = connect()
         with file('../queries/set_portfolio_start_values.sql','r') as update:
             sql_update = update.read().format(strategy_id)
+        close(db,cursor)
 
     def backtest_prep(strategy_id):
         set_rdp_relation(strategy_id)
