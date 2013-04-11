@@ -78,7 +78,7 @@ class controller():
 
 
 
-    def import_ports(self, sid):        
+    def import_ports(sid):        
  #       db = oracle.connect("{}/{}@{}".format(username,password,server))
   #      cursor = db.cursor()
         db, cursor = connect()
@@ -97,10 +97,9 @@ class controller():
 
 def backtest():
     db, cursor = connect()
-    ports = import_ports('1000')
+    ports = import_ports('1000') #strategy_id
     #   portfolios = [portfolio.aggregate_portfolio(x[0],x[1],x[2],x[3],x[4],x[5],x[6]) for x in ports]
     i = 0
-    print 'hi'
     for x in ports:
         portfolios.append(portfolio.aggregate_portfolio(x[0],x[1],x[2],x[3],x[4],x[5],x[6]))
     cursor.close()
