@@ -38,12 +38,14 @@ def populate_cookie(user_id):
                             AND C.user_id = '{}'
                         """.format(user_id))
     data = cursor.fetchall()
-    strategies = []
-    for strat in data:
-        print strat
-        strategies.append((strat[0], unicode(strat[1])))
-    if len(strategies) > 0:
-        session['strategy'] = strategies
+    only_strategy = data[0]
+    session['strategy'] = (only_strategy[0], unicode(only_strategy[0]))
+    #strategies = []
+    #for strat in data:
+    #    print strat
+    #    strategies.append((strat[0], unicode(strat[1])))
+    #if len(strategies) > 0:
+    #    session['strategy'] = strategies
 
     #get all indicators
     session.pop('indicator', None)
