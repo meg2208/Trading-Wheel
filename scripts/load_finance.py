@@ -28,7 +28,6 @@ def check_if_exists(ticker_symbol, cursor):
 
 
 def format_date(date_str):
-    print date_str
     # DD-MMM-YYYY
     cal = [None, 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug',
            'sep', 'oct', 'nov', 'dec']
@@ -44,7 +43,6 @@ def get_data(ticker_symbol, db, cursor):
     try:
         yahoo_data = urllib2.urlopen(url)
         for row in yahoo_data.readlines():
-            print row
             if row[0:4] != 'Date':
                 row = row.split(',')
                 data = '(\'{}\',\'{}\',{},{},{},{},{},{},{},{})'.format(
