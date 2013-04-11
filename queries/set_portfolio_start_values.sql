@@ -12,5 +12,4 @@ MERGE INTO aggregate_portfolio A
 						AND s1.strategy_id = s.strategy_id)
 		) B
 		ON (B.portfolio_id = A.portfolio_id)
-		WHEN MATCHED THEN UPDATE SET A.free_cash = B.start_cash, A.securites_value = B.start_sec,
-									A.portfolio_value = B.start_port;
+		WHEN MATCHED THEN UPDATE SET A.free_cash = B.start_cash, A.securites_value = B.start_sec, A.portfolio_value = B.start_port;
