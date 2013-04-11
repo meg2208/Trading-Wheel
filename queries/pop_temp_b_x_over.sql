@@ -23,7 +23,7 @@ SELECT portfolio_id, a.security, a.buy_sell, a.share_amount, a.allocation, a.adj
   			FROM aggregate_portfolio ag, day_to_day dtd
   			WHERE ag.time = time
   				AND ag.portfolio_id = dtd.portfolio_id
-  				AND dtd.strategy_id = 1000) b
+  				AND dtd.strategy_id = {0}) b
 	WHERE a.mva1 > a.mva2 
 	  AND a.yestmva1 < a.yestmva2
-	  AND b.time = a.time;
+	  AND b.time = a.time
