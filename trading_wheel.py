@@ -40,6 +40,7 @@ def populate_cookie(user_id):
     data = cursor.fetchall()
     only_strategy = data[0]
     session['strategy'] = (only_strategy[0], unicode(only_strategy[0]))
+    # limiting to one strategy for now
     #strategies = []
     #for strat in data:
     #    print strat
@@ -47,7 +48,7 @@ def populate_cookie(user_id):
     #if len(strategies) > 0:
     #    session['strategy'] = strategies
 
-    #get all indicators
+    # get all indicators
     session.pop('indicator', None)
     indicators = []
     for strat in session['strategy']:
@@ -248,11 +249,11 @@ def create_indicator():
         indicator_id = get_next_index('indicator', 'indicator_id')
         ticker = create_indicator_form.security.data
         if create_indicator_form.mva.data is '10 day':
-            mva_10_day = 'Y'
-            mva_25_day = 'N'
+            mva_10_day = 'T'
+            mva_25_day = 'F'
         else:
-            mva_10_day = 'N'
-            mva_25_day = 'Y'
+            mva_10_day = 'F'
+            mva_25_day = 'T'
         row = [indicator_id, ticker, mva_10_day, mva_25_day]
         add_data('indicator', row)
         # adding relation
