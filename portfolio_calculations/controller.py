@@ -120,12 +120,14 @@ def backtest(portfolios):
     print 'hi'
     for x in ports:
         portfolios.append(portfolio.aggregate_portfolio(x[0], x[1], x[2], x[3], x[4], x[5], x[6]))
+        print 'portfolio appended'
     cursor.close()
     db = oracle.connect("{}/{}@{}".format(username, password, server))
     cursor = db.cursor()
     #   db, cursor = connect()
     for i in portfolios:
         i.import_trades()
+        print 'imported trades'
     a = 0
     print 'got here...'
     for z in portfolios:
