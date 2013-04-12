@@ -6,17 +6,20 @@ import urllib2
 from credentials import username, password, server
 
 
+# Returns connections to the db and cursor objects
 def connect():
     db = oracle.connect("{}/{}@{}".format(username, password, server))
     cursor = db.cursor()
     return db, cursor
 
 
+# Closes the db and cursor connections
 def close(db, cursor):
     cursor.close()
     db.close()
 
 
+# Checks to see if a ticker has been uploaded into the table
 def check_if_exists(ticker_symbol, cursor):
     sql_query = 'SELECT DISTINCT security FROM query_data'
     cursor.execute(sql_query)
@@ -27,6 +30,8 @@ def check_if_exists(ticker_symbol, cursor):
     return False
 
 
+# Expects YYYY-MM-DD
+# Outputs DD-MMM-YYYY
 def format_date(date_str):
     # DD-MMM-YYYY
     cal = [None, 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug',
@@ -37,6 +42,8 @@ def format_date(date_str):
     return date
 
 
+# Downloads from  yahoo
+# Uploads to SQL*Plus
 def get_data(ticker_symbol, db, cursor):
     url = "http://ichart.finance.yahoo.com/table.csv?s="+ticker_symbol
     counter = 0
@@ -69,7 +76,11 @@ def get_data(ticker_symbol, db, cursor):
     print counter, 'rows added'
 
 
+# Callable method for module
 def upload_ticker(ticker):
+    ticker = str(ticker)
+    ticker = ticker.encode('ascii', 'ignore')  # trying to remove non-ascii
+    print 'someone tried to UPLOAD', ticker
     ticker - ticker.upper()
     db, cursor = connect()
     if check_if_exists(ticker, cursor) is False:
@@ -77,6 +88,7 @@ def upload_ticker(ticker):
     close(db, cursor)
 
 
+# Main method for command line testing
 if __name__ == '__main__':
     if len(argv) != 2:
         print '\tProper Usage:\npython loader_finance.py <ticker name>'
