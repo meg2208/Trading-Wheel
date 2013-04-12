@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}
+Trading Wheel
+{% endblock %}
+
+{% block body %}
+<h1>Your Portfolio Values</h1>
+
+<table>
+<tr>
+	<td>Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	<td>Value&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	<td>Value of Securities&nbsp;&nbsp;</td>
+	<td>Free Cash&nbsp;&nbsp;&nbsp;</td>
+	<td>Day Change in Value</td>
+</tr>
+
+{% for day in portfolios %}
+	<tr>	
+	{% for column in day %}
+		<td>{{column}}</td>
+	{% endfor %}
+	</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

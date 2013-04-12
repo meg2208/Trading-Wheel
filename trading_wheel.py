@@ -79,6 +79,7 @@ def populate_cookie(user_id):
     if len(data) == 0:
         return
     only_strategy = data[0]
+                        # Strategy ID,         Strat_name
     session['strategy'] = [(only_strategy[0], only_strategy[1])]
     print 'STRATEGY:', only_strategy, '\n'
     #session['strategy'] = [(only_strategy[0], unicode(only_strategy[1]))]
@@ -266,6 +267,29 @@ def CreateForm(name, cookie_data=None):
 def show_portfolio():
     check_if_logged_in()
     populate_cookie(session['user_id'])
+    # Query finds all relevant aggregate portfolios
+    sql_query = """SELECT
+        A.time,
+        A.portfolio_value,
+        A.securities_value,
+        A.free_cash,
+        A.portfolio_value_change
+    FROM
+        day_to_day D,
+        aggregate_portfolio A
+    WHERE
+        D.strategy_id = {} AND
+        D.portfolio_id = A.portfolio_id
+
+    """.format(session['strategy'][0][0])
+    db, cursor = connect_db()
+    cursor.execute(sql_query)
+    data = cursor.fetchall()
+    close_db(db, cursor)
+    print 'PORTFOLIO VALUES'
+    for day in data:
+        print day
+    return render_template('portfolio.html', portfolios=data)
 
 
 #####################################################################
@@ -347,6 +371,8 @@ def indicator_reference():
                indicator_ref.share_amount.data,
                indicator_ref.allocation.data,
                indicator_ref.cash_value.data]
+
+        # Inserting the relations data
         add_data('indicator_reference', row)
         flash('Your new trigger has been created!')
         if 'indicator_ref' in session:
