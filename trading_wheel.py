@@ -256,12 +256,6 @@ def CreateForm(name, cookie_data=None):
             allocation = DecimalField('Allocation (decimal)', default=0.0)
             cash_value = IntegerField('Cash Value', default=0)
 
-        def validate_ind_1(form, field):
-            one = field.data
-            two = form.ind_2.data
-            if one == two:
-                raise ValidationError('You must choose different indicators!')
-
         return Create_Indicator_Reference(request.form)
 
 
@@ -334,6 +328,13 @@ def indicator_reference():
     indicator_ref = CreateForm('indicator_ref', session['indicator'])
 
     if request.method == 'POST' and indicator_ref.validate():
+
+        # If the indicators are identical
+        if indicator_ref.ind_1.data == indicator_ref.ind_2.data:
+            flash('You must choose two different indicators!')
+            return render_template('indicator_reference.html',
+                                   form=indicator_ref)
+
         start_date = '01-{}-{}'.format(indicator_ref.start_month.data,
                                        str(indicator_ref.start_year.data))
         row = [start_date,
