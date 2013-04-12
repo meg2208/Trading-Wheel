@@ -220,12 +220,12 @@ class aggregate_portfolio():
                 trades.share_amount = shares
                 trades.allocation = allocation
                 self.update_securities(trades.security, shares, price)
-        self.update_in_db()
 
     def update_in_db(self):
         db, cursor = connect()
-        self.push_ag_to_db(cursor, db)
-        
+        self.push_ag_to_db(cursor)
+        self.push_trades_to_db(cursor)
+        db.close()
 
     def push_ag_to_db(self, cursor, db):
         sql_update = """
@@ -239,7 +239,18 @@ class aggregate_portfolio():
                         self.securities_value, self.free_cash, self.portfolio_id)
         cursor.execute(sql_update)
         db.commit()
-        close(db, cursor)
+
+    def push_trades_to_db(self, cursor, db):
+        if len(makes_trade) > 0
+            sql_update = """
+            UPDATE trade t
+            SET
+                t.share_amount = {0}
+            WHERE 
+                t.trade_id = {1}""".format(self.makes_trade[0].share_amount,
+                    self.makes_trade.[0].trade_id)
+            cursor.execute(sql_update)
+            db.commit()
 
 
 class trade():
