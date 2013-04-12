@@ -3,6 +3,7 @@ from sys import argv
 import csv
 import cx_Oracle as oracle
 from credentials import username, password, server
+from decimal import Decimal
 
 
 # Connecting to oracle database
@@ -94,9 +95,17 @@ def day_to_day(row):
 
 # Expects DD-MMM-YYYY format
 def indicator_reference(row):
-    return '(\'{}\',\'{}\',{},{},\'{}\',\'{}\',\'{}\',{},{},{})'.format(
-           row[0], row[1], row[2], row[3], row[4],
-           row[5], row[6], row[7], row[8], row[9])
+    return "('{}','{}',{},{},'{}','{}','{}',{},{},{})".format(
+           row[0],          # start time
+           row[1],          # end time
+           int(row[2]),     # Left indicator ID
+           int(row[3]),     # Right indicator ID
+           row[4],          # 'B' or 'S'
+           row[5],          # operator ('x_under', etc)
+           row[6],          # action security
+           int(row[7]),     # share_amount
+           Decimal(row[8]),  # allocation
+           Decimal(row[9]))  # cash value
 
 
 def makes_trade(row):
@@ -114,21 +123,21 @@ def raw_data_parsing(row):
 
 def determine_table(name):
     converters = {'calculate_statistics': calculate_statistics,
-        'create_strategy': create_strategy,
-        'criteria': criteria,
-        'day_to_day': day_to_day,
-        'indicator_reference': indicator_reference,
-        'makes_trade': makes_trade,
-        'portfolio_contents': portfolio_contents,
-        'raw_data_parsing': raw_data_parsing,
-        'aggregate_portfolio': aggregate_portfolio,
-        'indicator': indicator,
-        'portfolio_statistics': portfolio_statistics,
-        'security_state': security_state,
-        'query_data': query_data,
-        'strategy': strategy,
-        'trade': trade,
-        'user_data': user_data}
+                  'create_strategy': create_strategy,
+                  'criteria': criteria,
+                  'day_to_day': day_to_day,
+                  'indicator_reference': indicator_reference,
+                  'makes_trade': makes_trade,
+                  'portfolio_contents': portfolio_contents,
+                  'raw_data_parsing': raw_data_parsing,
+                  'aggregate_portfolio': aggregate_portfolio,
+                  'indicator': indicator,
+                  'portfolio_statistics': portfolio_statistics,
+                  'security_state': security_state,
+                  'query_data': query_data,
+                  'strategy': strategy,
+                  'trade': trade,
+                  'user_data': user_data}
     return converters[name]
 
 
