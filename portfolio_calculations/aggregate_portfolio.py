@@ -1,7 +1,6 @@
 import datetime
-import os, sys
 # sys.path.append() #move to root
-from credentials import username,password,server
+from credentials import username, password, server
 import cx_Oracle as oracle
 
 
@@ -25,7 +24,6 @@ class aggregate_portfolio():
     portfolio_contents = []  # contains all security_state objects for the given day
     makes_trade = []  # contains all trade objects for the given day
 
-
     def __init__(self, pid, t, pv, ir, sv, fc, pvc):
         self.portfolio_id = pid
         self.time = t
@@ -41,7 +39,7 @@ class aggregate_portfolio():
         self.makes_trade = []
         self.portfolio_contents = []
 
-    def import_trades(self,db):
+    def import_trades(self, db):
         cursor = db.cursor()
         cursor.execute("""
             SELECT t.*
@@ -51,8 +49,8 @@ class aggregate_portfolio():
                 mt.portfolio_id = {} """.format(str(self.portfolio_id)))
         trades = cursor.fetchall()
         if trades:
-            self.makes_trade = [trade(self.portfolio_id,
-                x[0], x[1], x[2], x[3], x[4], x[5], x[6]) for x in trades]
+            self.makes_trade = [trade(self.portfolio_id, x[0], x[1], x[2],
+                                x[3], x[4], x[5], x[6]) for x in trades]
 
     def get_price(self, sec):
         db, cursor = connect()
@@ -120,6 +118,11 @@ class aggregate_portfolio():
         amount = 0
         allocation = 0
         value = 0
+
+        print 'alloc', type(alloc)
+        print 'current', type(current)
+        print 'price', type(price)
+
         if current == 0:
             ''
         elif amt > 0:
@@ -131,6 +134,7 @@ class aggregate_portfolio():
             amount = shares
         elif alloc > 0:
             shares = (alloc*(current*price))/price
+
         #    amount = (shares*price)/self.porfolio_value
         # elif val > 0:
         #     if val < current*price:
@@ -141,7 +145,7 @@ class aggregate_portfolio():
         return -1*shares, allocation
 
     def get_current_amt(self, sec):
-        amount = 0
+        share_amount = 0
         if self.portfolio_contents:
             for secs in self.portfolio_contents:
                 if secs.security == sec:
@@ -168,20 +172,19 @@ class aggregate_portfolio():
             for trades in self.makes_trade:
        #         security = trades.security
                 shares, allocation = self.calc_amts(trades.security, trades.share_amount,
-                    trades.allocation, 0, trades.action)
+                                                    trades.allocation, 0, trades.action)
                 trades.share_amount = shares
                 trades.allocation = allocation
 
     def full_update(self):
         self.update_trade()
-<<<<<<< HEAD
-        update_securities()
-        update_portfolio_value()
+        self.update_securities()
+        self.update_portfolio_value()
 
 
 class trade():
-    portfolio_id = 0 #from makes_trade
-    trade_id = 0 ##
+    portfolio_id = 0  # from makes_trade
+    trade_id = 0
     security = ""
     action = ""
     share_amount = 0
@@ -196,35 +199,11 @@ class trade():
         self.security = s
         self.action = a
         self.share_amount = sh
-        self.allocation = al ## fix this later
+        self.allocation = al  # fix this later
         self.price = pr
         self.time = t
-=======
-        self.update_securities()
-        self.update_portfolio_value()
-
-
-class trade():
-        portfolio_id = 0  # from makes_trade
-        trade_id = 0
-        security = ""
-        action = ""
-        share_amount = 0
-        allocation = 0
-        price = 0
-        time = datetime.date
-
-        #sets the values equal to the original trigger
-        def __init__(self, pid, tid, s, a, sh, al, pr, t):
-            self.portfolio_id = pid
-            self.trade_id = tid
-            self.security = s
-            self.action = a
-            self.share_amount = sh
-            self.allocation = al  # fix this later
-            self.price = pr
-            self.time = t
->>>>>>> a076a79c42064a1457c8fc69aeaee042b2507356
+        #self.update_securities()
+        #self.update_portfolio_value()
 
 
 class security_state():
@@ -243,17 +222,15 @@ class security_state():
 
 class portfolio_contents():
 
-<<<<<<< HEAD
     state_id = 0
     portfolio_id = 0
     security = ""
-    securities = [] #array of security_state objects
+    securities = []  # array of security_state objects
 
     def __init__(self, sid, pid, s):
         state_id = sid
         portfolio_id = pid
         security = s
-=======
         state_id = 0
         portfolio_id = 0
         security = ""
@@ -263,4 +240,3 @@ class portfolio_contents():
             state_id = sid
             portfolio_id = pid
             security = s
->>>>>>> a076a79c42064a1457c8fc69aeaee042b2507356
