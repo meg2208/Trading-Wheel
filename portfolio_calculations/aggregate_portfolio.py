@@ -176,53 +176,53 @@ class aggregate_portfolio():
                 trades.allocation = allocation
 
     def full_update(self):
-        update_trade()
+        self.update_trade()
         update_securities()
         update_portfolio_value()
 
 
 class trade():
-        portfolio_id = 0 #from makes_trade
-        trade_id = 0 ##
-        security = ""
-        action = ""
-        share_amount = 0
-        allocation = 0
-        price = 0
-        time = datetime.date
+    portfolio_id = 0 #from makes_trade
+    trade_id = 0 ##
+    security = ""
+    action = ""
+    share_amount = 0
+    allocation = 0
+    price = 0
+    time = datetime.date
 
-        #sets the values equal to the original trigger
-        def __init__(self, pid, tid, s, a, sh, al, pr, t):
-            self.portfolio_id = pid
-            self.trade_id = tid
-            self.security = s
-            self.action = a
-            self.share_amount = sh
-            self.allocation = al ## fix this later
-            self.price = pr
-            self.time = t
+    #sets the values equal to the original trigger
+    def __init__(self, pid, tid, s, a, sh, al, pr, t):
+        self.portfolio_id = pid
+        self.trade_id = tid
+        self.security = s
+        self.action = a
+        self.share_amount = sh
+        self.allocation = al ## fix this later
+        self.price = pr
+        self.time = t
 
 class security_state():
 
-        portfolio_id = 0
-        security = ''
-        share_amount = 0
-        changed = True
+    portfolio_id = 0
+    security = ''
+    share_amount = 0
+    changed = True
 
-        def __init__(self, pid, s, sh):
-            self.portfolio_id = pid
-            self.security = s
-            self.share_amount = sh
-            self.changed = True
+    def __init__(self, pid, s, sh):
+        self.portfolio_id = pid
+        self.security = s
+        self.share_amount = sh
+        self.changed = True
 
 class portfolio_contents():
 
-        state_id = 0
-        portfolio_id = 0
-        security = ""
-        securities = [] #array of security_state objects
+    state_id = 0
+    portfolio_id = 0
+    security = ""
+    securities = [] #array of security_state objects
 
-        def __init__(self, sid, pid, s):
-            state_id = sid
-            portfolio_id = pid
-            security = s
+    def __init__(self, sid, pid, s):
+        state_id = sid
+        portfolio_id = pid
+        security = s
