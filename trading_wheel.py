@@ -2,9 +2,9 @@
 from flask import Flask, render_template, flash, \
     url_for, redirect, request, session
 import cx_Oracle as oracle
-from scripts import credentials, loader
+from scripts import credentials, loader, load_finance
 from wtforms import Form, BooleanField, TextField, PasswordField, \
-    validators, ValidationError, SelectField, TextAreaField, DateField, \
+    validators, ValidationError, SelectField, TextAreaField, \
     IntegerField, DecimalField
 
 
@@ -28,8 +28,8 @@ def close_db(db, cursor):
 
 
 def add_data(table_name, data):
-    print table_name
-    print data
+    #print table_name
+    #print data
     loader.insert_data(table_name, data)
 
 
@@ -76,8 +76,11 @@ def populate_cookie(user_id):
                             AND C.user_id = '{}'
                         """.format(user_id))
     data = cursor.fetchall()
+    if len(data) == 0:
+        return
     only_strategy = data[0]
     session['strategy'] = [(only_strategy[0], only_strategy[1])]
+    print only_strategy
     #session['strategy'] = [(only_strategy[0], unicode(only_strategy[1]))]
     # limiting to one strategy for now
     #strategies = []
@@ -105,13 +108,14 @@ def populate_cookie(user_id):
             # Storing (indicator_id, ticker)
             indicators.append((ind[0], unicode("{} {}".format(ind[1], temp))))
     session['indicator'] = indicators
+
     print indicators
 
 
 #####################################################################
 # Create Forms
 #####################################################################
-def CreateForm(name):
+def CreateForm(name, cookie_data=None):
     if name == 'indicator':
         class Create_Indicator_Form(Form):
             security = TextField('Ticker Name', [
@@ -120,7 +124,7 @@ def CreateForm(name):
             mva = SelectField('MVA',
                               choices=[('mva_10_day', u'10 Day'),
                                        ('mva_25_day', u'25 Day')])
-            strategy = SelectField('strategy', choices=session['strategy'],
+            strategy = SelectField('strategy', choices=cookie_data,
                                    coerce=int)
         return Create_Indicator_Form(request.form)
 
@@ -203,9 +207,9 @@ def CreateForm(name):
                                       ('nov', 'November'), ('dec', 'December')]])
             start_year = SelectField('Start Year', choices=[(x, x) for x in range(1900, 2013)],
                                      coerce=int)
-            ind_1 = SelectField('Indicator 1', choices=session['indicator'],
+            ind_1 = SelectField('Indicator 1', choices=cookie_data,
                                 coerce=int)
-            ind_2 = SelectField('Indicator 2', choices=session['indicator'],
+            ind_2 = SelectField('Indicator 2', choices=cookie_data,
                                 coerce=int)
             action = SelectField('Buy/Sell', choices=[('B', u'Buy'),
                                                       ('S', u'Sell')])
@@ -223,17 +227,71 @@ def CreateForm(name):
 
 
 #####################################################################
+# Show Aggregate Portfolios
+#####################################################################
+@app.route('/portfolio', methods=['GET'])
+def show_portfolio():
+    print 'hi'
+
+
+#####################################################################
+# Show Trades
+#####################################################################
+@app.route('/trades', methods=['GET'])
+def show_trades():
+    check_if_logged_in()
+    populate_cookie(session['user_id'])
+    strat_id = session['strategy'][0][0]
+    sql_query = """SELECT
+        T.security,
+        T.security,
+        T.action,
+        T.share_amount,
+        T.allocation,
+        T.price,
+        T.time
+    FROM
+        day_to_day D,
+        makes_trade M,
+        trade T
+    WHERE
+        D.strategy_id = {} AND
+        D.portfolio_id = M.portfolio_id AND
+        T.trade_id = M.trade_id
+    ORDER BY
+        T.time
+    """.format(strat_id)
+    sql_query = """SELECT T.*
+    FROM
+        trade T
+    ORDER BY
+        T.time
+    """
+    print 'SQL QUERY\n', sql_query
+    db, cursor = connect_db()
+    cursor.execute(sql_query)
+    data = cursor.fetchall()
+    print 'HERE ARE THE TRADES'
+    print data
+    close_db(db, cursor)
+
+    return render_template('trades.html', trades=data)
+
+
+#####################################################################
 # Create Indicator Reference
 #####################################################################
 @app.route('/indicator_reference', methods=['GET', 'POST'])
 def indicator_reference():
     check_if_logged_in()
-    indicator_ref = CreateForm('indicator_ref')
+
+    populate_cookie(session['user_id'])
+    print session['indicator']
+    indicator_ref = CreateForm('indicator_ref', session['indicator'])
 
     if request.method == 'POST' and indicator_ref.validate():
         start_date = '01-{}-{}'.format(indicator_ref.start_month.data,
                                        str(indicator_ref.start_year.data))
-        print start_date
         row = [start_date,
                '01-mar-2013',
                indicator_ref.ind_1.data,
@@ -246,6 +304,16 @@ def indicator_reference():
                indicator_ref.cash_value.data]
         add_data('indicator_reference', row)
         flash('Your new trigger has been created!')
+        if 'indicator_ref' in session:
+            session['indicator_ref'].append((indicator_ref.ind_1.data,
+                                             indicator_ref.ind_2.data,
+                                             indicator_ref.action.data))
+        else:
+            session['indicator_ref'] = [(indicator_ref.ind_1.data,
+                                         indicator_ref.ind_2.data,
+                                         indicator_ref.action.data)]
+        # Trying to upload the action security to the databse
+        load_finance.upload_ticker(indicator_ref.action_security.data)
         return redirect(url_for('home'))
 
     return render_template('indicator_reference.html',
@@ -258,13 +326,14 @@ def indicator_reference():
 @app.route('/create_indicator', methods=['GET', 'POST'])
 def create_indicator():
     check_if_logged_in()
-    create_indicator_form = CreateForm('indicator')
-    print session['strategy']
+    create_indicator_form = CreateForm('indicator', session['strategy'])
+    #print session['strategy']
 
     if request.method == 'POST' and create_indicator_form.validate():
         indicator_id = get_next_index('indicator', 'indicator_id')
         ticker = create_indicator_form.security.data
-        if create_indicator_form.mva.data is '10 day':
+        print 'HERE', create_indicator_form.mva.data
+        if create_indicator_form.mva.data == 'mva_10_day':
             mva_10_day = 'T'
             mva_25_day = 'F'
         else:
@@ -277,6 +346,7 @@ def create_indicator():
         add_data('criteria', criteria_row)
         # adding to session
         if 'indicator' in session:
+            print 'ind in session'
             session['indicator'].append((indicator_id,
                                         u'{} {}'.format(ticker,
                                         create_indicator_form.mva.data)))
@@ -284,6 +354,9 @@ def create_indicator():
             session['indicator'] = [(indicator_id,
                                     u'{} {}'.format(ticker,
                                     create_indicator_form.mva.data))]
+        print session['indicator']
+        # Trying to upload ticker to the database
+        load_finance.upload_ticker(ticker)
         return redirect(url_for('home'))
 
     return render_template('create_indicator.html',
@@ -301,9 +374,9 @@ def create_strategy():
     if request.method == 'POST' and create_strat_form.validate():
         strat_id = get_next_index('strategy', 'strategy_id')
         strat_name = create_strat_form.strat_name.data
-        strat = [strat_id, strat_name]
         cash = create_strat_form.cash.data
-        add_data('strategy', strat, cash)
+        strat = [strat_id, strat_name, cash]
+        add_data('strategy', strat)
         add_data('create_strategy', [session['user_id'], strat_id])
 
         if 'strategy' in session:
@@ -363,6 +436,8 @@ def logout():
 #####################################################################
 @app.route('/')
 def home():
+    if 'user_id' in session:
+        populate_cookie(session['user_id'])
     return render_template('home.html')
 
 
