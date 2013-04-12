@@ -87,4 +87,3 @@ if __name__ == '__main__':
     if check_if_exists(ticker_name, cursor) is False:
         get_data(ticker_name, db, cursor)
     close(db, cursor)
-

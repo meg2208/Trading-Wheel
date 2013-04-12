@@ -27,7 +27,8 @@ def get_columns(cursor):
     print columns
 
 
-# DD-MMM-YYYY
+# Expects YYYY-MM-DD
+# Outputs DD-MMM-YYYY
 def format_date(date_str):
     cal = [None, 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug',
            'sep', 'oct', 'nov', 'dec']
@@ -40,7 +41,7 @@ def format_date(date_str):
 # ENTITIES
 def aggregate_portfolio(row):
     return '({},\'{}\',{},{},{},{},{})'.format(row[0], row[1],
-        row[2], row[3], row[4], row[5], row[6])
+           row[2], row[3], row[4], row[5], row[6])
 
 
 def indicator(row):
@@ -91,10 +92,11 @@ def day_to_day(row):
     return '({},{})'.format(row[0], row[1])
 
 
+# Expects DD-MMM-YYYY format
 def indicator_reference(row):
     return '(\'{}\',\'{}\',{},{},\'{}\',\'{}\',\'{}\',{},{},{})'.format(
-        format_date(row[0]),format_date(row[1]),row[2], row[3], row[4],
-                    row[5], row[6], row[7], row[8], row[9])
+           row[0], row[1], row[2], row[3], row[4],
+           row[5], row[6], row[7], row[8], row[9])
 
 
 def makes_trade(row):
