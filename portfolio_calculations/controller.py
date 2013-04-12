@@ -20,10 +20,15 @@ def backtest(strat_id):
 
 def backtest_prep(strategy_id):
     set_rdp_relation(strategy_id)
+    print 'rdp done'
     populate_mva(strategy_id)
+    print 'mva done'
     pop_skeleton(strategy_id)
+    print 'skeleton done'
     pop_trades(strategy_id)
+    print 'trades done'
     set_start_vals(strategy_id)
+    print 'start vals done'
 
 
 # reference is volume or adj_price
@@ -125,8 +130,8 @@ def run_backtest(strategy_id):
         if a == 0:
             ''
         else:
-            z.daily_update(portfolios[a-1].get_cash_amt())
-        print 'portfolio value ', z.portfolio_value
+            z.daily_update(portfolios[a-1].get_all_values())
         if len(z.makes_trade):
             z.full_update()
+        print z.portfolio_value
         a += 1

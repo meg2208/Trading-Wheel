@@ -23,15 +23,27 @@
 --	WHEN MATCHED THEN UPDATE SET A.MVA_10_day = B.mv10, A.MVA_25_DAY = B.mv25;
 --	SELECT * from query_data where security = 'AAPL' order by time;
 
-	Select * 
-		FROM ( 
-			SELECT q.time, SUM(q.MVA_10_day) OVER(ORDER BY q.time ROWS BETWEEN 1 PRECEDING 
-					AND CURRENT ROW) - q.MVA_10_day AS yestmva1, q.mva_10_day AS mva1,
-				SUM(q.MVA_25_day) OVER(ORDER BY q.time ROWS BETWEEN 1 PRECEDING 
-					AND CURRENT ROW) - q.mva_25_day AS yestmva2, q.mva_25_day AS mva2
-			FROM query_data q
-			WHERE q.security = 'AAPL')
-			WHERE mva1 > mva2 AND yestmva1 < yestmva2;
+INSERT INTO RAW_DATA_PARSING (strategy_id, security, time) 
+	SELECT {0}, q.security, q.time
+	FROM indicator_reference ir, criteria c,
+		criteria c1, query_data q
+	WHERE 
+		q.time >= ir.start_time AND
+		q.time <= ir.end_time AND
+		ir.buy_sell = 'S' AND
+		q.security = ir.action_security AND
+		ir.L_Indicator_ID = c1.indicator_id AND
+		ir.R_Indicator_id = c.indicator_id AND
+		c.strategy_id = c1.strategy_id AND
+		c1.strategy_id = {0} AND
+		NOT EXISTS
+		(SELECT * 
+			FROM raw_data_parsing r1
+			WHERE r1.strategy_id = {0} 
+			AND r1.security = q.security
+				AND r1.time = q.time);
+
+
 
 	-- POPULATE X_OVER/X_UNDER FOR USER WHEN CROSS OVER
 	
