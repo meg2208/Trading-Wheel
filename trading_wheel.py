@@ -6,7 +6,7 @@ from scripts import credentials, loader, load_finance
 from wtforms import Form, BooleanField, TextField, PasswordField, \
     validators, ValidationError, SelectField, TextAreaField, \
     IntegerField, DecimalField
-
+from portfolio_calculations import controller
 
 app = Flask(__name__)
 app.config.from_object('flask_settings')
@@ -266,7 +266,7 @@ def CreateForm(name, cookie_data=None):
 #####################################################################
 @app.route('/find_trades')
 def find_trades():
-    print 'SHIT JUST HAPPENED!!!'
+    controller.backtest(session['strategy'][0][0])
     session['trade'] = True
     return redirect(url_for('home'))
 
