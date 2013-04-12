@@ -331,19 +331,6 @@ def show_trades():
         T.time
     """.format(strat_id)
 
-    # ALL THE TRADES.... FUCK
-    sql_query = """SELECT
-        T.security,
-        T.action,
-        T.share_amount,
-        T.allocation,
-        T.price,
-        T.time
-    FROM
-        trade T
-    ORDER BY
-        T.time
-    """
     print 'SQL QUERY\n', sql_query
     db, cursor = connect_db()
     cursor.execute(sql_query)
