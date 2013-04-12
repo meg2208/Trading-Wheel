@@ -26,13 +26,13 @@
             | <a href="{{ url_for( 'create_strategy' ) }}">create strategy</a>
         {% else %}
             | <a href="{{ url_for( 'create_indicator' )}}">create indicator</a>
-
-            | {% if session['indicator'][1] %}
-                <a href="{{ url_for( 'indicator_reference' ) }}">create trigger</a>
+            {% if session['indicator'][1] %}
+               | <a href="{{ url_for( 'indicator_reference' ) }}">create trigger</a>
             {% endif %}
-
         {% endif %}
-
+    {% if session['indicator_ref'] %}
+        | <a href="{{ url_for( 'trades' ) }}">trades</a>
+    {% endif %}
     {% else %}
         <a href="{{ url_for( 'home') }}">home</a> |
         <a href="{{ url_for( 'register' ) }}">register</a> |
