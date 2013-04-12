@@ -223,8 +223,8 @@ class aggregate_portfolio():
 
     def update_in_db(self):
         db, cursor = connect()
-        self.push_ag_to_db(cursor)
-        self.push_trades_to_db(cursor)
+        self.push_ag_to_db(cursor, db)
+        self.push_trades_to_db(cursor, db)
         db.close()
 
     def push_ag_to_db(self, cursor, db):
@@ -241,14 +241,14 @@ class aggregate_portfolio():
         db.commit()
 
     def push_trades_to_db(self, cursor, db):
-        if len(makes_trade) > 0
+        if len(self.makes_trade) > 0:
             sql_update = """
             UPDATE trade t
             SET
                 t.share_amount = {0}
             WHERE 
                 t.trade_id = {1}""".format(self.makes_trade[0].share_amount,
-                    self.makes_trade.[0].trade_id)
+                    self.makes_trade[0].trade_id)
             cursor.execute(sql_update)
             db.commit()
 
