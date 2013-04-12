@@ -64,7 +64,7 @@ def security_state(row):
 
 
 def strategy(row):
-    return '({},\'{}\')'.format(row[0], row[1])
+    return "({},'{}',{})".format(row[0], row[1], row[2])
 
 
 def trade(row):
