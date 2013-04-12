@@ -80,7 +80,7 @@ def populate_cookie(user_id):
         return
     only_strategy = data[0]
     session['strategy'] = [(only_strategy[0], only_strategy[1])]
-    print only_strategy
+    print 'STRATEGY:', only_strategy, '\n'
     #session['strategy'] = [(only_strategy[0], unicode(only_strategy[1]))]
     # limiting to one strategy for now
     #strategies = []
@@ -108,8 +108,41 @@ def populate_cookie(user_id):
             # Storing (indicator_id, ticker)
             indicators.append((ind[0], unicode("{} {}".format(ind[1], temp))))
     session['indicator'] = indicators
+    print '\n', 'INDICATORS'
+    for i in session['indicator']:
+        print i
 
-    print indicators
+    session.pop('indicator_ref', None)
+    indicator_references = []
+    db, cursor = connect_db()
+    for ind in indicators:
+        sql_query = """
+        SELECT DISTINCT
+            R.L_indicator_id,
+            R.R_indicator_id,
+            R.buy_sell,
+            R.operator
+        FROM
+            indicator I,
+            indicator_reference R
+        WHERE
+            R.L_indicator_id = {0} OR
+            R.R_indicator_id = {0}
+        """.format(ind[0])
+        cursor.execute(sql_query)
+        data = cursor.fetchall()
+        if len(data) > 0:
+            for ind_ref in data:
+                indicator_references.append(ind_ref)
+
+    session['indicator_ref'] = indicator_references
+    close_db(db, cursor)
+
+    print '\n', 'TRIGGERS'
+    for t in indicator_references:
+        print t
+
+    session['trade'] = False
 
 
 #####################################################################
@@ -198,7 +231,7 @@ def CreateForm(name, cookie_data=None):
 
     elif name == 'indicator_ref':
         class Create_Indicator_Reference(Form):
-            start_month = SelectField('Start Year', choices=[x for x in
+            start_month = SelectField('Start Month', choices=[x for x in
                                       [('jan', 'January'), ('feb', 'February'),
                                       ('mar', 'March'), ('apr', 'April'),
                                       ('may', 'May'), ('jun', 'June'),
@@ -221,7 +254,13 @@ def CreateForm(name, cookie_data=None):
                                         validators.Length(min=1, max=6)])
             share_amount = IntegerField('Number of shares', default=0)
             allocation = DecimalField('Allocation (decimal)', default=0.0)
-            cash_value = IntegerField('Starting cash amount', default=0)
+            cash_value = IntegerField('Cash Value', default=0)
+
+        def validate_ind_1(form, field):
+            one = field.data
+            two = form.ind_2.data
+            if one == two:
+                raise ValidationError('You must choose different indicators!')
 
         return Create_Indicator_Reference(request.form)
 
@@ -231,7 +270,8 @@ def CreateForm(name, cookie_data=None):
 #####################################################################
 @app.route('/portfolio', methods=['GET'])
 def show_portfolio():
-    print 'hi'
+    check_if_logged_in()
+    populate_cookie(session['user_id'])
 
 
 #####################################################################
@@ -242,6 +282,8 @@ def show_trades():
     check_if_logged_in()
     populate_cookie(session['user_id'])
     strat_id = session['strategy'][0][0]
+
+    # Should return on the current strategies trades
     sql_query = """SELECT
         T.security,
         T.security,
@@ -261,6 +303,8 @@ def show_trades():
     ORDER BY
         T.time
     """.format(strat_id)
+
+    # ALL THE TRADES.... FUCK
     sql_query = """SELECT T.*
     FROM
         trade T

@@ -22,17 +22,26 @@
     {% if session['user_id'] %}
         <a href="{{ url_for( 'home') }}">home</a>
         | <a href="{{ url_for( 'logout' ) }}">log out</a>
+
+        {# Shows the create strategy button if there is no strategy #}
         {% if 'strategy' not in session %}
             | <a href="{{ url_for( 'create_strategy' ) }}">create strategy</a>
+        {# Shows create indicator if there is a strategy #}
         {% else %}
             | <a href="{{ url_for( 'create_indicator' )}}">create indicator</a>
+
+            {# Shows the create trigger button if there's > 2 indicators #}
             {% if session['indicator'][1] %}
                | <a href="{{ url_for( 'indicator_reference' ) }}">create trigger</a>
             {% endif %}
+            
+            {# shows the trade button if enabled by session #}
+            {% if session['trade'] %}
+                | <a href="{{ url_for( 'trades' ) }}">trades</a>
+            {% endif %}
         {% endif %}
-    {% if session['indicator_ref'] %}
-        | <a href="{{ url_for( 'trades' ) }}">trades</a>
-    {% endif %}
+
+    {# Default button bar if not logged in #}
     {% else %}
         <a href="{{ url_for( 'home') }}">home</a> |
         <a href="{{ url_for( 'register' ) }}">register</a> |
