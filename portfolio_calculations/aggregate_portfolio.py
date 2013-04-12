@@ -33,7 +33,6 @@ class aggregate_portfolio():
         self.portfolio_id = pid
         self.time = t
         self.portfolio_value = pv
-        print 'portfolio_value is ', self.portfolio_value
         self.interest_rate = ir
         self.securities_value = sv
         self.free_cash = fc
@@ -45,13 +44,28 @@ class aggregate_portfolio():
         self.makes_trade = []
         self.portfolio_contents = []
 
+    def get_all_values(self):
+        x = self.portfolio_contents, self.free_cash 
+      #  self.securities_value, self.portfolio_value
+        return x
 
     def get_cash_amt(self):
         return self.free_cash
 
-    def daily_update(self, yest_cash):
+    def daily_update(self, x):
+        yest_contents = x[0]
+        yest_cash = x[1]
+        self.portfolio_contents = yest_contents
         self.free_cash = (1+(self.interest_rate/365)) * yest_cash
-        self.portfolio_value = self.free_cash + self.securities_value
+        self.securities_value = self.current_securities_value()
+        self.portfolio_value = self.securities_value + yest_cash
+
+    def current_securities_value(self):
+        value = 0
+        if len(self.portfolio_contents) > 0:
+            for securities in self.portfolio_contents:
+                value += self.get_price(securities.security)*securities.share_amount
+        return value
 
     def import_trades(self, db):
         cursor = db.cursor()
@@ -79,16 +93,8 @@ class aggregate_portfolio():
                                         'sec': str(sec)})
         price = cursor.fetchall()
         close(db, cursor)
+        print price
         return price[0][0]
-
-    def update_portfolio_value(self):
-        new_sec_val = 0
-        #cash = self.free_cash
-        for sec in self.portfolio_contents:
-            new_sec_val += sec.share_amount*self.get_price(sec.security)
-        self.free_cash = new_sec_val - self.securities_value
-        self.securities_value = new_sec_val
-        self.aggregate_portfolio = self.free_cash+self.securities_value
 
     def calc_amts(self, sec, amt, allo, val, action):
         if action == 'B':
@@ -100,12 +106,9 @@ class aggregate_portfolio():
         print 'buy... '
         print 'price of ' + sec + 'is ', self.get_price(sec)
         print 'currently have ', self.get_current_amt(sec), 'of ', sec
-        print 'portfolio value is ', self.porfolio_value
+        print 'portfolio value is ', self.portfolio_value
         price = self.get_price(sec)
-        if self.get_current_amt(sec) is None:
-            current = 0
-        else:
-            current = self.get_current_amt(sec)
+        current = self.get_current_amt(sec)
         shares = 0
         allocation = 0
         #amount = 0
@@ -119,22 +122,22 @@ class aggregate_portfolio():
         #    amount = shares
         elif allo > 0:
             if allo*self.portfolio_value < self.free_cash and current == 0:
-                shares = int((allo*self.porfolio_value)/price)
-            elif current != 0 and (allo*self.porfolio_value - price*current) < self.free_cash:
-                shares = int((allo*self.porfolio_value - price*current)/price)
+                shares = int((allo*self.portfolio_value)/price)
+            elif current != 0 and (allo*self.portfolio_value - price*current) < self.free_cash:
+                shares = int((allo*self.portfolio_value - price*current)/price)
             else:
                 shares = int(self.free_cash/price)
             print "shares are ", shares
             print "price is ", price
             suggested_amt = operator.mul(shares,int(price))
-            allocation = suggested_amt/self.porfolio_value
+            allocation = suggested_amt/self.portfolio_value
         # elif val > 0:
         #     if val < self.free_cash and current == 0:
         #         shares = int(val/price)
         #     elif val > self.free_cash and current != 0:
         #         shares = int(self.free_cash/price)
         #     value = shares*price
-        return shares, allocation
+        return shares, allocation, price
 
     # allo refers to an allocation of your current amount of
     # that security that you have
@@ -172,18 +175,18 @@ class aggregate_portfolio():
             total_suggested_amt = tot_current*suggested_alloc
             shares_a = total_suggested_amt/price
             shares = int(shares_a)
-        #    amount = (shares*price)/self.porfolio_value
+        #    amount = (shares*price)/self.portfolio_value
         # elif val > 0:
         #     if val < current*price:
         #         shares = int(val/price)
         #     else:
         #         shares = current
         #     value = shares*price
-        return -1*shares, allocation
+        return -1*shares, allocation, price
 
     def get_current_amt(self, sec):
         amount = 0
-        if self.portfolio_contents:
+        if len(self.portfolio_contents) > 0:
             for secs in self.portfolio_contents:
                 if secs.security == sec:
                     amount = secs.share_amount
@@ -192,34 +195,32 @@ class aggregate_portfolio():
             return amount
 
     def add_contents(self, sec, shares):
-        portfolio_contents.append(security_state(self.portfolio_id, sec, shares))
+        self.portfolio_contents.append(security_state(self.portfolio_id, sec, shares))
 
-    def update_securities(self):
-        for secs in self.portfolio_contents:
-            for trades in self.makes_trade:
-                security = trades.security
-                has_security = False
-                for secs in self.security_state:
-                    if security == trades.security:
-                        has_security = True
-                        security.share_amount += trades.share_amount
-                if not has_security:
-                    self.add_contents(trades.security, trades.share_amount)
+    def update_securities(self, sec, shares, price):
+        if len(self.portfolio_contents) > 0:
+            for securities in self.portfolio_contents:
+                if securities.security == sec:
+                    securities.share_amount += shares
+        else:
+            self.add_contents(sec, shares)
 
-    def update_trade(self):
+        #portfolio value doesnt change when a security is purchased/sold
+        self.securities_value += shares*price
+        self.free_cash -= shares*price
+
+
+    def full_update(self):
         if len(self.makes_trade) > 0:
             print 'trade happened'
             for trades in self.makes_trade:
        #         security = trades.security
-                shares, allocation = self.calc_amts(trades.security, trades.share_amount,
+                shares, allocation, price = self.calc_amts(trades.security, trades.share_amount,
                                                     trades.allocation, 0, trades.action)
                 trades.share_amount = shares
                 trades.allocation = allocation
+                self.update_securities(trades.security, shares, price)
 
-    def full_update(self):
-        self.update_trade()
-        self.update_securities()
-        self.update_portfolio_value()
 
 
 class trade():
@@ -253,30 +254,8 @@ class security_state():
     share_amount = 0
     changed = True
 
-    def __init__(self, pid, s, sh):
+    def __init__(self, pid, sec, sh):
         self.portfolio_id = pid
-        self.security = s
+        self.security = sec
         self.share_amount = sh
         self.changed = True
-
-
-class portfolio_contents():
-
-    state_id = 0
-    portfolio_id = 0
-    security = ""
-    securities = []  # array of security_state objects
-
-    def __init__(self, sid, pid, s):
-        state_id = sid
-        portfolio_id = pid
-        security = s
-        state_id = 0
-        portfolio_id = 0
-        security = ""
-        securities = []  # array of security_state objects
-
-        def __init__(self, sid, pid, s):
-            state_id = sid
-            portfolio_id = pid
-            security = s
