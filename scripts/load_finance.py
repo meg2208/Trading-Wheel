@@ -24,7 +24,7 @@ def check_if_exists(ticker_symbol, cursor):
     sql_query = 'SELECT DISTINCT security FROM query_data'
     cursor.execute(sql_query)
     for security in cursor.fetchall():
-        if ticker_symbol.upper() in str(security[0]):
+        if ticker_symbol in str(security[0]):
             print 'Already loaded!'
             return True
     return False
