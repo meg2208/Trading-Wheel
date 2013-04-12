@@ -76,12 +76,25 @@ def get_data(ticker_symbol, db, cursor):
     print counter, 'rows added'
 
 
+def upload_id(indicator_id):
+    print 'someone tried to upload', indicator_id
+    sql_query = """
+    SELECT security
+    FROM indicator
+    WHERE indicator_id = {}
+    """.format(indicator_id)
+    db, cursor = connect()
+    cursor.execute(sql_query)
+    data = cursor.fetchall()
+    print 'data', data
+
+
 # Callable method for module
 def upload_ticker(ticker):
     ticker = str(ticker)
     ticker = ticker.encode('ascii', 'ignore')  # trying to remove non-ascii
     print 'someone tried to UPLOAD', ticker
-    ticker - ticker.upper()
+    ticker = ticker.upper()
     db, cursor = connect()
     if check_if_exists(ticker, cursor) is False:
         get_data(ticker.upper(), db, cursor)
