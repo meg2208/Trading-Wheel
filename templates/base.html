@@ -41,7 +41,7 @@
             {% endif %}
             
             {# shows the trade button if enabled by session #}
-            {% if 'trade' in session %}
+            {% if session['trade'] == 'True' %}
                 | <a href="{{ url_for( 'trades' ) }}">trades</a>
                 | <a href="{{ url_for( 'portfolios' ) }}">day to day values</a>
             {% endif %}
