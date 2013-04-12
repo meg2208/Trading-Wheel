@@ -282,7 +282,7 @@ def show_portfolio():
     sql_query = """SELECT
         A.time,
         A.portfolio_value,
-        A.securities_value,
+        A.securites_value,
         A.free_cash,
         A.portfolio_value_change
     FROM
@@ -291,7 +291,6 @@ def show_portfolio():
     WHERE
         D.strategy_id = {} AND
         D.portfolio_id = A.portfolio_id
-
     """.format(session['strategy'][0][0])
     db, cursor = connect_db()
     cursor.execute(sql_query)
@@ -315,7 +314,6 @@ def show_trades():
     # Should return on the current strategies trades
     sql_query = """SELECT
         T.security,
-        T.security,
         T.action,
         T.share_amount,
         T.allocation,
@@ -334,7 +332,13 @@ def show_trades():
     """.format(strat_id)
 
     # ALL THE TRADES.... FUCK
-    sql_query = """SELECT T.*
+    sql_query = """SELECT
+        T.security,
+        T.action,
+        T.share_amount,
+        T.allocation,
+        T.price,
+        T.time
     FROM
         trade T
     ORDER BY
