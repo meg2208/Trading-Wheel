@@ -5,7 +5,7 @@ INSERT INTO RAW_DATA_PARSING (strategy_id, security, time)
 	WHERE 
 		q.time >= ir.start_time AND
 		q.time <= ir.end_time AND
-		ir.buy_sell = {1} AND
+		ir.buy_sell = 'B' AND
 		q.security = ir.action_security AND
 		ir.L_Indicator_ID = c1.indicator_id AND
 		ir.R_Indicator_id = c.indicator_id AND

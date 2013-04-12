@@ -13,23 +13,17 @@ def close(db, cursor):
     cursor.close()
     db.close()
 
+# to run the backtest, just run this with the strategy id
+def backtest(strat_id):
+    backtest_prep(strat_id)
+    run_backtest(strat_id)
 
-# make object
-# call populate_mva
-# call prepare_backtest
-# call backtest
-
-# period must be equal to "10_day" or "25_day"
-def back_test(strat_id, reference, period):
-    if period is '10_day':
-        column_name = 'MVA_10_DAY'
-    else:
-        column_name = 'MVA_25_DAY'
-
-    portfolios = []
-    all_cash = True
-
-    populate_mva()
+def backtest_prep(strategy_id):
+    set_rdp_relation(strategy_id)
+    populate_mva(strategy_id)
+    pop_skeleton(strategy_id)
+    pop_trades(strategy_id)
+    set_start_vals(strategy_id)
 
 
 # reference is volume or adj_price
@@ -37,28 +31,28 @@ def back_test(strat_id, reference, period):
 # period is amount of days
 # run this before running backtest_prep
 # then you are ready to run the backtest
-def populate_mva(security, reference, period):
-    if period is '10_day':
-        column_name = 'MVA_10_DAY'
-    else:
-        column_name = 'MVA_25_DAY'
-
+def populate_mva(strategy_id):
     db, cursor = connect()
-    with file('../queries/mva_mod.sql', 'r') as update:
-        sql_update = update.read().format("'"+str(security)+"'", reference, column_name, period)
+    with file('../queries/mva.sql', 'r') as update:
+        sql_update = update.read().format(strategy_id)
     cursor.execute(sql_update)
+    db.commit()
     close(db, cursor)
 
 
 def set_rdp_relation(strategy_id):
     db, cursor = connect()
-    with file('../queries/set_rdp_relation.sql', 'r') as update:
-        sql_update = update.read().format(strategy_id, 'B')
-    cursor.execute(sql_update)
-    with file('../queries/set_rdp_relation.sql', 'r') as update:
-        sql_update = update.read().format(strategy_id, 'S')
-    cursor.execute(sql_update)
-    close(db, cursor)
+    B = 'B'
+    S = 'S'
+    with file('../queries/set_rdp_relationB.sql', 'r') as update:
+        sql_update = update.read().format(strategy_id)
+        cursor.execute(sql_update)
+        db.commit()
+    with file('../queries/set_rdp_relationS.sql', 'r') as update:
+        sql_update = update.read().format(strategy_id)
+        cursor.execute(sql_update)
+        db.commit()
+        close(db, cursor)
 
 
 def pop_skeleton(strategy_id):
@@ -66,6 +60,7 @@ def pop_skeleton(strategy_id):
     with file('../queries/initial_agg_port_and_dtd.sql', 'r') as update:
         sql_update = update.read().format(strategy_id)
     cursor.execute(sql_update)
+    db.commit()
     close(db, cursor)
 
 
@@ -87,51 +82,51 @@ def set_start_vals(strategy_id):
     with file('../queries/set_portfolio_start_values.sql', 'r') as update:
         sql_update = update.read().format(strategy_id)
     cursor.execute(sql_update)
+    db.commit()
     close(db, cursor)
 
 
-def backtest_prep(strategy_id):
-    set_rdp_relation(strategy_id)
-    pop_skeleton(strategy_id)
-    pop_trades(strategy_id)
-    set_start_vals(strategy_id)
-
 
 def import_ports(sid):
-#       db = oracle.connect("{}/{}@{}".format(username,password,server))
-#      cursor = db.cursor()
     db, cursor = connect()
     strat_id = sid
+    print strat_id
     cursor.execute("""
-        SELECT ag.*
-            FROM aggregate_portfolio ag, day_to_day dtd
-            WHERE dtd.portfolio_id = ag.portfolio_id
-            AND dtd.strategy_id = """+strat_id+"""
-            ORDER BY ag.time""")
+        SELECT
+            ag.*
+        FROM
+            aggregate_portfolio ag, day_to_day dtd
+        WHERE
+            dtd.portfolio_id = ag.portfolio_id
+            AND dtd.strategy_id = {}
+        ORDER BY ag.time""".format(strat_id))
     ports = cursor.fetchall()
+    close(db, cursor)
     return ports
 
 
-def backtest(portfolios):
+def run_backtest(strategy_id):
     db, cursor = connect()
-    ports = import_ports('1000')
-    #   portfolios = [portfolio.aggregate_portfolio(x[0],x[1],x[2],x[3],x[4],x[5],x[6]) for x in ports]
+    ports = import_ports(strategy_id)
+    portfolios = []
     i = 0
-    print 'hi'
     for x in ports:
         portfolios.append(portfolio.aggregate_portfolio(x[0], x[1], x[2], x[3], x[4], x[5], x[6]))
+        print 'time is ', portfolios[i].time
         print 'portfolio appended'
-    cursor.close()
-    db = oracle.connect("{}/{}@{}".format(username, password, server))
-    cursor = db.cursor()
-    #   db, cursor = connect()
-    for i in portfolios:
-        i.import_trades(db)
+        i += 1
+    for k in portfolios:
+        print 'date of portfolio is ', k.time
+        k.import_trades(db)
         print 'imported trades'
     a = 0
     print 'got here...'
     for z in portfolios:
-        z.free_cash = (1+(z.interest_rate/365)) * portfolios[a-1].free_cash
-        z.portfolio_value = z.free_cash + z.securities_value
+        if a == 0:
+            ''
+        else:
+            z.daily_update(portfolios[a-1].get_cash_amt())
+        print 'portfolio value ', z.portfolio_value
         if len(z.makes_trade):
             z.full_update()
+        a += 1

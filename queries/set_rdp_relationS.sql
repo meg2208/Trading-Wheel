@@ -1,13 +1,12 @@
 INSERT INTO RAW_DATA_PARSING (strategy_id, security, time) 
 	SELECT {0}, q.security, q.time
 	FROM indicator_reference ir, criteria c,
-		criteria c1, query_data q, indicator ind
+		criteria c1, query_data q
 	WHERE 
 		q.time >= ir.start_time AND
 		q.time <= ir.end_time AND
-		ir.buy_sell = {1} AND
-		q.security = ind.security AND
-		ind.indicator_id = ir.R_Indicator_id AND
+		ir.buy_sell = 'S' AND
+		q.security = ir.action_security AND
 		ir.L_Indicator_ID = c1.indicator_id AND
 		ir.R_Indicator_id = c.indicator_id AND
 		c.strategy_id = c1.strategy_id AND

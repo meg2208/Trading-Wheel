@@ -11,14 +11,21 @@ SELECT portfolio_id, a.security, a.buy_sell, a.share_amount, a.allocation, a.adj
 			   	q.MVA_10_DAY AS mva1,
 				SUM(q.MVA_25_DAY) OVER(ORDER BY q.time ROWS BETWEEN 1 PRECEDING AND CURRENT ROW) - q.MVA_25_DAY AS yestmva2, 
 				q.MVA_25_DAY AS mva2
-		FROM indicator L_ind, indicator R_ind, query_data q, indicator_reference ir, raw_data_parsing rd
+		FROM indicator L_ind, indicator R_ind, query_data q, indicator_reference ir, raw_data_parsing rd,
+				criteria c, criteria c1
 		WHERE q.security = ir.action_security 
+			AND rd.security = ir.action_security
 			AND L_ind.MVA_10_DAY = 'T' 
 			AND R_ind.MVA_25_DAY = 'F' 
+			AND L_ind.indicator_id = c.indicator_id
+			AND R_ind.indicator_id = c1.indicator_id
+			AND c.strategy_id = {0}
+			AND c1.strategy_id = c.strategy_id
 			AND ir.buy_sell = 'B' 
 			AND rd.time = q.time 
 			AND ir.operator = 'x_over' 
-			AND q.security = ir.action_security ) a,
+			AND q.security = ir.action_security
+			AND rd.strategy_id = {0}) a,
   	  (SELECT ag.portfolio_id, ag.time, dtd.strategy_id
   			FROM aggregate_portfolio ag, day_to_day dtd
   			WHERE ag.time = time
