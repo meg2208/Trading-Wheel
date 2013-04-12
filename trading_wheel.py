@@ -143,7 +143,8 @@ def populate_cookie(user_id):
     for t in indicator_references:
         print t
 
-    session['trade'] = False
+    if 'trade' in session:
+        print "IT'S IN THERE"
 
 
 #####################################################################
@@ -258,6 +259,16 @@ def CreateForm(name, cookie_data=None):
             cash_value = IntegerField('Cash Value', default=0)
 
         return Create_Indicator_Reference(request.form)
+
+
+#####################################################################
+# DO CRAZY BACKEND
+#####################################################################
+@app.route('/find_trades')
+def find_trades():
+    print 'SHIT JUST HAPPENED!!!'
+    session['trade'] = True
+    return redirect(url_for('home'))
 
 
 #####################################################################
