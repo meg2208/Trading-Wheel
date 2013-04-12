@@ -194,9 +194,19 @@ def CreateForm(name):
 
     elif name == 'indicator_ref':
         class Create_Indicator_Reference(Form):
-            start_year = DateField('Start Year', format='%D-%M-%Y')
-            ind_1 = SelectField('Indicator 1', choices=session['indicator'])
-            ind_2 = SelectField('Indicator 2', choices=session['indicator'])
+            start_month = SelectField('Start Year', choices=[x for x in
+                                      [('jan', 'January'), ('feb', 'February'),
+                                      ('mar', 'March'), ('apr', 'April'),
+                                      ('may', 'May'), ('jun', 'June'),
+                                      ('jul', 'July'), ('aug', 'August'),
+                                      ('sep', 'September'), ('oct', 'October'),
+                                      ('nov', 'November'), ('dec', 'December')]])
+            start_year = SelectField('Start Year', choices=[(x, x) for x in range(1900, 2013)],
+                                     coerce=int)
+            ind_1 = SelectField('Indicator 1', choices=session['indicator'],
+                                coerce=int)
+            ind_2 = SelectField('Indicator 2', choices=session['indicator'],
+                                coerce=int)
             action = SelectField('Buy/Sell', choices=[('B', u'Buy'),
                                                       ('S', u'Sell')])
             operator = SelectField('Trigger', choices=[
@@ -221,24 +231,19 @@ def indicator_reference():
     indicator_ref = CreateForm('indicator_ref')
 
     if request.method == 'POST' and indicator_ref.validate():
-        ind_id_1 = indicator_ref.ind_1.data
-        sql_query = """SELECT security
-                       FROM indicator
-                       WHERE indicator_id = {}""".format(ind_id_1)
-        db, cursor = connect_db()
-        cursor.execute(sql_query)
-        action_security = cursor.fetchall()[0][0]
-        row = [indicator_ref.start_year.data,
-               '01-JAN-2013',
-               ind_id_1,
+        start_date = '01-{}-{}'.format(indicator_ref.start_month.data,
+                                       str(indicator_ref.start_year.data))
+        print start_date
+        row = [start_date,
+               '01-mar-2013',
+               indicator_ref.ind_1.data,
                indicator_ref.ind_2.data,
                indicator_ref.action.data,
                indicator_ref.operator.data,
-               action_security,
+               indicator_ref.action_security.data,
                indicator_ref.share_amount.data,
                indicator_ref.allocation.data,
-               indicator_ref.cash.data
-               ]
+               indicator_ref.cash_value.data]
         add_data('indicator_reference', row)
         flash('Your new trigger has been created!')
         return redirect(url_for('home'))

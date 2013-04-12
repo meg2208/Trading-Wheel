@@ -10,6 +10,7 @@ Indicator Reference
 {% from "_formhelper.html" import render_field %}
 <form method=post action='/indicator_reference'>
 	<dl>
+		{{ render_field( form.start_month) }}
 		{{ render_field( form.start_year) }}
 		{{ render_field( form.ind_1 ) }}
 		{{ render_field( form.ind_2 ) }}
