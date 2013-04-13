@@ -266,8 +266,9 @@ def CreateForm(name, cookie_data=None):
 #####################################################################
 @app.route('/find_trades')
 def find_trades():
-    controller.backtest(session['strategy'][0][0])
-    session['trade'] = True
+    if session['trade'] != 'true':
+        controller.backtest(session['strategy'][0][0])
+    session['trade'] = 'true'
     return redirect(url_for('home'))
 
 

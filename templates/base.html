@@ -30,7 +30,7 @@
         {% else %}
             | <a href="{{ url_for( 'create_indicator' )}}">create indicator</a>
 
-            {# Shows the create trigger button if there's > 2 indicators #}
+            {# Shows the create trigger button if there's 2 indicators #}
             {% if session['indicator'][1] %}
                | <a href="{{ url_for( 'indicator_reference' ) }}">create trigger</a>
             {% endif %}
@@ -41,9 +41,9 @@
             {% endif %}
             
             {# shows the trade button if enabled by session #}
-            {% if session['trade'] == 'True' %}
-                | <a href="{{ url_for( 'trades' ) }}">trades</a>
-                | <a href="{{ url_for( 'portfolios' ) }}">day to day values</a>
+            {% if 'trade' in session %}
+                | <a href="{{ url_for( 'show_trades' ) }}">trades</a>
+                | <a href="{{ url_for( 'show_portfolio' ) }}">day to day values</a>
             {% endif %}
         {% endif %}
 
