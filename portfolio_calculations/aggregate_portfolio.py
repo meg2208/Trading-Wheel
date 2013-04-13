@@ -231,9 +231,9 @@ class aggregate_portfolio():
         sql_update = """
         UPDATE aggregate_portfolio ag
         SET
-            ag.portfolio_value = {0},
-            ag.securites_value = {1},
-            ag.free_cash = {2}
+            ag.portfolio_value = ROUND({0}, 2),
+            ag.securites_value = ROUND({1}, 2),
+            ag.free_cash = ROUND({2}, 2)
         WHERE 
             ag.portfolio_id = {3}""".format(self.portfolio_value,
                         self.securities_value, self.free_cash, self.portfolio_id)
