@@ -8,15 +8,23 @@ Trading Wheel
 <h1>Your Portfolio Values</h1>
 
 <table class="table table-bordered table-striped table-hover">
-<tr>
-	<td>Date</td>
-	<td>Value</td>
-	<td>Value of Securities</td>
-	<td>Free Cash</td>
-	<td>Day Change in Value</td>
+<tr class='info'>
+	<td><b>Date</b></td>
+	<td><b>Value</b></td>
+	<td><b>Value of Securities</b></td>
+	<td><b>Free Cash</b></td>
+	<td><b>Day Change in Value</b></td>
 </tr>
-
 {% for day in portfolios %}
+	{% if loop.index%40 == 0 %}
+		<tr class='info'>
+			<td><b>Date</b></td>
+			<td><b>Value</b></td>
+			<td><b>Value of Securities</b></td>
+			<td><b>Free Cash</b></td>
+			<td><b>Day Change in Value</b></td>
+		</tr>
+	{% endif %}
 	<tr>	
 	{% for column in day %}
 		<td>{{column}}</td>
