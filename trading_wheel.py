@@ -266,9 +266,9 @@ def CreateForm(name, cookie_data=None):
 #####################################################################
 @app.route('/find_trades')
 def find_trades():
-    if session['trade'] != 'true':
+    if session['calculated'] != 'true':
         controller.backtest(session['strategy'][0][0])
-    session['trade'] = 'true'
+    session['calculated'] = 'true'
     return redirect(url_for('home'))
 
 
@@ -388,6 +388,7 @@ def indicator_reference():
                                          indicator_ref.action.data)]
         # Trying to upload the action security to the databse
         load_finance.upload_ticker(indicator_ref.action_security.data)
+        session['calculated'] = "false"
         return redirect(url_for('home'))
 
     return render_template('indicator_reference.html',
