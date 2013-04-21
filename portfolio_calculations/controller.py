@@ -131,7 +131,7 @@ def run_backtest(strategy_id):
             ''
         else:
             z.daily_update(portfolios[a-1].get_all_values())
-        if len(z.makes_trade):
+        if len(z.makes_trade) > 0:
             z.full_update()
         z.update_in_db()
         print z.portfolio_value
