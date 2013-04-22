@@ -28,6 +28,8 @@ class aggregate_portfolio():
     portfolio_value_change = 0
     portfolio_contents = []  # contains all security_state objects for the given day
     makes_trade = []  # contains all trade objects for the given day
+    stock_prices = {}
+
 
     def __init__(self, pid, t, pv, ir, sv, fc, pvc):
         self.portfolio_id = pid
@@ -36,23 +38,19 @@ class aggregate_portfolio():
         self.interest_rate = ir
         self.securities_value = sv
         self.free_cash = fc
-        self.portfolio_value_change = pvc
- #       if self.free_cash != 0:
-  #          self.all_cash = False
-   #     else:
-    #        self.all_cash = True
+        self.portfolio_value_change = pvc\
         self.makes_trade = []
         self.portfolio_contents = []
 
     def get_all_values(self):
-        x = self.portfolio_contents, self.free_cash 
-      #  self.securities_value, self.portfolio_value
+        x = self.portfolio_contents, self.free_cash
         return x
 
     def get_cash_amt(self):
         return self.free_cash
 
-    def daily_update(self, x):
+    def daily_update(self, x, stock_prices):
+        self.stock_prices = stock_prices
         yest_contents = x[0]
         yest_cash = x[1]
         self.portfolio_contents = yest_contents
@@ -84,17 +82,9 @@ class aggregate_portfolio():
                                 x[3], x[4], x[5], x[6]) for x in trades]
 
     def get_price(self, sec):
-        db, cursor = connect()
-        cursor.execute("""
-            SELECT q.adj_close
-                FROM query_data q
-                WHERE q.security = (:sec) AND
-                q.time = (:mydate)""", {'mydate': self.time,
-                                        'sec': str(sec)})
-        price = cursor.fetchall()
-        close(db, cursor)
-        print price
-        return price[0][0]
+        date = self.time
+        price = self.stock_prices[(sec, date)][5]
+        return price
 
     def calc_amts(self, sec, amt, allo, val, action):
         if action == 'B':
@@ -221,11 +211,12 @@ class aggregate_portfolio():
                 trades.allocation = allocation
                 self.update_securities(trades.security, shares, price)
 
-    def update_in_db(self):
-        db, cursor = connect()
+    def update_in_db(self, db, cursor):
+#        db, cursor = connect()
         self.push_ag_to_db(cursor, db)
         self.push_trades_to_db(cursor, db)
-        db.close()
+        return db, cursor
+#        db.close()
 
     def push_ag_to_db(self, cursor, db):
         sql_update = """

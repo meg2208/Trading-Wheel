@@ -1,6 +1,7 @@
 import aggregate_portfolio as portfolio
 from credentials import username, password, server
 import cx_Oracle as oracle
+import datetime
 
 
 def connect():
@@ -109,6 +110,27 @@ def import_ports(sid):
     close(db, cursor)
     return ports
 
+# key (as a tuple) = ('AAPL', datetime.datetime(2013, 2, 28, 0, 0))
+# results (as a tuple) = (open, high, low, close, volume, adj_close, mva_10_day, mva_25_day)
+def get_stock_info(strategy_id):
+    print 'starting'
+    db, cursor = connect()
+    print 'connected'
+    sql_query = """SELECT qd.*
+    FROM raw_data_parsing rdp, query_data qd 
+    WHERE rdp.security = qd.security 
+        AND rdp.time = qd.time
+        AND rdp.security = qd.security
+        AND rdp.strategy_id = {}""".format(strategy_id)
+    print 'done query'
+    cursor.execute(sql_query)
+    stock_list = cursor.fetchall()
+    print 'now making the list'
+    stock_dict = dict([(element[:2], element[2:]) for element in stock_list])
+    print 'done making the list'
+    close(db, cursor)
+    return stock_dict
+
 
 def run_backtest(strategy_id):
     db, cursor = connect()
@@ -124,15 +146,19 @@ def run_backtest(strategy_id):
         print 'date of portfolio is ', k.time
         k.import_trades(db)
         print 'imported trades'
+
+    #store stock prices in dictionary
+    stock_info = get_stock_info(strategy_id)
     a = 0
     print 'got here...'
     for z in portfolios:
         if a == 0:
             ''
         else:
-            z.daily_update(portfolios[a-1].get_all_values())
+            z.daily_update(portfolios[a-1].get_all_values(), stock_info)
         if len(z.makes_trade) > 0:
             z.full_update()
-        z.update_in_db()
+        db, cursor = z.update_in_db(db, cursor)
         print z.portfolio_value
         a += 1
+    close(db, cursor)
