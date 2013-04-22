@@ -1,7 +1,7 @@
 MERGE INTO query_data A 
 USING (SELECT q.security, q.time, 
-	AVG(q.adj_close) OVER(ORDER BY q.time ROWS BETWEEN 25-1 PRECEDING 
-			AND CURRENT ROW) AS mv25, AVG(q.adj_close) OVER(ORDER BY q.time ROWS BETWEEN 10-1 PRECEDING 
+	AVG(q.adj_close) OVER(ORDER BY q.security, q.time ROWS BETWEEN 25-1 PRECEDING 
+			AND CURRENT ROW) AS mv25, AVG(q.adj_close) OVER(ORDER BY q.security, q.time ROWS BETWEEN 10-1 PRECEDING 
 			AND CURRENT ROW) AS mv10
 		FROM query_data q, raw_data_parsing rdp
 		WHERE rdp.strategy_id = {0}

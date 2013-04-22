@@ -111,16 +111,21 @@ class aggregate_portfolio():
                 shares = amt - current
         #    amount = shares
         elif allo > 0:
-            if allo*self.portfolio_value < self.free_cash and current == 0:
-                shares = int((allo*self.portfolio_value)/price)
-            elif current != 0 and (allo*self.portfolio_value - price*current) < self.free_cash:
-                shares = int((allo*self.portfolio_value - price*current)/price)
+            if allo*self.portfolio_value < float(self.free_cash) and current == 0:
+                shares = int((allo*float(self.portfolio_value))/price)
+
+            # print "type of price ", type(price) 
+            # print "type of current ", type(current) 
+            # proposed_amt = allo*self.portfolio_value
+            # current_amt = price*current
+            elif current != 0 and (operator.mul(float(allo),float(self.portfolio_value)) - price*current) < float(self.free_cash):
+                shares = int((float(allo)*float(self.portfolio_value) - price*current)/price)
             else:
                 shares = int(self.free_cash/price)
             print "shares are ", shares
             print "price is ", price
             suggested_amt = operator.mul(shares,int(price))
-            allocation = suggested_amt/self.portfolio_value
+            allocation = suggested_amt/float(self.portfolio_value)
         # elif val > 0:
         #     if val < self.free_cash and current == 0:
         #         shares = int(val/price)
@@ -180,9 +185,7 @@ class aggregate_portfolio():
             for secs in self.portfolio_contents:
                 if secs.security == sec:
                     amount = secs.share_amount
-                    return amount
-        else:
-            return amount
+        return amount
 
     def add_contents(self, sec, shares):
         self.portfolio_contents.append(security_state(self.portfolio_id, sec, shares))
@@ -264,8 +267,6 @@ class trade():
         self.allocation = al  # fix this later
         self.price = pr
         self.time = t
-        #self.update_securities()
-        #self.update_portfolio_value()
 
 
 class security_state():
