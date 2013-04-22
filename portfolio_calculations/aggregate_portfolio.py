@@ -38,7 +38,7 @@ class aggregate_portfolio():
         self.interest_rate = ir
         self.securities_value = sv
         self.free_cash = fc
-        self.portfolio_value_change = pvc\
+        self.portfolio_value_change = pvc
         self.makes_trade = []
         self.portfolio_contents = []
 
