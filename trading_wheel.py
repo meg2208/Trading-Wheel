@@ -298,8 +298,6 @@ def show_portfolio():
     data = cursor.fetchall()
     close_db(db, cursor)
     print 'PORTFOLIO VALUES'
-    for day in data:
-        print day
     return render_template('portfolio.html', portfolios=data)
 
 
