@@ -72,11 +72,7 @@ def pop_skeleton(strategy_id):
 
 def pop_trades(strategy_id):
     db, cursor = connect()
-    with file('queries/pop_temp_b_x_over.sql', 'r') as update:
-        sql_update = update.read().format(strategy_id)
-    cursor.execute(sql_update)
-    db.commit()
-    with file('queries/pop_temp_s_x_under.sql', 'r') as update:
+    with file('queries/populate_trades_skeleton.sql', 'r') as update:
         sql_update = update.read().format(strategy_id)
     cursor.execute(sql_update)
     db.commit()
