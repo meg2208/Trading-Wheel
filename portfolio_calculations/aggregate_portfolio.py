@@ -50,6 +50,7 @@ class aggregate_portfolio():
         return self.free_cash
 
     def daily_update(self, x, stock_prices):
+        print 'today is ', self.time
         self.stock_prices = stock_prices
         yest_contents = x[0]
         yest_cash = x[1]
@@ -63,6 +64,7 @@ class aggregate_portfolio():
         if len(self.portfolio_contents) > 0:
             for securities in self.portfolio_contents:
                 value += self.get_price(securities.security)*securities.share_amount
+                print 'you have ', securities.share_amount, 'shares of ', securities.security
         return value
 
     def import_trades(self, db):
@@ -95,37 +97,52 @@ class aggregate_portfolio():
     def buy_calc_amts(self, sec, amt, allo, val):
         print 'buy... '
         print 'price of ' + sec + 'is ', self.get_price(sec)
-        print 'currently have ', self.get_current_amt(sec), 'of ', sec
+        print 'currently have ', self.get_current_amt(sec), ' share of ', sec
         print 'portfolio value is ', self.portfolio_value
+        print 'DESIRED ALLOCATION IS ', allo
         price = self.get_price(sec)
         current = self.get_current_amt(sec)
+        current_amt = current*price
         shares = 0
         allocation = 0
         #amount = 0
         #value = 0
 
-        if amt > 0:
+
+        if allo > 0.0:
+            print 'GOT HERE YOU STUPID BITCH'
+            amt_desired = operator.mul(allo,self.portfolio_value)
+
+            # have enough and don't have the stock --> buy all desired
+            if amt_desired < float(self.free_cash) and current == 0:
+                shares = int(amt_desired/price)
+
+            # have enough and do have the stock --> buy remaining amount to reach desired allocation
+            elif current != 0 and (amt_desired - current_amt) < float(self.free_cash):
+                shares = int((amt_desired - current_amt)/price)
+           
+            # don't have enough and don't have the stock --> use all remaining cash
+            elif amt_desired > self.free_cash and current == 0:
+                shares = int(self.free_cash/price)
+
+            # don't have enough and have the stock --> use all remaining cash
+            elif current != 0 and (amt_desired - current_amt) > float(self.free_cash):
+                shares = int(self.free_cash/price)
+
+            #not 100% sure if this  will ever be triggered
+            else:
+                return 0, 0, price
+
+            print "time to buy ", shares
+            print "buying them for ", price
+            amt_to_purchase = operator.mul(shares,int(price))
+            allocation = amt_to_purchase/float(self.portfolio_value)
+
+        elif amt > 0.0:
             if current == 0 and amt*price < self.free_cash:
                 shares = amt
             elif current < amt and (amt - current)*price < self.free_cash:
                 shares = amt - current
-        #    amount = shares
-        elif allo > 0:
-            if allo*self.portfolio_value < float(self.free_cash) and current == 0:
-                shares = int((allo*float(self.portfolio_value))/price)
-
-            # print "type of price ", type(price) 
-            # print "type of current ", type(current) 
-            # proposed_amt = allo*self.portfolio_value
-            # current_amt = price*current
-            elif current != 0 and (operator.mul(float(allo),float(self.portfolio_value)) - price*current) < float(self.free_cash):
-                shares = int((float(allo)*float(self.portfolio_value) - price*current)/price)
-            else:
-                shares = int(self.free_cash/price)
-            print "shares are ", shares
-            print "price is ", price
-            suggested_amt = operator.mul(shares,int(price))
-            allocation = suggested_amt/float(self.portfolio_value)
         # elif val > 0:
         #     if val < self.free_cash and current == 0:
         #         shares = int(val/price)
@@ -141,13 +158,14 @@ class aggregate_portfolio():
         print 'sell... '
         print 'price of ' + sec + 'is ', self.get_price(sec)
         print 'currently have ', self.get_current_amt(sec), 'of ', sec
-        if self.get_current_amt(sec) is None:
-            current = 0
-        else:
-            current = self.get_current_amt(sec)
+        print 'portfolio value is ', self.portfolio_value
+        
         price = float(self.get_price(sec))
+        current = self.get_current_amt(sec)
+        current_amt = current*price
+
         shares = 0
-        amount = 0
+#        amount = 0
         allocation = 0
         value = 0
 
@@ -155,19 +173,26 @@ class aggregate_portfolio():
         print 'current', type(current)
         print 'price', type(price)
 
+        # can't sell something you don't have (no margin support yet)
         if current == 0:
-            ''
-        elif amt > 0:
-            # if you have more than you are supposed to sell, sell all
+            return 0, 0, price
+
+        # amt is the amount of shares you originally wanted to sell
+        elif amt > 0.0:
+
+            # if you have less than you are supposed to sell --> sell all
             if current < amt:
                 shares = current
+
+            # if you have more than you are supposed to sell --> sell desired amount
             elif current > amt:
                 shares = amt
-            amount = shares
-        elif alloc > 0:
-            tot_current = current*price
+
+        # the allocation to sell here represents the percentage of your 
+        #  current position in the stock
+        elif alloc > 0.0:
             suggested_alloc = alloc
-            total_suggested_amt = tot_current*suggested_alloc
+            total_suggested_amt = current_amt*suggested_alloc
             shares_a = total_suggested_amt/price
             shares = int(shares_a)
         #    amount = (shares*price)/self.portfolio_value
@@ -191,11 +216,15 @@ class aggregate_portfolio():
         self.portfolio_contents.append(security_state(self.portfolio_id, sec, shares))
 
     def update_securities(self, sec, shares, price):
+        found = False
         if len(self.portfolio_contents) > 0:
             for securities in self.portfolio_contents:
                 if securities.security == sec:
+                    found = True
                     securities.share_amount += shares
-        else:
+                    print 'increasing shares of ', sec, ' to ', securities.share_amount
+        elif not found:
+            print 'adding ', sec, ' to the portfolio'
             self.add_contents(sec, shares)
 
         #portfolio value doesnt change when a security is purchased/sold
@@ -235,16 +264,19 @@ class aggregate_portfolio():
         db.commit()
 
     def push_trades_to_db(self, cursor, db):
+        i = 0
         if len(self.makes_trade) > 0:
-            sql_update = """
-            UPDATE trade t
-            SET
-                t.share_amount = {0}
-            WHERE 
-                t.trade_id = {1}""".format(self.makes_trade[0].share_amount,
-                    self.makes_trade[0].trade_id)
-            cursor.execute(sql_update)
-            db.commit()
+            for trades in self.makes_trade:
+                sql_update = """
+                UPDATE trade t
+                SET
+                    t.share_amount = {0}
+                WHERE 
+                    t.trade_id = {1}""".format(self.makes_trade[i].share_amount,
+                        self.makes_trade[i].trade_id)
+                cursor.execute(sql_update)
+                db.commit()
+                i = i+1
 
 
 class trade():
