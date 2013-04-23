@@ -42,12 +42,15 @@ class aggregate_portfolio():
         self.makes_trade = []
         self.portfolio_contents = []
 
+    # returns all values of the stock
     def get_all_values(self):
         x = self.portfolio_contents, self.free_cash
         return x
 
+    #  
     def get_cash_amt(self):
         return self.free_cash
+
 
     def daily_update(self, x, stock_prices):
         print 'today is ', self.time
@@ -59,12 +62,13 @@ class aggregate_portfolio():
         self.securities_value = self.current_securities_value()
         self.portfolio_value = self.securities_value + yest_cash
 
+
     def current_securities_value(self):
         value = 0
         if len(self.portfolio_contents) > 0:
             for securities in self.portfolio_contents:
                 value += self.get_price(securities.security)*securities.share_amount
-                print 'you have ', securities.share_amount, 'shares of ', securities.security
+                print 'you have ', securities.share_amount, ' shares of ', securities.security
         return value
 
     def import_trades(self, db):
@@ -151,6 +155,8 @@ class aggregate_portfolio():
         #     value = shares*price
         return shares, allocation, price
 
+
+
     # allo refers to an allocation of your current amount of
     # that security that you have
     # that you would like to remove
@@ -204,6 +210,9 @@ class aggregate_portfolio():
         #     value = shares*price
         return -1*shares, allocation, price
 
+
+
+    # returns amount of shares held by a given security at the current time
     def get_current_amt(self, sec):
         amount = 0
         if len(self.portfolio_contents) > 0:
@@ -212,10 +221,18 @@ class aggregate_portfolio():
                     amount = secs.share_amount
         return amount
 
+
+
+    # called by update_securities
     def add_contents(self, sec, shares):
         self.portfolio_contents.append(security_state(self.portfolio_id, sec, shares))
 
+
+
+    # the last step of the full update
+    # goes through each security so shares reflect the day's trades
     def update_securities(self, sec, shares, price):
+        print 'got here '
         found = False
         if len(self.portfolio_contents) > 0:
             for securities in self.portfolio_contents:
@@ -223,7 +240,7 @@ class aggregate_portfolio():
                     found = True
                     securities.share_amount += shares
                     print 'increasing shares of ', sec, ' to ', securities.share_amount
-        elif not found:
+        elif found == False:
             print 'adding ', sec, ' to the portfolio'
             self.add_contents(sec, shares)
 
@@ -232,6 +249,7 @@ class aggregate_portfolio():
         self.free_cash -= shares*price
 
 
+    # master method for updating when trades are made
     def full_update(self):
         if len(self.makes_trade) > 0:
             print 'trade happened'
@@ -243,6 +261,7 @@ class aggregate_portfolio():
                 trades.allocation = allocation
                 self.update_securities(trades.security, shares, price)
 
+    # calls individual pushes for each entity set
     def update_in_db(self, db, cursor):
 #        db, cursor = connect()
         self.push_ag_to_db(cursor, db)
@@ -250,6 +269,7 @@ class aggregate_portfolio():
         return db, cursor
 #        db.close()
 
+    # updates aggregate portfolios in the db
     def push_ag_to_db(self, cursor, db):
         sql_update = """
         UPDATE aggregate_portfolio ag
@@ -263,10 +283,14 @@ class aggregate_portfolio():
         cursor.execute(sql_update)
         db.commit()
 
+    # updates trades in the oracle db
     def push_trades_to_db(self, cursor, db):
         i = 0
         if len(self.makes_trade) > 0:
+            print 'push_trades_to_db '
+            print 'trades ' 
             for trades in self.makes_trade:
+                print trades.share_amount, 'shares of ', trades.security
                 sql_update = """
                 UPDATE trade t
                 SET
@@ -280,6 +304,7 @@ class aggregate_portfolio():
 
 
 class trade():
+
     portfolio_id = 0  # from makes_trade
     trade_id = 0
     security = ""
@@ -306,10 +331,8 @@ class security_state():
     portfolio_id = 0
     security = ''
     share_amount = 0
-    changed = True
 
     def __init__(self, pid, sec, sh):
         self.portfolio_id = pid
         self.security = sec
         self.share_amount = sh
-        self.changed = True
