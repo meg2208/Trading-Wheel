@@ -5,9 +5,9 @@ Trading Wheel
 {% endblock %}
 
 {% block body %}
-<h3>Create a financial strategy and test your ideas against historical data!</h3>
 
 {% if 'user_id' in session %}
+<h3>Create a financial strategy and test your ideas against historical data!</h3>
 <h2>
 	Strategy:
 </h2>
@@ -52,20 +52,33 @@ Trading Wheel
 	</div>
 </div>
 {% else %}
-<p>
-	Even Grandma can handle this!
 
+	<h1>Even Grandma can handle this!</h1>
+	<p>
 	Build your trading algorithm (strategy) with triggers from your library of indicators. 
+	</p>
 
-	Here is an example:
+	<h2>
+	Here is an example
+	</h2>
 
+	<div class="row">
+		<div class="span4">
+			<h3>Trigger:</h3>
+			<ul>
+				<li>
+				Buy AAPL when the AAPL 10 day MVA crosses over the AAPL 25 day MVA
+				</li>
+			</ul>
+		</div> <!-- end span -->
 
-	Trigger:
-	* Buy AAPL when the AAPL 10 day MVA crosses over the AAPL 25 day MVA
-
-	Indicators: 
-	* AAPL 10 day MVA
-	* AAPL 25 day MVA
-</p>
+		<div class="span4">
+			<h3>Indicators:</h3>
+			<ul>
+				<li>AAPL 10 day MVA</li>
+				<li>AAPL 25 day MVA</li>
+			</ul>
+		</div> <!-- end span -->
+	</div>
 {% endif %}
 {% endblock %}
