@@ -9,7 +9,7 @@ CREATE TABLE indicator_reference(
     share_amount INTEGER,   --NULL
     allocation NUMBER,      --100
     cash_value NUMBER, -- Starting cash amt
-    PRIMARY KEY (L_indicator_id,R_indicator_id,buy_sell),
+    PRIMARY KEY (L_indicator_id,R_indicator_id,buy_sell, action_security),
     FOREIGN KEY (L_indicator_id) REFERENCES indicator,
     FOREIGN KEY (R_indicator_id) REFERENCES indicator
 );
