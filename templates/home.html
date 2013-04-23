@@ -5,7 +5,51 @@ Trading Wheel
 {% endblock %}
 
 {% block body %}
-<h1>Trading Wheel</h1>
-<br>
 <p>Create a financial strategy and test your ideas against historical data!</p>
+
+<h2>
+	Strategy:
+</h2>
+<div class='well'>
+	{% if 'strategy' in session %}
+		{{ session['strategy'][0][1] }}
+	{% else %}
+		<h1>None</h1> Get working!
+	{% endif %}
+</div>
+
+<div class="row">
+	<div class="span4">
+		<h4>Indicators</h4>
+		{% if 'indicator' in session %}
+			<div class='well'>
+				<ul>
+				{% for ind in session['indicator'] %}
+					<li>
+						{{ ind[1] }}
+					</li>
+				{% endfor %}
+				</ul>
+			</div>
+		{% endif %}
+	</div>
+
+	<div class="span8">
+		<h4>Triggers</h4>
+		{% if 'indicator_ref' in session %}
+			<div class='well'>
+				<ul>
+				{% for trigger in session['indicator_ref'] %}
+					<li>
+						{{ trigger }}
+					</li>
+				{% endfor %}
+				</ul>
+			</div>
+		{% endif %}
+	
+	</div>
+
+
+</div>
 {% endblock %}
