@@ -39,6 +39,7 @@ def get_next_index(table_name, colum_name):
     db, cursor = connect_db()
     cursor.execute(sql_query)
     max_index = int(cursor.fetchall()[0][0])
+    close_db(db, cursor)
     return max_index+1
 
 
@@ -92,6 +93,7 @@ def populate_cookie(user_id):
     #    session['strategy'] = strategies
 
     # get all indicators
+
     session.pop('indicator', None)
     indicators = []
     for strat in session['strategy']:
@@ -115,29 +117,32 @@ def populate_cookie(user_id):
 
     session.pop('indicator_ref', None)
     indicator_references = []
-    db, cursor = connect_db()
     for ind in indicators:
         sql_query = """
         SELECT DISTINCT
-            R.L_indicator_id,
-            R.R_indicator_id,
-            R.buy_sell,
-            R.operator
+            L_indicator_id,
+            R_indicator_id,
+            buy_sell,
+            operator,
+            action_security
         FROM
-            indicator I,
-            indicator_reference R
+            indicator_reference
         WHERE
-            R.L_indicator_id = {0} OR
-            R.R_indicator_id = {0}
+            L_indicator_id = {0}
         """.format(ind[0])
+
         cursor.execute(sql_query)
         data = cursor.fetchall()
         if len(data) > 0:
             for ind_ref in data:
-                indicator_references.append(ind_ref)
+                print data
+                indicator_references.append( 
+                    process_trigger(ind_ref[0], ind_ref[1], ind_ref[2],
+                                    ind_ref[3], ind_ref[4] )) 
 
     session['indicator_ref'] = indicator_references
     close_db(db, cursor)
+
 
     print '\n', 'TRIGGERS'
     for t in indicator_references:
@@ -145,6 +150,39 @@ def populate_cookie(user_id):
 
     if 'trade' in session:
         print "IT'S IN THERE"
+
+
+#####################################################################
+# Process Indicator References to Strings
+#####################################################################       
+def process_trigger(left_id, right_id, b_s, operator, act):
+
+    get_ind_name = "SELECT security, mva_10_day FROM indicator WHERE indicator_id = {}"
+    
+    db, cursor = connect_db()
+    left = cursor.execute(get_ind_name.format(left_id)).fetchall()[0]
+    right = cursor.execute(get_ind_name.format(right_id)).fetchall()[0]
+    close_db(db, cursor)
+ 
+    if left[1] == 'T':
+        left_ind = left[0] + " 10 day MVA "
+        right_ind = right[0] + " 25 day MVA "
+    else:
+        left_ind = left[0] + " 25 day MVA "
+        right_ind = right[0] + " 10 day MVA "
+
+
+    if b_s == 'B':
+        b_s = "Buy "
+    else:
+        b_s = "Sell "
+
+    if operator == 'x_under':
+        operator = ' crosses under the '
+    else:
+        operator = ' crosses over the '
+
+    return b_s + act + ' when the ' + left_ind + operator + right_ind
 
 
 #####################################################################
@@ -266,9 +304,10 @@ def CreateForm(name, cookie_data=None):
 #####################################################################
 @app.route('/find_trades')
 def find_trades():
-    if session['calculated'] != 'true':
+    print 'STRAT ID', session['strategy'][0][0]
+    if 'calculated' not in session or session['calculated'] is not True:
         controller.backtest(session['strategy'][0][0])
-    session['calculated'] = 'true'
+    session['calculated'] = True
     return redirect(url_for('home'))
 
 
@@ -347,8 +386,8 @@ def show_trades():
 @app.route('/indicator_reference', methods=['GET', 'POST'])
 def indicator_reference():
     check_if_logged_in()
-
     populate_cookie(session['user_id'])
+
     print session['indicator']
     indicator_ref = CreateForm('indicator_ref', session['indicator'])
 
@@ -377,16 +416,27 @@ def indicator_reference():
         add_data('indicator_reference', row)
         flash('Your new trigger has been created!')
         if 'indicator_ref' in session:
-            session['indicator_ref'].append((indicator_ref.ind_1.data,
-                                             indicator_ref.ind_2.data,
-                                             indicator_ref.action.data))
+            
+            # (left_id, right_id, b_s, operator, act, l_period):
+
+            trigger_string = process_trigger(indicator_ref.ind_1.data,
+                             indicator_ref.ind_2.data,
+                             indicator_ref.action.data,
+                             indicator_ref.operator.data,
+                             indicator_ref.action_security.data )
+            session['indicator_ref'].append(trigger_string)
+
         else:
-            session['indicator_ref'] = [(indicator_ref.ind_1.data,
-                                         indicator_ref.ind_2.data,
-                                         indicator_ref.action.data)]
+            trigger_string = process_trigger(indicator_ref.ind_1.data,
+                             indicator_ref.ind_2.data,
+                             indicator_ref.action.data,
+                             indicator_ref.operator.data,
+                             indicator_ref.action_security.data )
+            session['indicator_ref'] = [trigger_string]
+
         # Trying to upload the action security to the databse
         load_finance.upload_ticker(indicator_ref.action_security.data)
-        session['calculated'] = "false"
+        session['calculated'] = False
         return redirect(url_for('home'))
 
     return render_template('indicator_reference.html',
@@ -511,7 +561,7 @@ def logout():
 def home():
     if 'user_id' in session:
         populate_cookie(session['user_id'])
-    return render_template('home.html')
+    return render_template('home.html', data=session)
 
 
 if __name__ == '__main__':
