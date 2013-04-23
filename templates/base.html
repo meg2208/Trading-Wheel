@@ -3,14 +3,8 @@
 
 <head>
     <link rel='shortcut icon' href="../static/assets/images/favicon2.ico">
-    <link href="../static/assets/css/bootstrap.css" rel="stylesheet">
-    <style type="text/css">
-    body {
-        padding-top: 40px;
-        padding-bottom: 40px;
-        padding-left: 40px;
-    }
-    </style>
+    <link href="../static/assets/css/bootstrap_united.css" rel="stylesheet">
+    <link href="../static/assets/css/style.css" rel="stylesheet">
 
     <title>
     {% block title %}
@@ -21,73 +15,88 @@
     {% endblock %}
 </head>
 
-<div class="btn btn-navbar">
-    {% if session['user_id'] %}
-        <a href="{{ url_for( 'home') }}">home</a>
-        | <a href="{{ url_for( 'logout' ) }}">log out</a>
+<body class="preview">
+  <div id="wrap">
 
-        {# Shows the create strategy button if there is no strategy #}
-        {% if 'strategy' not in session %}
-            | <a href="{{ url_for( 'create_strategy' ) }}">create strategy</a>
-        {# Shows create indicator if there is a strategy #}
-        {% else %}
-            | <a href="{{ url_for( 'create_indicator' )}}">create indicator</a>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="{{ url_for('home') }}">Trading Wheel</a>   <!-- brand/home link -->
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              {% if session['user_id'] %}
+                  <li> <a href="{{ url_for( 'home') }}">home</a> </li>
+                  <li> <a href="{{ url_for( 'logout' ) }}">log out</a> </li>
 
-            {# Shows the create trigger button if there's 2 indicators #}
-            {% if session['indicator'][1] %}
-               | <a href="{{ url_for( 'indicator_reference' ) }}">create trigger</a>
-            {% endif %}
+                  {# Shows the create strategy button if there is no strategy #}
+                  {% if 'strategy' not in session %}
+                      <li> <a href="{{ url_for( 'create_strategy' ) }}">create strategy</a> </li>
+                  {# Shows create indicator if there is a strategy #}
+                  {% else %}
+                      <li> <a href="{{ url_for( 'create_indicator' )}}">create indicator</a> </li>
 
-            {# Shows the option to calculate the strategy #}
-            {% if session['indicator_ref'] %}
-                | <a href="{{ url_for( 'find_trades' ) }}">calculate strategy</a>
-            {% endif %}
-            
-            {# shows the trade button if enabled by session #}
-            {% if 'trade' in session %}
-                | <a href="{{ url_for( 'show_trades' ) }}">trades</a>
-                | <a href="{{ url_for( 'show_portfolio' ) }}">results</a>
-            {% endif %}
-        {% endif %}
+                      {# Shows the create trigger button if there's 2 indicators #}
+                      {% if session['indicator'][1] %}
+                         <li> <a href="{{ url_for( 'indicator_reference' ) }}">create trigger</a> </li>
+                      {% endif %}
 
-    {# Default button bar if not logged in #}
-    {% else %}
-        <a href="{{ url_for( 'home') }}">home</a> |
-        <a href="{{ url_for( 'register' ) }}">register</a> |
-        <a href="{{ url_for( 'log_in' ) }}">log in</a>
-    {% endif %}
+                      {# Shows the option to calculate the strategy #}
+                      {% if session['indicator_ref'] %}
+                          <li> <a href="{{ url_for( 'find_trades' ) }}">calculate strategy</a> </li>
+                      {% endif %}
+                      
+                      {# shows the trade button if enabled by session #}
+                      {% if 'trade' in session %}
+                          <li> <a href="{{ url_for( 'show_trades' ) }}">trades</a> </li>
+                          <li> <a href="{{ url_for( 'show_portfolio' ) }}">results</a> </li>
+                      {% endif %}
+                  {% endif %}
+
+                  {# Default button bar if not logged in #}
+                  {% else %}
+                      <li> <a href="{{ url_for( 'register' ) }}">register</a> </li>
+                      <li> <a href="{{ url_for( 'log_in' ) }}">log in</a> </li>
+                  {% endif %}
+              </ul>  <!-- end menu items -->
+            </div> <!-- end nav-collapse -->
+          </div>  <!-- end container -->
+        </div> <!-- end inner nav bar -->
+      </div> <!-- end navbar -->
+
+      <!-- Flash messages -->
+      <div class="container">
+        <div class="page-header">
+          {% with messages = get_flashed_messages() %}
+             {% if messages %}
+              <ul class=flashes>
+              {% for message in messages %}
+                 <li>{{ message }}</li>
+              {% endfor %}
+              </ul>
+              {% endif %}
+          {% endwith %}
+        </div>  <!-- end header -->
+
+      {% block body %}
+      {% endblock %}
+
+      <div id="push"></div>
     </div>
 
-<body class="preview">
-    <br>
-    <!-- Flash messages -->
-   {% with messages = get_flashed_messages() %}
-       {% if messages %}
-        <ul class=flashes>
-        {% for message in messages %}
-           <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-        {% endif %}
-    {% endwith %}
-
-    {% block body %}
-    {% endblock %}
-<div class=page>
-
+  <!-- Fork Me Ribbon -->
+  <a href="https://github.com/nsb2142/trading-wheel">
+          <img style="position: absolute; top: 42px; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+  <!-- End ribbon -->
     
-<!-- Fork Me Ribbon -->
-<a href="https://github.com/nsb2142/trading-wheel">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
-<!-- End ribbon -->
+  </div>  <!-- end wrap -->
 
-</div>
-
-<footer>
-Trading Wheel
-| COMS4111 Project by Nate Brennand and Matt Garbis
-| <a href="http://starlogs.net/#nsb2142/trading-wheel">Credits</a>
-</footer>
+  <div id="footer">
+    <div class="container">
+      Trading Wheel
+      | COMS4111 Project by Nate Brennand and Matt Garbis
+      | <a href="http://starlogs.net/#nsb2142/trading-wheel">Credits</a>
+    </div>
+  </div>
 
 </body>
 

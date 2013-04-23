@@ -25,6 +25,15 @@ Trading Wheel
       var annotatedtimeline = new google.visualization.AnnotatedTimeLine(
           document.getElementById('visualization'));
       annotatedtimeline.draw(data, {'displayAnnotations': true});
+			
+			function resize () {
+      	var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+
+    window.onload = resize();
+    window.onresize = resize;
+
     }
     google.setOnLoadCallback(drawVisualization);
     </script>
