@@ -84,8 +84,9 @@ class aggregate_portfolio():
         if trades:
             print 'TRADETRADETRADETRADETRADETRADE'
             print self.time
-            self.makes_trade = [trade(self.portfolio_id, x[0], x[1], x[2],
-                                x[3], x[4], x[5], x[6]) for x in trades]
+            for x in trades:
+                self.makes_trade.append(trade(self.portfolio_id, x[0], x[1], x[2],
+                                x[3], x[4], x[5], x[6]) )
 
     def get_price(self, sec):
         date = self.time
@@ -240,7 +241,7 @@ class aggregate_portfolio():
                     found = True
                     securities.share_amount += shares
                     print 'increasing shares of ', sec, ' to ', securities.share_amount
-        elif found == False:
+        if found == False:
             print 'adding ', sec, ' to the portfolio'
             self.add_contents(sec, shares)
 
@@ -254,7 +255,6 @@ class aggregate_portfolio():
         if len(self.makes_trade) > 0:
             print 'trade happened'
             for trades in self.makes_trade:
-       #         security = trades.security
                 shares, allocation, price = self.calc_amts(trades.security, trades.share_amount,
                                                     trades.allocation, 0, trades.action)
                 trades.share_amount = shares
@@ -263,11 +263,9 @@ class aggregate_portfolio():
 
     # calls individual pushes for each entity set
     def update_in_db(self, db, cursor):
-#        db, cursor = connect()
         self.push_ag_to_db(cursor, db)
         self.push_trades_to_db(cursor, db)
         return db, cursor
-#        db.close()
 
     # updates aggregate portfolios in the db
     def push_ag_to_db(self, cursor, db):
