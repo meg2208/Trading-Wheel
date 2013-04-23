@@ -5,8 +5,9 @@ Trading Wheel
 {% endblock %}
 
 {% block body %}
-<p>Create a financial strategy and test your ideas against historical data!</p>
+<h3>Create a financial strategy and test your ideas against historical data!</h3>
 
+{% if 'user_id' in session %}
 <h2>
 	Strategy:
 </h2>
@@ -20,8 +21,8 @@ Trading Wheel
 
 <div class="row">
 	<div class="span4">
-		<h4>Indicators</h4>
 		{% if 'indicator' in session %}
+		<h4>Indicators</h4>
 			<div class='well'>
 				<ul>
 				{% for ind in session['indicator'] %}
@@ -35,8 +36,8 @@ Trading Wheel
 	</div>
 
 	<div class="span8">
-		<h4>Triggers</h4>
 		{% if 'indicator_ref' in session %}
+		<h4>Triggers</h4>
 			<div class='well'>
 				<ul>
 				{% for trigger in session['indicator_ref'] %}
@@ -49,7 +50,10 @@ Trading Wheel
 		{% endif %}
 	
 	</div>
-
-
 </div>
+{% else %}
+<p>
+	<!-- INSERT HOW TO DESCRIPTION HERE -->
+</p>
+{% endif %}
 {% endblock %}
