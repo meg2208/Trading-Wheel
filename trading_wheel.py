@@ -68,6 +68,7 @@ def not_found(error):
 #####################################################################
 def populate_cookie(user_id):
     db, cursor = connect_db()
+    print user_id
 
     #get all strategies
     session.pop('strategy', None)
@@ -551,6 +552,9 @@ def register():
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
+    session.pop('strategy', None)
+    session.pop('indicator', None)
+    session.pop('indicator_ref', None)
     return redirect(url_for('home'))
 
 
