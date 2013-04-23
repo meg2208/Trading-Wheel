@@ -25,15 +25,6 @@ Trading Wheel
       var annotatedtimeline = new google.visualization.AnnotatedTimeLine(
           document.getElementById('visualization'));
       annotatedtimeline.draw(data, {'displayAnnotations': true});
-			
-			function resize () {
-      	var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-      chart.draw(data, options);
-    }
-
-    window.onload = resize();
-    window.onresize = resize;
-
     }
     google.setOnLoadCallback(drawVisualization);
     </script>
@@ -41,14 +32,14 @@ Trading Wheel
 
 
 {% block body %}
-<div id="visualization" style="width: 1500px; height: 400px;"></div>
+<div id="visualization" style="width: 900px; height: 400px;"></div>
 
 
 <div id="table">
 <h1>Your Portfolio Values</h1>
 
 <table class="table table-bordered table-striped table-hover">
-<tr class='info'>
+<tr class='error'>
 	<td><b>Date</b></td>
 	<td><b>Value</b></td>
 	<td><b>Value of Securities</b></td>
@@ -57,7 +48,7 @@ Trading Wheel
 </tr>
 {% for day in portfolios %}
 	{% if loop.index%40 == 0 %}
-		<tr class='info'>
+		<tr class='error'>
 			<td><b>Date</b></td>
 			<td><b>Value</b></td>
 			<td><b>Value of Securities</b></td>
