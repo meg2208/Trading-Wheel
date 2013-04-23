@@ -14,7 +14,10 @@
     {% block script %}
     {% endblock %}
 </head>
-
+<!-- Fork Me Ribbon -->
+<a href="https://github.com/nsb2142/trading-wheel">
+<a href="https://github.com/nsb2142/trading-wheel"><img style="position: absolute; top: 41px; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+<!-- End ribbon -->
 <body class="preview">
   <div id="wrap">
 
@@ -25,7 +28,6 @@
           <div class="nav-collapse collapse">
             <ul class="nav">
               {% if session['user_id'] %}
-                  <li> <a href="{{ url_for( 'home') }}">home</a> </li>
                   <li> <a href="{{ url_for( 'logout' ) }}">log out</a> </li>
 
                   {# Shows the create strategy button if there is no strategy #}
@@ -41,12 +43,12 @@
                       {% endif %}
 
                       {# Shows the option to calculate the strategy #}
-                      {% if session['indicator_ref'] %}
+                      {% if session['indicator_ref'] and session['calculated'] == false %}
                           <li> <a href="{{ url_for( 'find_trades' ) }}">calculate strategy</a> </li>
                       {% endif %}
                       
                       {# shows the trade button if enabled by session #}
-                      {% if 'trade' in session %}
+                      {% if session['calculated'] == true %}
                           <li> <a href="{{ url_for( 'show_trades' ) }}">trades</a> </li>
                           <li> <a href="{{ url_for( 'show_portfolio' ) }}">results</a> </li>
                       {% endif %}
@@ -77,15 +79,13 @@
           {% endwith %}
         </div>  <!-- end header -->
 
-      {% block body %}
-      {% endblock %}
+        <div class="container">
+          {% block body %}
+          {% endblock %}
+        </div>
 
       <div id="push"></div>
     </div>
-
-  <!-- Fork Me Ribbon -->
-  <a href="https://github.com/nsb2142/trading-wheel">
-<a href="https://github.com/nsb2142/trading-wheel"><img style="position: absolute; top: 41px; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>  <!-- End ribbon -->
     
   </div>  <!-- end wrap -->
 
