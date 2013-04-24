@@ -18,3 +18,5 @@ remake_all.sql
 test.sql
 test.py
 scripts/populate_trades.py
+
+scripts/load_finance1.py

@@ -263,8 +263,9 @@ class aggregate_portfolio():
 
     # calls individual pushes for each entity set
     def update_in_db(self, db, cursor):
-        self.push_ag_to_db(cursor, db)
-        self.push_trades_to_db(cursor, db)
+        db, cursor = self.push_ag_to_db(cursor, db)
+        db, cursor = self.push_trades_to_db(cursor, db)
+        db, cursor = self.push_contents_to_db(cursor, db)
         return db, cursor
 
     # updates aggregate portfolios in the db
@@ -299,7 +300,22 @@ class aggregate_portfolio():
                 cursor.execute(sql_update)
                 db.commit()
                 i = i+1
+        return db, cursor
 
+    def push_contents_to_db(self, cursor, db):
+        if len(self.portfolio_contents) > 0:
+            print 'push secs to db '
+            for holdings in self.portfolio_contents:
+                sql_insert = """
+                INSERT ALL
+                INTO SECURITY_STATE (state_id, security, security_price, share_amount)
+                    VALUES(seq_stateid.nextval, {0}, {1}, {2})
+                INTO PORTFOLIO_CONTENTS (trade_id, portfolio_id)
+                    VALUES(seq_stateid.currval, {0}, {3})
+                    """.format(self.portfolio_id, self.get_price(holdings.security), holdings.share_amount, holdings.security);
+                cursor.execute(sql_insert)
+                db.commit()
+            return db, cursor
 
 class trade():
 
