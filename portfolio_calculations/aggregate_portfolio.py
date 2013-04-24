@@ -265,7 +265,7 @@ class aggregate_portfolio():
     def update_in_db(self, db, cursor):
         db, cursor = self.push_ag_to_db(cursor, db)
         db, cursor = self.push_trades_to_db(cursor, db)
-        db, cursor = self.push_contents_to_db(cursor, db)
+    #    db, cursor = self.push_contents_to_db(cursor, db)
         return db, cursor
 
     # updates aggregate portfolios in the db
