@@ -142,6 +142,7 @@ class aggregate_portfolio():
             print "buying them for ", price
             amt_to_purchase = operator.mul(shares,int(price))
             allocation = amt_to_purchase/float(self.portfolio_value)
+            print "allocation is ", allocation
 
         elif amt > 0.0:
             if current == 0 and amt*price < self.free_cash:
@@ -198,8 +199,8 @@ class aggregate_portfolio():
         # the allocation to sell here represents the percentage of your 
         #  current position in the stock
         elif alloc > 0.0:
-            suggested_alloc = alloc
-            total_suggested_amt = current_amt*suggested_alloc
+            allocation = alloc
+            total_suggested_amt = current_amt*allocation
             shares_a = total_suggested_amt/price
             shares = int(shares_a)
         #    amount = (shares*price)/self.portfolio_value
@@ -209,7 +210,7 @@ class aggregate_portfolio():
         #     else:
         #         shares = current
         #     value = shares*price
-        return -1*shares, allocation, price
+        return -1*shares, -1*allocation, price
 
 
 
@@ -294,10 +295,11 @@ class aggregate_portfolio():
                 sql_update = """
                 UPDATE trade t
                 SET
-                    t.share_amount = {0}
+                    t.share_amount = ROUND({0}, 2),
+                    t.allocation = ROUND({2}, 2)
                 WHERE 
                     t.trade_id = {1}""".format(self.makes_trade[i].share_amount,
-                        self.makes_trade[i].trade_id)
+                        self.makes_trade[i].trade_id, self.makes_trade[i].allocation)
                 cursor.execute(sql_update)
                 db.commit()
                 i = i+1
