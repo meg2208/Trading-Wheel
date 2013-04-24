@@ -111,10 +111,12 @@ def populate_cookie(user_id):
                 temp = '25 day moving average'
             # Storing (indicator_id, ticker)
             indicators.append((ind[0], unicode("{} {}".format(ind[1], temp))))
-    session['indicator'] = indicators
-    print '\n', 'INDICATORS'
-    for i in session['indicator']:
-        print i
+
+    if len(indicators) > 0:
+        session['indicator'] = indicators
+        print '\n', 'INDICATORS'
+        for i in session['indicator']:
+            print i
 
     session.pop('indicator_ref', None)
     indicator_references = []
@@ -141,7 +143,8 @@ def populate_cookie(user_id):
                     process_trigger(ind_ref[0], ind_ref[1], ind_ref[2],
                                     ind_ref[3], ind_ref[4]))
 
-    session['indicator_ref'] = indicator_references
+    if len(indicator_references) > 0:
+        session['indicator_ref'] = indicator_references
 
     for t in indicator_references:
         print t
@@ -338,6 +341,10 @@ def show_portfolio():
     db, cursor = connect_db()
     cursor.execute(sql_query)
     data = cursor.fetchall()
+
+    # with file('queries/portfolio_statistics.sql') as f:
+    #     data = cursor.execute(f.read().)
+
     close_db(db, cursor)
     print 'PORTFOLIO VALUES'
     return render_template('portfolio.html', portfolios=data)
