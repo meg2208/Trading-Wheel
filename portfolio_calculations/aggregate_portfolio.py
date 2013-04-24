@@ -155,7 +155,7 @@ class aggregate_portfolio():
         #     elif val > self.free_cash and current != 0:
         #         shares = int(self.free_cash/price)
         #     value = shares*price
-        return shares, allocation, price
+        return shares, 100*allocation, price
 
 
 
@@ -210,7 +210,7 @@ class aggregate_portfolio():
         #     else:
         #         shares = current
         #     value = shares*price
-        return -1*shares, -1*allocation, price
+        return -1*shares, -100*allocation, price
 
 
 
