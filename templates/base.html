@@ -52,7 +52,7 @@
                       {# shows the trade button if enabled by session #}
                       {% if session['calculated'] == true %}
                           <li> <a href="{{ url_for( 'show_trades' ) }}">trades</a> </li>
-                          <li> <a href="{{ url_for( 'show_portfolio' ) }}">results</a> </li>
+                          <li> <a href="{{ url_for( 'show_portfolio' ) }}">portfolio</a> </li>
                       {% endif %}
                   {% endif %}
 

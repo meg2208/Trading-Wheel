@@ -161,11 +161,11 @@ def populate_cookie(user_id):
 
     close_db(db, cursor)
 
+
 #####################################################################
 # Process Indicator References to Strings
 #####################################################################
 def process_trigger(left_id, right_id, b_s, operator, act):
-
     get_ind_name = "SELECT security, mva_10_day FROM indicator WHERE indicator_id = {}"
 
     db, cursor = connect_db()
@@ -304,7 +304,41 @@ def CreateForm(name, cookie_data=None):
             allocation = DecimalField('Allocation (decimal)', default=0.0)
             cash_value = IntegerField('Cash Value', default=0)
 
+            def validate_ind_2(form, field):
+                if not check_ticker(field.data, form.ind_1.data):
+                    raise ValidationError('The ticker of both indicators must be the same')
+
+            def validate_action_security(form, field):
+                if not check_ticker(form.ind_1.data, None, field.data):
+                    raise ValidationError('The action security must be the same ticker as the indicators.')
+
         return Create_Indicator_Reference(request.form)
+
+
+#####################################################################
+# Check if identical ticker
+#####################################################################
+def check_ticker(id_1, id_2, ticker = None, cursor = None, db = None):
+    """id -> ticker"""
+    close = False
+    if not cursor or not db:
+        close = True
+        db, cursor = connect_db()
+
+    sql_query = "SELECT security FROM indicator WHERE indicator_id = {}"
+    ticker_1 = cursor.execute(sql_query.format(id_1)).fetchall()
+    if not ticker:
+        ticker_2 = cursor.execute(sql_query.format(id_2)).fetchall()
+    else:
+        ticker_2 = ticker
+
+    if close:
+        close_db(db, cursor)
+
+    if ticker_1 == ticker_2:
+        return True
+    else:
+        return False
 
 
 #####################################################################
@@ -426,22 +460,20 @@ def indicator_reference():
         add_data('indicator_reference', row)
         flash('Your new trigger has been created!')
         if 'indicator_ref' in session:
-            
-            # (left_id, right_id, b_s, operator, act, l_period):
 
             trigger_string = process_trigger(indicator_ref.ind_1.data,
-                             indicator_ref.ind_2.data,
-                             indicator_ref.action.data,
-                             indicator_ref.operator.data,
-                             indicator_ref.action_security.data )
+                                             indicator_ref.ind_2.data,
+                                             indicator_ref.action.data,
+                                             indicator_ref.operator.data,
+                                             indicator_ref.action_security.data)
             session['indicator_ref'].append(trigger_string)
 
         else:
             trigger_string = process_trigger(indicator_ref.ind_1.data,
-                             indicator_ref.ind_2.data,
-                             indicator_ref.action.data,
-                             indicator_ref.operator.data,
-                             indicator_ref.action_security.data )
+                                             indicator_ref.ind_2.data,
+                                             indicator_ref.action.data,
+                                             indicator_ref.operator.data,
+                                             indicator_ref.action_security.data)
             session['indicator_ref'] = [trigger_string]
 
         # Trying to upload the action security to the databse
