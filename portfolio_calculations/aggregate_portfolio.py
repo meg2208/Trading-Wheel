@@ -281,6 +281,7 @@ class aggregate_portfolio():
                         self.securities_value, self.free_cash, self.portfolio_id)
         cursor.execute(sql_update)
         db.commit()
+        return db, cursor
 
     # updates trades in the oracle db
     def push_trades_to_db(self, cursor, db):
@@ -315,7 +316,7 @@ class aggregate_portfolio():
                     """.format(self.portfolio_id, self.get_price(holdings.security), holdings.share_amount, holdings.security)
                 cursor.execute(sql_insert)
                 db.commit()
-            return db, cursor
+        return db, cursor
 
 class trade():
 
