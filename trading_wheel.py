@@ -106,9 +106,9 @@ def populate_cookie(user_id):
         for ind in cursor.fetchall():
             print ind
             if ind[2] is 'T':
-                temp = '10 day'
+                temp = '10 day moving average'
             else:
-                temp = '25 day'
+                temp = '25 day moving average'
             # Storing (indicator_id, ticker)
             indicators.append((ind[0], unicode("{} {}".format(ind[1], temp))))
     session['indicator'] = indicators
@@ -137,15 +137,13 @@ def populate_cookie(user_id):
         if len(data) > 0:
             for ind_ref in data:
                 print data
-                indicator_references.append( 
+                indicator_references.append(
                     process_trigger(ind_ref[0], ind_ref[1], ind_ref[2],
-                                    ind_ref[3], ind_ref[4] )) 
+                                    ind_ref[3], ind_ref[4]))
 
     session['indicator_ref'] = indicator_references
     close_db(db, cursor)
 
-
-    print '\n', 'TRIGGERS'
     for t in indicator_references:
         print t
 
@@ -155,23 +153,22 @@ def populate_cookie(user_id):
 
 #####################################################################
 # Process Indicator References to Strings
-#####################################################################       
+#####################################################################
 def process_trigger(left_id, right_id, b_s, operator, act):
 
     get_ind_name = "SELECT security, mva_10_day FROM indicator WHERE indicator_id = {}"
-    
+
     db, cursor = connect_db()
     left = cursor.execute(get_ind_name.format(left_id)).fetchall()[0]
     right = cursor.execute(get_ind_name.format(right_id)).fetchall()[0]
     close_db(db, cursor)
- 
+
     if left[1] == 'T':
         left_ind = left[0] + " 10 day MVA "
         right_ind = right[0] + " 25 day MVA "
     else:
         left_ind = left[0] + " 25 day MVA "
         right_ind = right[0] + " 10 day MVA "
-
 
     if b_s == 'B':
         b_s = "Buy "
@@ -196,8 +193,8 @@ def CreateForm(name, cookie_data=None):
                                  validators.Required(),
                                  validators.Length(min=1, max=6)])
             mva = SelectField('MVA',
-                              choices=[('mva_10_day', u'10 Day'),
-                                       ('mva_25_day', u'25 Day')])
+                              choices=[('mva_10_day', u'10 Day Moving Average'),
+                                       ('mva_25_day', u'25 Day Moving Average')])
             strategy = SelectField('strategy', choices=cookie_data,
                                    coerce=int)
         return Create_Indicator_Form(request.form)
