@@ -312,7 +312,7 @@ class aggregate_portfolio():
                     VALUES(seq_stateid.nextval, {0}, {1}, {2})
                 INTO PORTFOLIO_CONTENTS (trade_id, portfolio_id)
                     VALUES(seq_stateid.currval, {0}, {3})
-                    """.format(self.portfolio_id, self.get_price(holdings.security), holdings.share_amount, holdings.security);
+                    """.format(self.portfolio_id, self.get_price(holdings.security), holdings.share_amount, holdings.security)
                 cursor.execute(sql_insert)
                 db.commit()
             return db, cursor
