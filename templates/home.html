@@ -21,7 +21,7 @@ Trading Wheel
 
 <div class="row">
 	<div class="span4">
-		{% if 'indicator' in session %}
+		{% if session['indicator'][0] %}
 		<h4>Indicators</h4>
 			<div class='well'>
 				<ul>
@@ -36,7 +36,7 @@ Trading Wheel
 	</div>
 
 	<div class="span8">
-		{% if 'indicator_ref' in session %}
+		{% if session['indicator_ref'][0] %}
 		<h4>Triggers</h4>
 			<div class='well'>
 				<ul>

@@ -142,14 +142,21 @@ def populate_cookie(user_id):
                                     ind_ref[3], ind_ref[4]))
 
     session['indicator_ref'] = indicator_references
-    close_db(db, cursor)
 
     for t in indicator_references:
         print t
 
-    if 'trade' in session:
-        print "IT'S IN THERE"
+    session.pop('calculated', None)
+    sql_query = "SELECT DISTINCT strategy_id FROM day_to_day WHERE strategy_id = {}"
+    # print 'HEREHEREHERE', session['strategy'][0], session['strategy'][0][0]
+    data = cursor.execute(sql_query.format(session['strategy'][0][0])).fetchall()
+    print data
+    if len(data) > 0:
+        session['calculated'] = True
+    else:
+        session['calculated'] = False
 
+    close_db(db, cursor)
 
 #####################################################################
 # Process Indicator References to Strings
@@ -302,9 +309,7 @@ def CreateForm(name, cookie_data=None):
 #####################################################################
 @app.route('/find_trades')
 def find_trades():
-    print 'STRAT ID', session['strategy'][0][0]
-    if 'calculated' not in session or session['calculated'] is not True:
-        controller.backtest(session['strategy'][0][0])
+    controller.backtest(session['strategy'][0][0])
     session['calculated'] = True
     return redirect(url_for('home'))
 

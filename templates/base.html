@@ -42,11 +42,9 @@
                          <li> <a href="{{ url_for( 'indicator_reference' ) }}">create trigger</a> </li>
                       {% endif %}
 
-                      {# Shows the option to calculate the strategy #}
-                      {% if session['indicator_ref'] and session['calculated'] == false %}
-                          <li> <a href="{{ url_for( 'find_trades' ) }}">calculate strategy</a> </li>
-                      {% endif %}
-                      
+                      {# Shows the option to calculate the strategy #}                      
+                      <li> <a href="{{ url_for( 'find_trades' ) }}">calculate strategy</a> </li>
+
                       {# shows the trade button if enabled by session #}
                       {% if session['calculated'] == true %}
                           <li> <a href="{{ url_for( 'show_trades' ) }}">trades</a> </li>
