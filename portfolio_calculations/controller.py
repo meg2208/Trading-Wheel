@@ -1,7 +1,6 @@
 import aggregate_portfolio as portfolio
 from credentials import username, password, server
 import cx_Oracle as oracle
-import datetime
 
 
 def connect():
@@ -48,8 +47,6 @@ def populate_mva(strategy_id):
 
 def set_rdp_relation(strategy_id):
     db, cursor = connect()
-    B = 'B'
-    S = 'S'
     with file('queries/set_rdp_relationB.sql', 'r') as update:
         sql_update = update.read().format(strategy_id)
         cursor.execute(sql_update)
