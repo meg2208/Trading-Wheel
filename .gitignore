@@ -20,3 +20,5 @@ test.py
 scripts/populate_trades.py
 
 scripts/load_finance1.py
+
+queries/temp_table_for_skeleton.sql

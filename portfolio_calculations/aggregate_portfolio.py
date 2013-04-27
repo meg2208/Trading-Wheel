@@ -85,8 +85,8 @@ class aggregate_portfolio():
             print 'TRADETRADETRADETRADETRADETRADE'
             print self.time
             for x in trades:
-                self.makes_trade.append(trade(self.portfolio_id, x[0], x[1], x[2],
-                                x[3], x[4], x[5], x[6]) )
+                self.makes_trade.append(trade(self.portfolio_id, 
+                            x[0],x[1],x[2],x[3],x[4],x[5],x[6]) )
 
     def get_price(self, sec):
         date = self.time
@@ -181,18 +181,24 @@ class aggregate_portfolio():
         print 'current', type(current)
         print 'price', type(price)
 
-        # can't sell something you don't have (no margin support yet)
+        # can't sell something you don't
+        # have (no margin support yet)
         if current == 0:
             return 0, 0, price
 
-        # amt is the amount of shares you originally wanted to sell
+        # amt is the amount of shares 
+        # you originally wanted to sell
         elif amt > 0.0:
 
-            # if you have less than you are supposed to sell --> sell all
+            # if you have less than you are 
+            # supposed to sell --> 
+            # sell all
             if current < amt:
                 shares = current
 
-            # if you have more than you are supposed to sell --> sell desired amount
+            # if you have more than you are 
+            # supposed to sell --> 
+            # sell desired amount
             elif current > amt:
                 shares = amt
 
@@ -203,13 +209,13 @@ class aggregate_portfolio():
             total_suggested_amt = current_amt*allocation
             shares_a = total_suggested_amt/price
             shares = int(shares_a)
-        #    amount = (shares*price)/self.portfolio_value
-        # elif val > 0:
-        #     if val < current*price:
-        #         shares = int(val/price)
-        #     else:
-        #         shares = current
-        #     value = shares*price
+           amount = (shares*price)/self.portfolio_value
+        elif val > 0:
+            if val < current*price:
+                shares = int(val/price)
+            else:
+                shares = current
+            value = shares*price
         return -1*shares, -100*allocation, price
 
 
@@ -256,8 +262,10 @@ class aggregate_portfolio():
         if len(self.makes_trade) > 0:
             print 'trade happened'
             for trades in self.makes_trade:
-                shares, allocation, price = self.calc_amts(trades.security, trades.share_amount,
-                                                    trades.allocation, 0, trades.action)
+                shares, allocation, price = self.calc_amts(trades.security,   
+                                                    trades.share_amount,
+                                                    trades.allocation, 
+                                                    0, trades.action)
                 trades.share_amount = shares
                 trades.allocation = allocation
                 self.update_securities(trades.security, shares, price)
@@ -279,14 +287,15 @@ class aggregate_portfolio():
             ag.free_cash = ROUND({2}, 2)
         WHERE 
             ag.portfolio_id = {3}""".format(self.portfolio_value,
-                        self.securities_value, self.free_cash, self.portfolio_id)
+                                        self.securities_value, 
+                                        self.free_cash, 
+                                        self.portfolio_id)
         cursor.execute(sql_update)
         db.commit()
         return db, cursor
 
     # updates trades in the oracle db
     def push_trades_to_db(self, cursor, db):
-        i = 0
         if len(self.makes_trade) > 0:
             print 'push_trades_to_db '
             print 'trades ' 
@@ -299,21 +308,22 @@ class aggregate_portfolio():
                     t.allocation = ROUND({2}, 2)
                 WHERE 
                     t.trade_id = {1}""".format(self.makes_trade[i].share_amount,
-                        self.makes_trade[i].trade_id, self.makes_trade[i].allocation)
+                                        self.makes_trade[i].trade_id, 
+                                        self.makes_trade[i].allocation)
                 cursor.execute(sql_update)
                 db.commit()
-                i = i+1
         return db, cursor
 
     def push_contents_to_db(self, cursor, db):
         if len(self.portfolio_contents) > 0:
             print 'push secs to db '
             for holdings in self.portfolio_contents:
-                sql_insert = """
-                INSERT ALL
-                INTO SECURITY_STATE (state_id, security, security_price, share_amount)
+                sql_insert = """INSERT INTO SECURITY_STATE 
+                    (state_id, security, security_price, share_amount)
                     VALUES(seq_stateid.nextval, {0}, {1}, {2})
-                INTO PORTFOLIO_CONTENTS (trade_id, portfolio_id)
+                /
+                Insert INTO PORTFOLIO_CONTENTS 
+                    (state_id, portfolio_id, security)
                     VALUES(seq_stateid.currval, {0}, {3})
                     """.format(self.portfolio_id, self.get_price(holdings.security), holdings.share_amount, holdings.security)
                 cursor.execute(sql_insert)
