@@ -209,7 +209,7 @@ class aggregate_portfolio():
             total_suggested_amt = current_amt*allocation
             shares_a = total_suggested_amt/price
             shares = int(shares_a)
-           amount = (shares*price)/self.portfolio_value
+            amount = (shares*price)/self.portfolio_value
         elif val > 0:
             if val < current*price:
                 shares = int(val/price)
