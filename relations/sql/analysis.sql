@@ -7,7 +7,7 @@ CREATE TABLE analysis (
 	strategy_id NUMBER,
 	risk_free_rate NUMBER,
 	portfolio_value NUMBER,
-	bench_values BENCHMARK_VALUES(strategy_id NUMBER, contents CONTENTS_LIST, time DATE, value NUMBER),
+	bench_values BENCHMARK_VALUES,
 	PRIMARY KEY (analysis_id, strategy_id),
 	CONSTRAINT s_fk FOREIGN KEY (strategy_id) REFERENCES strategy
 );
