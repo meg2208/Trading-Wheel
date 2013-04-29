@@ -7,8 +7,8 @@ CREATE OR REPLACE TYPE HELPER AS OBJECT (
 	--frequency VARCHAR2(10), -- daily, monthly, yearly, overall
 	MEMBER PROCEDURE set_rf_pv,
     CONSTRUCTOR FUNCTION HELPER (time DATE, strategy_id NUMBER,
-								analysis_id NUMBER),
-	RETURN SELF AS RESULT,
+								analysis_id NUMBER)
+	RETURN SELF AS RESULT
 );
 /
 CREATE OR REPLACE TYPE BODY HELPER AS
@@ -47,7 +47,6 @@ CREATE OR REPLACE TYPE BODY HELPER AS
 				)
 			WHERE a.analysis_id = SELF.analysis_id;
 	COMMIT;
-	END;
 	END;
 END;
 /
