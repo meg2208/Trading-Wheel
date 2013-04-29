@@ -4,13 +4,11 @@ CREATE TABLE analysis (
 	start_date DATE,
 	end_date DATE,
 	time DATE,
---	frequency VARCHAR2(10), -- daily, monthly, yearly
 	strategy_id NUMBER,
 	risk_free_rate NUMBER,
 	portfolio_value NUMBER,
-	bench_values BENCHMARK_VALUES(contents CONTENTS_LIST, time DATE),
-	help_obj HELPER(time DATE, strategy_id NUMBER),
+	bench_values BENCHMARK_VALUES(strategy_id NUMBER, contents CONTENTS_LIST, time DATE, value NUMBER),
 	PRIMARY KEY (analysis_id, strategy_id),
-	FOREIGN KEY (strategy_id) REFERENCES strategy
+	CONSTRAINT s_fk FOREIGN KEY (strategy_id) REFERENCES strategy
 );
 
