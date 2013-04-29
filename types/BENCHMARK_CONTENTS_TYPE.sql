@@ -67,7 +67,6 @@ CREATE OR REPLACE TYPE BODY BENCHMARK_CONTENTS_TYPE AS
 		SELF.shares := multiply(port_val, SELF.allocation);
 		SELF.shares := FLOOR(divide(SELF.shares, price));
 		SELF.start_value := multiply(SELF.shares, price);
-        COMMIT;
 	END populate_shares;
 
     -- returns total value of this security in benchmark

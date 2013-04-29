@@ -23,7 +23,6 @@ CREATE OR REPLACE TYPE BODY BENCHMARK_VALUES AS
 			FOR i IN SELF.contents.FIRST..SELF.contents.LAST LOOP
                 temp := SELF.contents(i).get_value(SELF.time);
 				SELF.value := add_it(SELF.value, temp);
-                COMMIT;
             END LOOP;
 			RETURN;
 	    END;
