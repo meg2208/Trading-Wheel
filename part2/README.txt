@@ -37,13 +37,12 @@ https://github.com/nsb2142/Trading-Wheel/tree/master/types
 QUERY EXPLANATIONS:
     annual returns:
         Returns a table consisting of your returns by year.
-    
+
+    excess returns (alpha):
+        Returns a table of investment returns from a security or portfolio that exceed a benchmark.
+
     sharpe ratio:
-        Returns a table with the reward-to-variability ratio by year.
+        Returns a table with the reward-to-variability ratio of the strategy.
         http://en.wikipedia.org/wiki/Sharpe_ratio
 
-    beta:
-        Returns a table with the beta values of the index. This describes the correlated volatality of an asset.
-        http://en.wikipedia.org/wiki/Beta_(finance)
-    
 
