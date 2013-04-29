@@ -8,8 +8,9 @@ CREATE TABLE analysis (
 	strategy_id NUMBER,
 	risk_free_rate NUMBER,
 	portfolio_value NUMBER,
-	bench_values BENCHMARK_VALUES(VARRAY(10) OF BENCH_CONTENTS_TYPE, time)
-	help_obj HELPER(time, strategy_id NUMBER)
+	bench_values BENCHMARK_VALUES(VARRAY(10) OF BENCH_CONTENTS_TYPE, time),
+	help_obj HELPER(time, strategy_id NUMBER),
 	PRIMARY KEY (analysis_id, strategy_id),
 	FOREIGN KEY (strategy_id) REFERENCES strategy
 );
+
