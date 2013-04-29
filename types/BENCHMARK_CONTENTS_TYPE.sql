@@ -46,7 +46,6 @@ CREATE OR REPLACE TYPE BODY BENCHMARK_CONTENTS_TYPE AS
 		RETURN num1 / num2;
 	END divide;
 
-
 	-- fills in the correct amount of shares and start_value
 	MEMBER PROCEDURE populate_shares IS	
 		CURSOR price_curs IS
@@ -60,8 +59,6 @@ CREATE OR REPLACE TYPE BODY BENCHMARK_CONTENTS_TYPE AS
 				WHERE	s.strategy_id = SELF.strategy_id);
 		price NUMBER;
 		port_val NUMBER;
---		price price_curs%ROWTYPE;
---		port_val start_val_curs%ROWTYPE;
 	BEGIN 
 		OPEN price_curs;
 		OPEN start_val_curs;
@@ -71,14 +68,14 @@ CREATE OR REPLACE TYPE BODY BENCHMARK_CONTENTS_TYPE AS
 		SELF.shares := FLOOR(divide(SELF.shares, price));
 		SELF.start_value := multiply(SELF.shares, price);
 	END populate_shares;
-	-- returns total value of this security in benchmark
+
+    -- returns total value of this security in benchmark
 	MEMBER FUNCTION get_value (given_time DATE) RETURN NUMBER IS	
 		CURSOR price_curs IS  
 			(SELECT DISTINCT q.adj_close
 				FROM	query_data q
 				WHERE	q.security = SELF.security
 					AND q.time = given_time);
---		price price_curs%ROWTYPE;
 		price NUMBER;
 		temp_value NUMBER;
 	BEGIN 
