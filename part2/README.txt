@@ -38,6 +38,12 @@ QUERY EXPLANATIONS:
     annual returns:
         Returns a table consisting of your returns by year.
     
-    
+    sharpe ratio:
+        Returns a table with the reward-to-variability ratio by year.
+        http://en.wikipedia.org/wiki/Sharpe_ratio
+
+    beta:
+        Returns a table with the beta values of the index. This describes the correlated volatality of an asset.
+        http://en.wikipedia.org/wiki/Beta_(finance)
     
 
