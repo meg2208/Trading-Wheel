@@ -28,8 +28,8 @@ CREATE OR REPLACE TYPE BODY BENCHMARK_VALUES AS
 	    END;
 
     MEMBER FUNCTION add_it (num1 NUMBER, num2 NUMBER) RETURN NUMBER IS
-    BEGIN
-        RETURN num1 + num2;
-    END add_it;
+	    BEGIN
+	        RETURN num1 + num2;
+	    END add_it;
 END;
 /
