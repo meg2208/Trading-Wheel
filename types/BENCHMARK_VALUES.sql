@@ -19,9 +19,11 @@ CREATE OR REPLACE TYPE BODY BENCHMARK_VALUES AS
             SELF.contents := contents;
 		    SELF.time := time;
 			SELF.value := 0;
-			FORALL i IN SELF.contents.FIRST..SELF.contents.LAST
-                temp := SELF.contents.get_value(SELF.time)
-				SELF.value := add_it(SELF.value, temp)
+
+			FOR i IN SELF.contents.FIRST..SELF.contents.LAST LOOP
+                temp := SELF.contents(i).get_value(SELF.time);
+				SELF.value := add_it(SELF.value, temp);
+            END LOOP;
 			RETURN;
 	    END;
 
