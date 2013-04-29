@@ -209,7 +209,7 @@ class aggregate_portfolio():
             total_suggested_amt = current_amt*allocation
             shares_a = total_suggested_amt/price
             shares = int(shares_a)
-           amount = (shares*price)/self.portfolio_value
+            amount = (shares*price)/self.portfolio_value
         elif val > 0:
             if val < current*price:
                 shares = int(val/price)
@@ -307,9 +307,9 @@ class aggregate_portfolio():
                     t.share_amount = ROUND({0}, 2),
                     t.allocation = ROUND({2}, 2)
                 WHERE 
-                    t.trade_id = {1}""".format(self.makes_trade[i].share_amount,
-                                        self.makes_trade[i].trade_id, 
-                                        self.makes_trade[i].allocation)
+                    t.trade_id = {1}""".format(trades.share_amount,
+                                        trades.trade_id, 
+                                        trades.allocation)
                 cursor.execute(sql_update)
                 db.commit()
         return db, cursor

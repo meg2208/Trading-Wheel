@@ -33,4 +33,5 @@ SELECT ROUND(((ag2.portfolio_value - ag1.portfolio_value) / ag1.portfolio_value)
  			AND dtd1.portfolio_id = ag1.portfolio_id
  			AND dtd2.portfolio_id = ag2.portfolio_id
  			AND ag1.time = b.start_time
- 			AND ag2.time = b.end_time;
+ 			AND ag2.time = b.end_time
+

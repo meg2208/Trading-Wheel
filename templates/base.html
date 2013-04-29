@@ -72,7 +72,7 @@
         <div class="page-header">
           {% with messages = get_flashed_messages() %}
              {% if messages %}
-              <ul class=flashes>
+              <ul class="alert alert-success">
               {% for message in messages %}
                  <li>{{ message }}</li>
               {% endfor %}

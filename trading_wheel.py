@@ -308,9 +308,9 @@ def CreateForm(name, cookie_data=None):
                 if not check_ticker(field.data, form.ind_1.data):
                     raise ValidationError('The ticker of both indicators must be the same')
 
-            def validate_action_security(form, field):
-                if not check_ticker(form.ind_1.data, None, field.data):
-                    raise ValidationError('The action security must be the same ticker as the indicators.')
+            # def validate_action_security(form, field):
+            #     if not check_ticker(form.ind_1.data, None, field.data):
+            #         raise ValidationError('The action security must be the same ticker as the indicators.')
 
         return Create_Indicator_Reference(request.form)
 
@@ -318,7 +318,7 @@ def CreateForm(name, cookie_data=None):
 #####################################################################
 # Check if identical ticker
 #####################################################################
-def check_ticker(id_1, id_2, ticker = None, cursor = None, db = None):
+def check_ticker(id_1, id_2, ticker=None, cursor=None, db=None):
     """id -> ticker"""
     close = False
     if not cursor or not db:
@@ -376,12 +376,12 @@ def show_portfolio():
     cursor.execute(sql_query)
     data = cursor.fetchall()
 
-    # with file('queries/portfolio_statistics.sql') as f:
-    #     data = cursor.execute(f.read().)
+    with file('queries/portfolio_statistics.sql') as f:
+        data2 = cursor.execute(f.read().format(session['strategy'][0][0])).fetchall()
 
     close_db(db, cursor)
     print 'PORTFOLIO VALUES'
-    return render_template('portfolio.html', portfolios=data)
+    return render_template('portfolio.html', portfolios=data, rev=data2)
 
 
 #####################################################################
