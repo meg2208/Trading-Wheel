@@ -8,6 +8,7 @@ CREATE TABLE analysis (
 	risk_free_rate NUMBER,
 	portfolio_value NUMBER,
 	bench_values BENCHMARK_VALUES,
+    help_obj HELPER,
 	PRIMARY KEY (analysis_id, strategy_id),
 	CONSTRAINT s_fk FOREIGN KEY (strategy_id) REFERENCES strategy
 );
