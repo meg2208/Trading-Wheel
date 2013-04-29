@@ -28,7 +28,7 @@ CREATE OR REPLACE TYPE BODY BENCHMARK_CONTENTS_TYPE AS
 				FROM	raw_data_parsing
 				WHERE	strategy_id = SELF.strategy_id;
 			populate_shares(); -- sets share amount for this security
-			RETURN
+			RETURN;
 		END;
 	END;
 	-- fills in the correct amount of shares and start_value
