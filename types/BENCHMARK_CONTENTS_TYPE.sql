@@ -27,12 +27,15 @@ CREATE OR REPLACE TYPE BODY BENCHMARK_CONTENTS_TYPE AS
 	RETURN SELF AS RESULT
 	AS
 	BEGIN
+		SELF.strategy_id := strategy_id;
+		SELF.security := security;
+		SELF.allocation := allocation;
 		--sets start_date attribute
-			SELECT 	MIN(time) 
+			SELECT 	MIN(rdp.time) 
 			INTO SELF.start_date
-			FROM	raw_data_parsing
-			WHERE	strategy_id = SELF.strategy_id;
-		populate_shares(); -- sets share amount for this security
+			FROM	raw_data_parsing rdp
+			WHERE	rdp.strategy_id = SELF.strategy_id;
+		populate_shares();
 		RETURN;
 	END;
 		
@@ -64,9 +67,11 @@ CREATE OR REPLACE TYPE BODY BENCHMARK_CONTENTS_TYPE AS
 		OPEN start_val_curs;
 		FETCH price_curs INTO price;
 		FETCH start_val_curs INTO port_val;
+		CLOSE price_curs;
+		CLOSE start_val_curs;
 		SELF.shares := multiply(port_val, SELF.allocation);
 		SELF.shares := FLOOR(divide(SELF.shares, price));
-		SELF.start_value := multiply(SELF.shares, price);
+		SELF.start_value := multiply(SELF.shares, price);		
 	END populate_shares;
 
     -- returns total value of this security in benchmark
