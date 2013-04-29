@@ -26,7 +26,9 @@ while True and i < 10:
         if len(choices) == 0: #redundancy
             choices.append((strat_id, 'SPY', 1.0))
         else:
-            choices[-1][2] += allocation_left
+            temp = choices[-1]
+            del choices[-1]
+            choices.append((strat_id, temp[1], temp[2]+allocation_left))
         break
 
     ticker, allocation = data.split(' ')
