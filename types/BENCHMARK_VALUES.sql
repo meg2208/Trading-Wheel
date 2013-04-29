@@ -1,29 +1,34 @@
 -- this holds the total benchmark value
 CREATE OR REPLACE TYPE BENCHMARK_VALUES AS OBJECT (
 	strategy_id NUMBER,
-	contents VARRAY(10) OF BENCH_CONTENTS_TYPE,
+	contents CONTENTS_LIST,
 	time DATE,
 	value NUMBER,
-	CONSTRUCTOR FUNCTION BENCHMARK_VALUES (VARRAY(10) 
-		-- probably a syntax error here
-		OF contents IN BENCH_CONTENTS_TYPE, time in DATE)
-		RETURN SELF AS RESULT
-	-- set up contents
+    MEMBER FUNCTION add_it (num1 NUMBER, num2 NUMBER)
+        RETURN NUMBER,
+	CONSTRUCTOR FUNCTION BENCHMARK_VALUES (contents CONTENTS_LIST, time DATE) 
+        RETURN SELF AS RESULT
 );
 /
 CREATE OR REPLACE TYPE BODY BENCHMARK_VALUES AS
-	CONSTRUCTOR FUNCTION BENCHMARK_VALUES(contents VARRAY(10) BENCH_CONTENTS_TYPE, time)
+	CONSTRUCTOR FUNCTION BENCHMARK_VALUES(contents CONTENTS_LIST, time DATE)
 		RETURN SELF AS RESULT
 		AS
-		price price_curs%ROWTYPE;
-		SELF.contents = contents;
-		SELF.time = time;
+            temp NUMBER;
 		BEGIN
-			SELF.value = 0;
-			FORALL i IN contents.FIRST..CONTENTS.LAST			
-				SELF.value := SELF.value + contents.get_value(SELF.time);
-			RETURN
-		END;
-	END;
+            SELF.contents := contents;
+		    SELF.time := time;
+			SELF.value := 0;
+            temp := 0;
+			FORALL i IN contents.FIRST..contents.LAST
+                temp := contents.get_value(SELF.time);
+				SELF.value := add_it(SELF.value, temp);
+			RETURN;
+	    END;
+
+    MEMBER FUNCTION add_it (num1 NUMBER, num2 NUMBER) RETURN NUMBER IS
+    BEGIN
+        RETURN num1 + num2;
+    END add_it;
 END;
 /
