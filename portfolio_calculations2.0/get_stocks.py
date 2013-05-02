@@ -2,6 +2,8 @@
 from sys import argv
 from decimal import Decimal
 import urllib2
+from stock import Stock
+from day_stock import Day_Stock
 
 
 # DD-MMM-YYYY
@@ -14,31 +16,31 @@ def format_date(date_str):
     return date
 
 
-def get_data(ticker_symbol):
+def get_data(ticker_symbol, mva_choices=None):
     url = "http://ichart.finance.yahoo.com/table.csv?s="+ticker_symbol
     counter = 0
+    new_stock = Stock(ticker_symbol, mva_choices)
+
     try:
         yahoo_data = urllib2.urlopen(url)
-        closing_10 = [0]*10
-        closing_25 = [0]*25
+
+        closing_prices = []
+        for choice in mva_choices:
+            closing_prices.append([choice, [0]*choice])
 
         for line in reversed(yahoo_data.readlines()):
-            if line[0:4] != 'Date':
+            if line[0:4] != 'Date':  # skips header line
                 row = line.split(',')
 
-                closing_10[counter % 10] = Decimal(row[4])
-                if counter > 9:
-                    mva_10_day = sum(closing_10)/10
-                else:
-                    mva_10_day = 'NULL'
-                closing_25[counter % 25] = Decimal(row[4])
-                if counter > 24:
-                    mva_25_day = sum(closing_25)/25
-                else:
-                    mva_25_day = 'NULL'
+                mva = {}
+                for interval in closing_prices:
+                    interval[1][counter % interval[0]] = float(row[4])
+                    if counter >= interval[0]-1:
+                        mva[interval[0]] = sum(interval[1])/interval[0]
+                    else:
+                        mva[interval[0]] = None
 
-                data = '(\'{}\',\'{}\',{},{},{},{},{},{},{},{})'.format(
-                    ticker_symbol,          # security symbol
+                new_stock.days.append(Day_Stock(
                     format_date(row[0]),    # date
                     Decimal(row[1]),        # open
                     Decimal(row[2]),        # high
@@ -46,15 +48,16 @@ def get_data(ticker_symbol):
                     Decimal(row[4]),        # close
                     int(row[5]),            # volume
                     Decimal(row[6]),        # adj_close
-                    mva_10_day,             # 10 day mva
-                    mva_25_day              # 25 day mva
-                )
+                    mva                     # various moving averages
+                ))
+                print mva
                 counter += 1
 
     except urllib2.URLError as e:
         print e
 
     print counter, ' rows added'
+    return new_stock
 
 
 if __name__ == '__main__':
