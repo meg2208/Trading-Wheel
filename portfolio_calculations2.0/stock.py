@@ -1,4 +1,6 @@
 
+from trade import Trade
+
 
 class Stock:
 
@@ -6,6 +8,7 @@ class Stock:
         self.ticker = str(tick)
         self.mva = mva
         self.days = []
+        self.trade_sets = []
 
     def __str__(self):
         tostring = ""
@@ -16,7 +19,8 @@ class Stock:
     """
     Finds all instances of where the 'over' MVA cross over the other option
     """
-    def find_cross_over(self, under, over):
+    def find_trades(self, under, over, buy_sell):
+        trades = []
 
         over_on_top = None      # initiating
         first = self.days[0]
@@ -25,15 +29,14 @@ class Stock:
         else:
             over_on_top = False
 
-        print under, over, over_on_top
-
         for day in self.days:
             if mva_flip_spots(day, under, over, over_on_top):
                 over_on_top = not over_on_top
                 if over_on_top:
                     print 'Trade made!'
-                else:
-                    print 'Sell it!'
+                    trades.append(Trade(self.ticker, day, None, buy_sell))
+
+        self.trade_sets.append(trades)
 
 
 def mva_flip_spots(day, under, over, current_state):
@@ -42,5 +45,3 @@ def mva_flip_spots(day, under, over, current_state):
     if day.mva[under] > day.mva[over] and current_state:
         return True     # 'under' cross over 'over'
     return False
-
-
