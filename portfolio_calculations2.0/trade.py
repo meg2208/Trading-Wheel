@@ -28,13 +28,14 @@ class Trade:
             decision = 'Buy'
         else:
             decision = 'Sell'
+
         return "{}\n\t{} {}".format(
-            self.date, decision, self.allocation, self.ticker)
+            self.date, decision, self.goal, self.ticker)
 
     def __cmp__(self, other):
         if self.date == other.date:
             return 0
         elif self.date < other.date:
             return -1
-        elif self.date > other.data:
+        elif self.date > other.date:
             return 1

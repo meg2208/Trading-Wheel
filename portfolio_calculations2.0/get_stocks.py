@@ -40,7 +40,6 @@ def get_data(ticker_symbol, mva_choices=None):
                     Decimal(row[6]),        # adj_close
                     mva                     # various moving averages
                 ))
-                print mva
                 counter += 1
 
     except urllib2.URLError as e:

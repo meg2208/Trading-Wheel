@@ -35,7 +35,8 @@ class Stock:
                 over_on_top = not over_on_top
                 if over_on_top:
                     print 'Trade made!'
-                    trades.append(Trade(self.ticker, day, allocation, buy_sell))
+                    trades.append(Trade(self.ticker, day.date, allocation,
+                                        buy_sell))
 
         self.trade_sets.append(trades)
 
