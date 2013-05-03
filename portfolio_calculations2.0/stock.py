@@ -11,15 +11,16 @@ class Stock:
         self.trade_sets = []
 
     def __str__(self):
-        tostring = ""
-        tostring += "ticker: {}".format(self.ticker)
-        tostring += "\nnum days: {}".format(len(self.days))
-        return tostring
+        return "ticker {}\nnum days: {}".format(
+            self.ticker, len(self.days))
 
     """
     Finds all instances of where the 'over' MVA cross over the other option
     """
-    def find_trades(self, under, over, buy_sell):
+    def find_trades(self, under, over, buy_sell, allocation,
+                    action_ticker=None):
+        if not action_ticker:
+            action_ticker = self.ticker
         trades = []
 
         over_on_top = None      # initiating
@@ -34,7 +35,7 @@ class Stock:
                 over_on_top = not over_on_top
                 if over_on_top:
                     print 'Trade made!'
-                    trades.append(Trade(self.ticker, day, None, buy_sell))
+                    trades.append(Trade(self.ticker, day, allocation, buy_sell))
 
         self.trade_sets.append(trades)
 

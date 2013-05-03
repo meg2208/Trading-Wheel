@@ -12,5 +12,3 @@ class Day_Stock:
         self.volume = volume
         self.adj_close = adj_close
         self.mva = mva
-
-
