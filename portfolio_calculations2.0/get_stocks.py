@@ -6,16 +6,6 @@ from stock import Stock
 from day_stock import Day_Stock
 
 
-# DD-MMM-YYYY
-def format_date(date_str):
-    cal = [None, 'jan', 'feb', 'mar', 'apr', 'may', 'jun',
-                 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
-    date_split = date_str.split('-')
-    date = [date_split[2], cal[int(date_split[1])], date_split[0]]
-    date = '-'.join(date)
-    return date
-
-
 def get_data(ticker_symbol, mva_choices=None):
     url = "http://ichart.finance.yahoo.com/table.csv?s="+ticker_symbol
     counter = 0
@@ -41,7 +31,7 @@ def get_data(ticker_symbol, mva_choices=None):
                         mva[interval[0]] = None
 
                 new_stock.days.append(Day_Stock(
-                    format_date(row[0]),    # date
+                    row[0],                 # date
                     Decimal(row[1]),        # open
                     Decimal(row[2]),        # high
                     Decimal(row[3]),        # low
