@@ -1,13 +1,15 @@
 
 from trade import Trade
+from datetime import datetime, timedelta
 
 
 class Stock:
 
     def __init__(self, tick, mva):
         self.ticker = str(tick)
+        self.first_day = None
         self.mva = mva
-        self.days = []
+        self.days = {}
         self.trade_sets = []
 
     def __str__(self):
@@ -22,19 +24,28 @@ class Stock:
         if not action_ticker:
             action_ticker = self.ticker
         trades = []
+        if under > over:
+            longest_mva = under
+        else:
+            longest_mva = over
+
+        first_pd = datetime.strptime(self.first_day, "%Y-%m-%d")
+        first_pd = nth_weekday(first_pd, longest_mva)
+        first_pd = "{}-{}-{}".format(first_pd.year, str(first_pd.month).zfill(2),
+                                     str(first_pd.day).zfill(2))
 
         over_on_top = None      # initiating
-        first = self.days[0]
-        if first.mva[under] < first.mva[over]:
+        if self.days[first_pd].mva[under] < self.days[first_pd].mva[over]:
             over_on_top = True
         else:
             over_on_top = False
 
-        for day in self.days:
+        day_keys = sorted(self.days.keys())
+        for date in day_keys:
+            day = self.days[date]
             if mva_flip_spots(day, under, over, over_on_top):
                 over_on_top = not over_on_top
                 if over_on_top:
-                    print 'Trade made!'
                     trades.append(Trade(self.ticker, day.date, allocation,
                                         buy_sell))
 
@@ -47,3 +58,17 @@ def mva_flip_spots(day, under, over, current_state):
     if day.mva[under] > day.mva[over] and current_state:
         return True     # 'under' cross over 'over'
     return False
+
+
+def nth_weekday(the_date, num_days):
+    """ the_date is a datetime object
+        num_days is the number of weekdays you'd like to skip
+        assumes taht the_date is a weekday      """
+    weeks = num_days / 5
+    day = the_date.weekday() + (num_days % 5)
+    if day > 4:
+        day += 2
+    num_days = weeks*7 + day - the_date.weekday()
+    diff = timedelta(days=num_days)
+    new_date = the_date + diff
+    return new_date
