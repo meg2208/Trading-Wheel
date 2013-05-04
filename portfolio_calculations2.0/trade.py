@@ -2,26 +2,23 @@
 
 class Trade:
 
-    def __init__(self, ticker, date, goal, buy, shares=None):
+    def __init__(self, ticker, date, allocation, buy, shares=None):
         self.ticker = ticker
         self.date = date
         self.shares = shares
         self.buy = buy
         self.attempt = None             # Shares attempted to buy
-        if goal:                        # allocation intended to use
-            self.goal = float(goal)
+        if allocation:                        # allocation intended to use
+            self.allocation = float(allocation)
         else:
-            self.goal = goal
+            self.allocation = allocation
 
     def get_data(self):
         if self.buy:
             decision = 'Bought'
         else:
             decision = 'Sold'
-        return [self.date,
-                self.ticker,
-                self.shares,
-                decision]
+        return [self.date, self.ticker, self.shares, decision]
 
     def __str__(self):
         if self.buy:
@@ -29,8 +26,8 @@ class Trade:
         else:
             decision = 'Sell'
 
-        return "{}\n\t{} {}".format(
-            self.date, decision, self.goal, self.ticker)
+        return "{}\t{} {} shares of {}".format(
+            self.date, decision, self.shares, self.ticker)
 
     def __cmp__(self, other):
         if self.date == other.date:

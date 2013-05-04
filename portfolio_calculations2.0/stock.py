@@ -61,9 +61,9 @@ def mva_flip_spots(day, under, over, current_state):
 
 
 def nth_weekday(the_date, num_days):
-    """ the_date is a datetime object
-        num_days is the number of weekdays you'd like to skip
-        assumes taht the_date is a weekday      """
+    """ the_date : datetime object
+        num_days : the number of weekdays you'd like to skip
+        assumes that the_date is a weekday  """
     weeks = num_days / 5
     day = the_date.weekday() + (num_days % 5)
     if day > 4:
