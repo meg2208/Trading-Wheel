@@ -5,7 +5,7 @@ def calculate(triggers, starting_cash=100000):
     stocks = get_stocks(triggers)
     print stocks
 
-    find_all_days(starting_cash, stocks)
+    find_all_trades(starting_cash, stocks)
 
 
 def get_stocks(triggers):
@@ -25,10 +25,6 @@ def get_stocks(triggers):
     stock_data = []
     for stock in stocks.keys():
         stock_data.append(get_data(stock, stocks[stock]))
-        print 'added'
-
-    print stocks
-    print stock_data
 
     "Finding potential trades/sells"
     for trigger in triggers:
@@ -43,7 +39,7 @@ def get_stocks(triggers):
     return stock_data
 
 
-def find_all_days(starting_cash, stocks):
+def find_all_trades(starting_cash, stocks):
     potential_trades = []
     for stock in stocks:
         for trades in stock.trade_sets:
@@ -53,3 +49,5 @@ def find_all_days(starting_cash, stocks):
 
     for trade in potential_trades:
         print trade
+
+    return potential_trades
