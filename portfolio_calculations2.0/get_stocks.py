@@ -2,6 +2,7 @@
 from sys import argv
 from decimal import Decimal
 import urllib2
+
 from stock import Stock
 from day_stock import Day_Stock
 
@@ -9,7 +10,6 @@ from day_stock import Day_Stock
 def get_data(ticker_symbol, mva_choices=None):
     url = "http://ichart.finance.yahoo.com/table.csv?s="+ticker_symbol
     counter = 0
-    new_stock = Stock(ticker_symbol, mva_choices)
 
     try:
         yahoo_data = urllib2.urlopen(url)
@@ -18,7 +18,13 @@ def get_data(ticker_symbol, mva_choices=None):
         for choice in mva_choices:
             closing_prices.append([choice, [0]*choice])
 
+        new_stock = Stock(ticker_symbol, mva_choices)
+
+        first = True
         for line in reversed(yahoo_data.readlines()):
+            if first:
+                first_day = line[0:10]
+                first = False
             if line[0:4] != 'Date':  # skips header line
                 row = line.split(',')
 
@@ -30,7 +36,7 @@ def get_data(ticker_symbol, mva_choices=None):
                     else:
                         mva[interval[0]] = None
 
-                new_stock.days.append(Day_Stock(
+                new_stock.days[row[0]] = (Day_Stock(
                     row[0],                 # date
                     Decimal(row[1]),        # open
                     Decimal(row[2]),        # high
@@ -45,6 +51,7 @@ def get_data(ticker_symbol, mva_choices=None):
     except urllib2.URLError as e:
         print e
 
+    new_stock.first_day = first_day
     print counter, ' rows added'
     return new_stock
 
