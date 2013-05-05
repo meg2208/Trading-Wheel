@@ -2,6 +2,8 @@ from get_stocks import get_data
 from portfolio import Portfolio
 from datetime import datetime, timedelta
 
+INTEREST_RATE = .025/365
+
 
 def calculate(triggers, starting_cash=100000):
     stocks = get_stocks(triggers)
@@ -20,7 +22,7 @@ def calculate(triggers, starting_cash=100000):
             print trade
 
     for day in portfolios:
-        print day.day, day.value
+        print day.graph_value()
 
 
 def get_stocks(triggers):
@@ -91,7 +93,7 @@ def fill_out_trades(starting_cash, trades, stocks):
             trade_dex += 1
 
         new_port = Portfolio(day, cash, stocks, trades_list, holdings)
-        cash = new_port.cash
+        cash = new_port.cash + new_port.cash * INTEREST_RATE
         holdings = new_port.holdings
         portfolios.append(new_port)
         date += timedelta(days=1)
@@ -104,6 +106,7 @@ def fill_out_trades(starting_cash, trades, stocks):
                 oldest_stock.days[day]
                 next_day = False
             except KeyError:
+                cash = new_port.cash + new_port.cash * INTEREST_RATE
                 date += timedelta(days=1)
 
     return portfolios

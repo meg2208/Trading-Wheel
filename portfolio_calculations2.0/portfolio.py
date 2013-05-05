@@ -1,5 +1,5 @@
 from math import ceil
-INTEREST_RATE = .025/365
+from datetime import datetime
 
 
 class Portfolio:
@@ -32,7 +32,6 @@ class Portfolio:
                     trade.shares = shares_sold
 
         self.trades = trades
-        self.cash += self.cash * INTEREST_RATE
 
         for security in holdings.keys():   # dictionary, ticker -> shares
             try:
@@ -41,11 +40,24 @@ class Portfolio:
             except KeyError:
                 print 'holiday, stock market closed on {}'.format(day)
 
-        self.value = self.cash + self.stock_value
+        self.value = int(self.cash + self.stock_value)
+        self.stock_value = int(self.stock_value)
+        self.cash = int(self.cash)
 
     def __str__(self):
         return "day: {}\n\tvalue: {}\n\tcash: {}".format(
             self.day, int(self.value), int(self.cash))
 
     def graph_info(self):
-        pass
+        return """
+        data.addColumn('date', 'Date');
+        data.addColumn('number', 'Portfolio Value');
+        data.addColumn('string', 'title1');
+        data.addColumn('string', 'text1');
+        data.addColumn('number', 'Cash');
+        data.addColumn('number', 'Securities Value');
+        """
+
+    def graph_value(self):
+        date = datetime.strptime(self.day, "%Y-%m-%d")
+        return [date, self.value, None, None, self.cash, self.stock_value]
