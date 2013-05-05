@@ -60,4 +60,4 @@ class Portfolio:
 
     def graph_value(self):
         date = datetime.strptime(self.day, "%Y-%m-%d")
-        return [date, self.value, None, None, self.cash, self.stock_value]
+        return [date, self.value, self.cash, self.stock_value]

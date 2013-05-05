@@ -10,15 +10,11 @@ Trading Wheel
     google.load('visualization', '1', {packages: ['annotatedtimeline']});
     function drawVisualization() {
       var data = new google.visualization.DataTable();
-      data.addColumn('date', 'Date');
-      
-      data.addColumn('number', 'Portfolio Value');
-      data.addColumn('string', 'title1');
-      data.addColumn('string', 'text1');
+      {{ table_header }}
       
       data.addRows([
         {% for day in portfolios %}
-	        [new Date( {{ day[0].year }},{{ day[0].month }},{{ day[0].day}} ), {{ day[1] }}, null, null],
+	        [{{ day[0] }}, {{ day[1] }}, null, null, {{ day[2] }}, {{ day[3] }}]
         {% endfor %}
       ]);
 
@@ -33,24 +29,4 @@ Trading Wheel
 
 {% block body %}
 <div id="visualization" style="width: 900px; height: 400px;"></div>
-
-
-<div id="table">
-<h1>Your Portfolio Values</h1>
-
-<table class="table table-bordered table-striped table-hover">
-<tr class='error'>
-	<td><b>Returns</b></td>
-	<td><b>Year</b></td>
-</tr>
-{% for day in rev %}
-	<tr>
-	{% for column in day %}
-		<td>{{column}}</td>
-	{% endfor %}
-	</tr>
-{% endfor %}
-</table>
-</div>
-
 {% endblock %}
