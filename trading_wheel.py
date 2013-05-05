@@ -67,8 +67,8 @@ def not_found(error):
 # COOKIEZ
 #####################################################################
 def populate_cookie(user_id):
-    db, cursor = connect_db()
     print user_id
+    db, cursor = connect_db()
 
     #get all strategies
     session.pop('strategy', None)
@@ -78,23 +78,13 @@ def populate_cookie(user_id):
                             AND C.user_id = '{}'
                         """.format(user_id))
     data = cursor.fetchall()
-    if len(data) == 0:
+    if len(data) == 0:  # if this user has no strategies
         return
-    only_strategy = data[0]
-                        # Strategy ID,         Strat_name
+    only_strategy = data[0] # Strategy ID,    Strat_name
     session['strategy'] = [(only_strategy[0], only_strategy[1])]
     print 'STRATEGY:', only_strategy, '\n'
-    #session['strategy'] = [(only_strategy[0], unicode(only_strategy[1]))]
-    # limiting to one strategy for now
-    #strategies = []
-    #for strat in data:
-    #    print strat
-    #    strategies.append((strat[0], unicode(strat[1])))
-    #if len(strategies) > 0:
-    #    session['strategy'] = strategies
 
     # get all indicators
-
     session.pop('indicator', None)
     indicators = []
     for strat in session['strategy']:
