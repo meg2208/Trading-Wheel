@@ -342,46 +342,18 @@ def check_ticker(id_1, id_2, ticker=None, cursor=None, db=None):
 
 
 #####################################################################
-# DO CRAZY BACKEND
-#####################################################################
-@app.route('/find_trades')
-def find_trades():
-    controller.backtest(session['strategy'][0][0])
-    session['calculated'] = True
-    return redirect(url_for('home'))
-
-
-#####################################################################
 # Show Aggregate Portfolios
 #####################################################################
 @app.route('/portfolio', methods=['GET'])
 def show_portfolio():
     check_if_logged_in()
     populate_cookie(session['user_id'])
-    # Query finds all relevant aggregate portfolios
-    sql_query = """SELECT
-        A.time,
-        A.portfolio_value,
-        A.securites_value,
-        A.free_cash,
-        A.portfolio_value_change
-    FROM
-        day_to_day D,
-        aggregate_portfolio A
-    WHERE
-        D.strategy_id = {} AND
-        D.portfolio_id = A.portfolio_id
-    """.format(session['strategy'][0][0])
-    db, cursor = connect_db()
-    cursor.execute(sql_query)
-    data = cursor.fetchall()
 
-    with file('queries/portfolio_statistics.sql') as f:
-        data2 = cursor.execute(f.read().format(session['strategy'][0][0])).fetchall()
-
-    close_db(db, cursor)
     print 'PORTFOLIO VALUES'
-    return render_template('portfolio.html', portfolios=data, rev=data2)
+    # get triggers
+    # do calculations
+    # get graph_value from each portfolio
+    return render_template('portfolio.html', table_header=header, portfolios=data)
 
 
 #####################################################################
