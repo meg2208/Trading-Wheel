@@ -14,3 +14,4 @@ class Trigger:
         if not action_ticker:               # B/S itself if not specified
             self.action_ticker = ticker
         self.allocation = allocation
+
