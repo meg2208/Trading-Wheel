@@ -11,7 +11,6 @@ from portfolio_calculations import controller
 app = Flask(__name__)
 app.config.from_object('flask_settings')
 
-
 # Opens SQL*Plus db and cursor connections
 def connect_db():
     db = oracle.connect("{}/{}@{}".format(credentials.username,
@@ -601,3 +600,4 @@ def home():
 
 if __name__ == '__main__':
     app.run()
+
